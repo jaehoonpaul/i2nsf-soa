@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block header %}
+<a href="#"><div class="head_d05 click">장비 모니터링</div></a>
+<a href="/dashboard/monitoring"><div class="btn-ok" style="margin-top: 5px;">뒤로가기</div></a>
+{% endblock header %}
+
+{% block left_menu %}
+<style>
+	.right_d01{height : 100%;width : 65%; margin:0px 0px 0px 100px;}
+	.datepicker.dropdown-menu{z-index:10000 !important;}
+	svg {cursor:pointer;}
+	#chartDraw {height:556px;}
+	#detailChart {height:556px;}
+	#datePicker{visibility:hidden;}
+	.selectList { width:150px; height: 30px; float:right; margin:10px; 10px; 0px; 0px;}
+	#networkListDiv { width:100%; height: 50px;}
+	#alarmTbl{height:90%; margin : 10px; 10px; 10px; 0px;}
+	.rs_d03 {height:100%; width:100%;}
+</style>
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+
+<div class="instance_d03">
+    <div class="instance_d01">호스트</div>
+    <select class="instance_sel01" id="selectHostList" style="float:left;">
+        {% for host in hosts %}
+        {% if host.name != "Zabbix server" %}
+        <option {% if host.hostid == hostid %} selected {% endif %} value="{{ host.hostid }}">{{ host.name }}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    <div class="clear_float"></div>
+ </div>
+
+<!-- 차트 영역 -->
+<div class="rs_d03" id="tabGroup" >
+    {% if host_flag %}
+    <a href="#" class="tab_title">
+        <div id="tabStatus" class="rs_d04 tab-btn">상태</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div id="tabPing" class="rs_d04 tab-btn" data-meter_group="ping">PING</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div id="tabMemory" class="rs_d04 tab-btn" data-meter_group="memory">MEMORY</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div id="tabCpu" class="rs_d04 tab-btn" data-meter_group="cpu">CPU</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div id="tabDisk" class="rs_d04 tab-btn" data-meter_group="disk">DISK</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div id="tabNetwork" class="rs_d04 tab-btn" data-meter_group="network">NETWORK</div>
+    </a>
+    {% else %}
+    <a href="#" class="tab_title" hidden>
+        <div id="tabVmStatus" class="rs_d04 tab-btn">상태</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div id="tabVmPing" class="rs_d04 tab-btn" data-meter_group="ping">PING</div>
+    </a>
+    {% endif %}
+    <div class="clear_float"></div>
+    <div id="monitoring"></div>
+</div>
+<script src="{% static 'js/monitoring/info.js' %}"></script>
+{% endblock content %}

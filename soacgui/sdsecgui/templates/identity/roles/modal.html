@@ -1,0 +1,25 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+{% block modal_body %}
+<form id="edit_role_frm">
+    <div class="tab-body" style="width: 100%;">
+        <table class="pop-tab-01" style="width: 700px;">
+            <tr id="area_role_name">
+                <th class="pop_input_td01"><label for="role_name">역할 이름 *</label></th>
+                <td class="pop_input_td02"><input type="text" name="name" id="role_name" value="{{ role_name }}"/></td>
+            </tr>
+        </table>
+    </div>
+</form>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <div class="pop_plus_bt_img01" id="submit_role" style="display:inline-block;">
+        <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+    </div>
+    <div class="pop_cancel_bt_img01" id="submit_role_cancel" style="display:inline-block;">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+{% endblock modal_footer %}

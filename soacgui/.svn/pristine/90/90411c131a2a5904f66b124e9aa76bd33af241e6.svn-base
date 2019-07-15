@@ -1,0 +1,57 @@
+{% extends 'service/right_pop.html' %}
+{% load commontags %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_network.png" alt="#">
+<div class="right_d01 type">네트워크</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02">이름</div>
+<div class="right_d03 name">{{ network.name }}</div>
+<div class="right_d04">ID</div>
+<div class="right_d03 id">{{ network.id }}</div>
+<div class="right_d04">상태</div>
+<div class="right_d03 status">{{ network.status }}</div>
+<div class="right_d04">프로젝트 ID</div>
+<div class="right_d03 project_id">{{ network.tenant_id }}</div>
+<div class="right_d04">관리자 상태</div>
+<div class="right_d03 admin_state_up">{% if network.admin_state_up %}예{% else %}아니오{% endif %}</div>
+<div class="right_d04">공유</div>
+<div class="right_d03 shared">{% if network.shared %}예{% else %}아니오{% endif %}</div>
+<div class="right_d04">외부 네트워크</div>
+{% get_dict network 'router:external' as external_flag %}
+<div class="right_d03 external">{% if external_flag %}예{% else %}아니오{% endif %}</div>
+<div class="right_d04">MTU</div>
+<div class="right_d03 mtu">{{ network.mtu }}</div>
+<div class="right_d02">타입</div>
+<div class="right_d03 network_type">{% get_dict network 'provider:network_type' %}</div>
+<div class="right_d04">구분 ID</div>
+<div class="right_d03 segmentation">{% get_dict network 'provider:segmentation_id' %}</div>
+<div class="right_d04">물리적인 네트워크</div>
+<div class="right_d03 physical_network">{% get_dict network 'provider:physical_network' %}</div>
+{% endblock resourceInfo %}
+{% comment %}
+{
+	"network": {
+		"status": "ACTIVE",
+		"router:external": false,
+		"availability_zone_hints": [],
+		"availability_zones": ["nova"],
+		"ipv4_address_scope": null,
+		"description": "",
+		"subnets": ["175cc607-7166-43d6-bf1b-744b644aa1d7"],
+		"port_security_enabled": true,
+		"tenant_id": "04b2b71d7fd64bf5b15fb201395d2649",
+		"created_at": "2018-11-20T02:17:34",
+		"tags": [],
+		"ipv6_address_scope": null,
+		"updated_at": "2018-11-20T02:17:34",
+		"admin_state_up": true,
+		"shared": false,
+		"mtu": 1450,
+		"id": "4a366218-ed81-4bcc-9c67-1e0ce0b84ed6",
+		"name": "test_network1"
+	}
+}
+{% endcomment %}

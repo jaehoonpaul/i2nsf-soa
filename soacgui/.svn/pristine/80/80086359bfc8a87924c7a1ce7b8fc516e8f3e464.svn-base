@@ -1,0 +1,33 @@
+# _*_coding:utf-8_*_
+from django.conf.urls import url, include
+
+from sdsecgui.dashboard.admin import views
+from sdsecgui.dashboard.admin.defaults import urls as defaults_urls
+from sdsecgui.dashboard.admin.hypervisor import urls as hypervisors_urls
+from sdsecgui.dashboard.admin.flavors import urls as flavors_urls
+from sdsecgui.dashboard.admin.host_aggregates import urls as aggregates_urls
+from sdsecgui.dashboard.admin.images import urls as images_urls
+from sdsecgui.dashboard.admin.info import urls as info_urls
+from sdsecgui.dashboard.admin.instances import urls as instances_urls
+from sdsecgui.dashboard.admin.networks import urls as networks_urls
+from sdsecgui.dashboard.admin.routers import urls as routers_urls
+from sdsecgui.dashboard.admin.volumes import urls as volumes_urls
+
+app_name = "admin"
+name = "admin1"
+urlpatterns = [
+    # 볼륨 주소
+    url(r'^$', views.retrieve_useage_list, name='index'),
+
+    url(r'^aggregates/', include(aggregates_urls, namespace='aggregates')),
+    url(r'^hypervisors/', include(hypervisors_urls, namespace='hypervisors')),
+    url(r'^instances/', include(instances_urls, namespace='instances')),
+    url(r'^volumes/', include(volumes_urls, namespace='volumes')),
+    url(r'^flavors/', include(flavors_urls, namespace='flavors')),
+    url(r'^images/', include(images_urls, namespace='images')),
+    url(r'^networks/', include(networks_urls, namespace='networks')),
+    url(r'^routers/', include(routers_urls, namespace='routers')),
+    url(r'^info/', include(info_urls, namespace='info')),
+    url(r'^defaults/', include(defaults_urls, namespace='defaults')),
+]
+# url(r'^\?start=(?P<startStr>[\d]{4}-[\d]{2}-[\d]{2})?&end=(?P<endStr>[\d]{4}-[\d]{2}-[\d]{2})?$', views.retrieve_useage_list, name='index'),

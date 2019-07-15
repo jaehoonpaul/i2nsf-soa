@@ -1,0 +1,86 @@
+{% load staticfiles %}
+{% load commontags %}
+<!-- Rule Create 탭-->
+
+<div class="rs_d04 tab-btn click">Endpoint</div>
+<div class="rs_d04 tab-btn">{{ _('설정값') }}</div>
+<div class="clear_float"></div>
+
+<div class="rs_d05 tab-body" id="endpointInfo" style="display:block;">
+    <div class="clear_float"></div>
+    <div class="division">
+        <div class="clear_float"></div>
+        <img class="mypage_img01" src="/static/img/dashboard/common/mypage_icon_02.png" alt="#">
+        <div class="mypage_d01">{{ _('정책') }}</div>
+    </div>
+    <img id="deleteRule" class="all_check_bt01" src='{% static "img/dashboard/common/del_bt_01.png" %}' alt="#" data-key="{{ endpoint.endpoint_key }}" data-name="{{ endpoint.name }}">
+    <img id="updateRule" class="all_check_bt02" src='{% static "img/dashboard/common/edit_bt_01.png" %}' alt="#" data-key="{{ endpoint.endpoint_key }}" data-name="{{ endpoint.name }}">
+    <div class="clear_float"></div>
+    <table class="mypage_tab01">
+        <colgroup></colgroup>
+        <tbody>
+            <tr>
+                <th class="mypage_td01">{{ _('이름') }}</th><td class="mypage_td02" colspan="3">{{ endpoint.name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">{{ _('메타데이터') }}</th><td class="mypage_td02">{{ endpoint.metadata }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">{{ _('종류') }}</th><td class="mypage_td02">{{ endpoint.endpoint_type }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="rs_d05 tab-body" hidden style="display: block;">
+    <div class="division">
+        <div class="clear_float"></div>
+        <img class="mypage_img01" src="/static/img/dashboard/common/mypage_icon_02.png" alt="#">
+        <div class="mypage_d01">{{ _('출발지') }}</div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="mypage_tab01">
+        <colgroup></colgroup>
+        <tbody>
+            <tr>
+                <th class="mypage_td01"><div>{{ _('이름') }}</div></th>
+                <td class="mypage_td02">{{ endpoint.name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">{{ _('메타데이터') }}</th>
+                <td class="mypage_td02">{{ endpoint.metadata }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">{{ _('종류') }}</th>
+                <td class="mypage_td02">{{ endpoint.endpoint_type }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if endpoint.endpoint_type == "device" or endpoint.endpoint_type == "url" %}
+    <div class="division">
+        <div class="clear_float"></div>
+        <img class="mypage_img01" src="/static/img/dashboard/common/mypage_icon_02.png" alt="#">
+        <div class="mypage_d01">{{ _('목적지') }}</div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="mypage_tab01">
+        <colgroup></colgroup>
+        <tbody>
+            <tr>
+                <th class="mypage_td01">{{ _('이름') }}</th>
+                <td class="mypage_td02">{{ endpoint.name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">{{ _('종류') }}</th>
+                <td class="mypage_td02">{{ endpoint.endpoint_type }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">IP {{ _('범위') }}</th>
+                <td class="mypage_td02">{{ endpoint.endpoint_type }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+    <div class="clear_float"></div>
+</div>
+<div class="clear_float"></div>

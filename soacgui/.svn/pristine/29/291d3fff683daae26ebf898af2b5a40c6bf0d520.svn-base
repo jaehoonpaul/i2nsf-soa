@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">볼륨</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<!--
+<div class="header_title_d01">볼륨</div>
+<div>
+    <a href="#"><div class="header_title_d04_click">볼륨</div></a>
+    <a href="#"><div class="header_title_d05">볼륨 타입</div></a>
+    <a href="#"><div class="header_title_d05">볼륨 스냅샷</div></a>
+</div>
+-->
+<div class="head_d05 click">볼륨</div>
+<div class="head_d05">볼륨 타입</div>
+<div class="head_d05">볼륨 스냅샷</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">볼륨</div>
+        <div class="clear_float"></div>
+    </div>
+    <button class="btn-ok" id="create">볼륨 생성</button>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th class="rs_td01">프로젝트</th>
+            <th class="rs_td01">호스트</th>
+            <th class="rs_td01">이름</th>
+            <th class="rs_td01">크기</th>
+            <th class="rs_td01">Status</th>
+            <th class="rs_td01">유형</th>
+            <th class="rs_td01">연결된 곳</th>
+            <th class="rs_td01">부팅가능</th>
+            <th class="rs_td01">암호화</th>
+            <th class="rs_td01">Actions</th>
+        </tr>
+        {% for volume in volume_list%}
+            <tr data-id="{{volume.id}}">
+                <td class="{% cycle 'rs_td02' 'rs_td03' as tdClass %}">{{ volume.project_name }}</td>
+                <td class="{{tdClass}}">{{ volume.host }}</td>
+                <td class="{{tdClass}}"><a class="list_a01" href="/dashboard/admin/volumes/{{volume.id}}">{{ volume.name }}</a></td>
+                <td class="{{tdClass}}">{{ volume.size }}GiB</td>
+                <td class="{{tdClass}}">{{ volume.status }}</td>
+                <td class="{{tdClass}}">{{ volume.volume_type }}</td>
+                <td class="{{tdClass}}">
+                {% for attach in volume.attachments %}
+                    {{attach.device}}의 <a class="list_a01" href="/dashboard/admin/instances/{{attach.server_id}}/detail">{{attach.server_id}}</a>에 연결
+                {% endfor %}
+                </td>
+                <td class="{{tdClass}}">{{ volume.bootable }}</td>
+                <td class="{{tdClass}}">{{ volume.encrypted }}</td>
+                <td class="{{tdClass}}">
+                    <button class="btnDelete">볼륨 삭제</button>
+                    {% if sync %}
+                    <button class="sync">soam 연동</button> <!-- TODO: soam sync delete-->
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        <!--
+        <tr>
+            <td class="rs_td02">이름</td>
+            <td class="rs_td02">호스트</td>
+            <td class="rs_td02"><a class="list_a01" href="/dashboard/admin/volumes/아이디">이름</a></td>
+            <td class="rs_td02">띠용 GiB</td>
+            <td class="rs_td02">며용</td>
+            <td class="rs_td02">댸용</td>
+            <td class="rs_td02">첨부</td>
+            <td class="rs_td02">끵</td>
+            <td class="rs_td02">핑</td>
+            <td class="rs_td02"><button class="btnDelete">볼륨 삭제</button></td>
+        </tr>
+        -->
+    </table>
+</div>
+
+<div id='modalCreate' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center;">
+    <div class="modal_pop_d01" style="width: 800px;">
+        <div class="ind_d02 modal_header">
+            <div class="ind_d05" id="modal-title">제목</div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="modal-body" style="text-align: left;">
+            <!--
+            <label for="inputName">볼륨 이름</label>
+            <input type="text" name="name" id="inputName" />
+            <div class="clear_float"></div>
+            <label for="inputCaption">설명</label>
+            <textarea name="caption" id="inputCaption"></textarea>
+            <div class="clear_float"></div>
+            <label for="inputSource">볼륨 소스</label>
+            <select name="source" id="inputSource">
+                <option value="">소스 없음</option>
+                <option value="a">소스 없음</option>
+            </select>
+            <div class="clear_float"></div>
+            <div id="areaSourceImage">
+                <label for="inputImage">소스로 이미지를 활용</label>
+                <select name="image" id="inputImage">
+                    <option>이미지 선택</option>
+                </select>
+                <div class="clear_float"></div>
+            </div>
+            <label for="inputType">유형</label>
+            <select name="type" id="inputType">
+                <option>타입 없음</option>
+            </select>
+            <div class="clear_float"></div>
+            <label for="inputSize">크기 (GiB)</label>
+            <input type="number" min="1" name="size" id="inputSize" value="1" />
+            <div class="clear_float"></div>
+            <label for="inputAvailable">가용 구역</label>
+            <select name="available" id="inputAvailable">
+                <option>가용성 존 없음</option>
+            </select>
+            -->
+            <table class="pop-tab-01" style="width: 700px;">
+                <tr>
+                    <th class="mypage_td01"><label for="inputName">볼륨 이름</label></th>
+                    <td class="mypage_td02"><input type="text" name="name" id="inputName" /></td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01"><label for="inputDesc">설명</label></th>
+                    <td class="mypage_td02"><textarea name="desc" id="inputDesc"></textarea></td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01"><label for="inputSource">볼륨 소스</label></th>
+                    <td class="mypage_td02">
+                        <select name="source" id="inputSource">
+                            <option value="">소스 없음</option>
+                            <option value="image">이미지</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="areaSourceImage">
+                    <th class="mypage_td01"><label for="inputImage">소스로 이미지를 활용</label></th>
+                    <td class="mypage_td02">
+                        <select name="image" id="inputImage">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01"><label for="inputType">유형</label></th>
+                    <td class="mypage_td02">
+                        <select name="type" id="inputType">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01"><label for="inputSize">크기 (GiB)</label></th>
+                    <td class="mypage_td02"><input type="number" min="1" name="size" id="inputSize" value="1" /></td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01"><label for="inputAvailable">가용 구역</label></th>
+                    <td class="mypage_td02">
+                        <select name="available" id="inputAvailable">
+                            <option value="nova">nova</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop_d03">
+                <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="btnCreateSave">
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/admin/volumes/index.js"></script>
+{% if volume_list.error %}
+<script>
+    $(function() {
+        U.lobibox("{{ volume_list.error.message }}", "error", "{{ volume_list.error.title }}");
+    });
+</script>
+{% endif %}
+{% endblock content %}

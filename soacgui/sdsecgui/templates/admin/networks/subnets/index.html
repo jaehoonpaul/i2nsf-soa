@@ -1,0 +1,59 @@
+{% load staticfiles %}
+{% load commontags %}
+<!--<img class="all_check_bt01" src='{% static "img/dashboard/admin/networks/subnet_del_bt_01.png" %}' alt="#">-->
+<img class="all_check_bt01" src='{% static "img/dashboard/admin/networks/subnet_new_bt_01.png" %}' alt="#"
+     id="createSubnet">
+<!--<input class="rs_text03" type="text" placeholder="필터">-->
+<div class="clear_float"></div>
+<table class="common-tab-01" cellpadding="0" border="0" cellspacing="0">
+    <colgroup></colgroup>
+    <thead>
+    <tr>
+        <th class="name">이름</th>
+        <th class="cidr">CIDR</th>
+        <th class="ip_version">IP 버전</th>
+        <th class="gateway_ip">게이트웨이 IP</th>
+        <th class="customHtml">액션</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for subnet in network.subnets %}
+    <tr data-id="{{ subnet.id }}" data-filter="{{ subnet.name }}" data-data="{{ subnet }}">
+        <td class="name link">
+            <a class="list_a01" href="/dashboard/admin/networks/subnets/{{ subnet.id }}/detail" data-id="{{ subnet.id }}">{{ subnet.name }}</a>
+        </td>
+        <td class="cidr">{{ subnet.cidr }}</td>
+        <td class="ip_version">{{ subnet.ip_version }}</td>
+        <td class="gateway_ip">{{ subnet.gateway_ip }}</td>
+        <td>
+            <div class="button_group_bt02">
+                <button class="btnUpdate button_group_d01">서브넷 편집</button>
+                <div class="action button_group_d02">
+                    <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                </div>
+                <div class="clear_float"></div>
+                <div class="actionGroup actionGroup01" hidden>
+                    <a href="#" class="deleteSubnet actionGroup_a01"><div>서브넷 삭제</div></a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    {% for value in network.subnets|length|range:5 %}
+    <tr>
+        <td>&nbsp;</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td class="rs_td03 tl" colspan="5">Displaying {{ network.subnets|length }} item</td>
+    </tr>
+    </tfoot>
+</table>
+
+<script src='{% static "js/admin/networks/subnet.js" %}'></script>

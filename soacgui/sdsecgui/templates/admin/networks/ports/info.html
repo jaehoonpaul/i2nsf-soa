@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="header_title_d01">
+    <div class="head_d05 click">포트</div>
+</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="port" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">포트</div>
+        <div class="clear_float"></div>
+    </div>
+    <table class="common-tab-02 info" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th>이름</th>     <td id="name"></td>
+        </tr>
+        <tr>
+            <th>ID</th>       <td id="id"></td>
+        </tr>
+        <tr>
+            <th>네트워크 이름</th>   <td id="network_name"></td>
+        </tr>
+        <tr>
+            <th>네트워크 ID</th>     <td id="network_id"></td>
+        </tr>
+        <tr>
+            <th>MAC 주소</th>     <td id="mac_address"></td>
+        </tr>
+        <tr>
+            <th>Status</th><td id="status"></td>
+        </tr>
+        <tr>
+            <th>관리자 상태</th><td id="admin_state_up"></td>
+        </tr>
+        <tr>
+            <th>DNS 이름</th><td id="dns_name"></td>
+        </tr>
+    </table>
+
+    <h4>DNS 할당</h4>
+    <hr>
+    <table class="common-tab-02 info" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th></th><td id=""></td>
+        </tr>
+    </table>
+
+    <h4>Fixed IP</h4>
+    <hr>
+    <table class="common-tab-02 info" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th></th><td id="fixed_ips"></td>
+        </tr>
+    </table>
+
+    <h4>장치 연결됨</h4>
+    <hr>
+    <table class="common-tab-02 info" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th>장치 소유자</th><td id="device_owner"></td>
+            <th>장치 ID</th><td id="device_id"></td>
+        </tr>
+    </table>
+
+    <h4>바인딩</h4>
+    <hr>
+    <table class="common-tab-02 info" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th>VNIC 유형</th>
+            <td id="binding_vnic_type"></td>
+        </tr>
+        <tr>
+            <th>호스트</th>
+            <td id="binding_host_id"></td>
+        </tr>
+        <tr>
+            <th>프로필</th>
+            <td id="binding_profile"></td>
+        </tr>
+        <tr>
+            <th>VIF 유형</th>
+            <td id="binding_vif_type"></td>
+        </tr>
+        <tr>
+            <th>VIF 세부 사항</th>
+            <td id="binding_vif_details"></td>
+        </tr>
+
+    </table>
+</div>
+{% load staticfiles %}
+<script src='{% static "js/admin/networks/ports/info.js" %}'></script>
+<script>
+$(function(){
+    getPortAjax("{{ port_id }}");
+});
+</script>
+{% endblock content %}

@@ -1,0 +1,199 @@
+# _*_ coding:utf-8 _*_
+from sdsec.settings import config, section
+from sdsecgui.tools.ctrlengine import ControlEngine
+from sdsecgui.db.db_connector import DBConnector
+from sdsecgui.tools.model import SingletonInstane
+from sdsecgui.tools.openstack_restapi import NeutronRestAPI, NovaRestAPI, GlanceRestAPI, CinderRestAPI
+from sdsecgui.db.soa_query import *
+
+
+class SOAManagerDBConnector(DBConnector, SingletonInstane):
+    def __init__(self):
+        DBConnector.__init__(self)
+        self.DB_NM = config.get(section, 'PORTAL_DB_NM')
+        self.DB_USER = config.get(section, 'PORTAL_DB_USER')
+        self.DB_PASS = config.get(section, 'PORTAL_DB_PASS')
+        self.DB_IP = config.get(section, 'PORTAL_DB_IP')
+
+    def insert_service(self, params, data_dic):
+        self.insert(INSERT_SOAM_SERVICE, params)
+
+    def insert_router(self, auth_url, neutron, service_id, router_id):
+        result_router = neutron.getRouter(router_id)
+        if result_router.get("success"):
+            router = result_router["success"].get("router")
+            params = (
+                auth_url,
+                service_id,
+                router.get("id"),
+                router.get("name"),
+                9 if router.get("status") else 12,
+                7 if router.get("admin_state_up") else 8
+            )
+            from sdsec.settings import logger
+            logger.debug(INSERT_SOAM_ROUTER % params)
+            return self.insert(INSERT_SOAM_ROUTER, params)
+
+    def insert_service_resource(self, params, service_template, request):
+        auth_url = params[0]
+        service_id = params[2]
+        token = request.session.get("passToken")
+        ctrl_header = request.session.get("ctrl_header")
+
+        neutron = NeutronRestAPI(auth_url, token)
+        nova = NovaRestAPI(auth_url, token)
+        glance = GlanceRestAPI(auth_url, token)
+        cinder = CinderRestAPI(auth_url, token)
+
+        control = ControlEngine(ctrl_header)
+
+        # router
+        routers = service_template.get("vrouter_list")
+        for router in routers:
+            self.insert_router(auth_url, neutron, service_id, router.get("vrouter_id"))
+
+        # network
+        networks = service_template.get("network_list")
+        for network in networks:
+            self.insert_network(auth_url, control, neutron, service_id, network.get("network_id"))
+
+        # server
+        servers = service_template.get("vm_list")
+        for server in servers:
+            self.insert_server(auth_url, nova, service_id, server.get("vm_id"), glance)
+
+        # volume
+        volumes = service_template.get("volume_list")
+        for volume in volumes:
+            self.insert_volume(auth_url, cinder, service_id, volume.get("volume_id"))
+
+
+    def delete_service(self, service_id):
+        pass
+
+    def select_service(self, service_id):
+        return None
+
+    def select_service_list(self):
+        pass
+
+    def update_service(self, service_id, service_template):
+        self.delete_service(service_id)
+        service = self.select_service(service_id)
+        if not service:  # service == None
+            params = ()
+            self.insert_service(params, service_template)
+        else:
+            pass
+
+    def insert_network(self, auth_url, control, neutron, service_id, network_id):
+        from sdsec.settings import logger
+        result_network = control.get_resource("NETWORK", network_id)
+        if result_network.get("success"):
+            network = result_network["success"].get("network")
+            params = (
+                auth_url,
+                service_id,
+                network.get("id"),
+                network.get("name"),
+                9 if network.get("status") else 12,
+                7 if network.get("admin_state_up") else 8,
+                "Y" if network.get("router:external") else "N",
+                "Y" if network.get("share") else "N",
+                network.get("mtu")  #
+            )
+            self.insert(INSERT_SOAM_NETWORK, params)
+            # subnet
+            for subnet_id in network.get("subnets"):
+                result_subnet = neutron.get_subnet(subnet_id)
+                if result_subnet.get("success"):
+                    subnet = result_subnet["success"].get("subnet")
+                    params = (
+                        auth_url,
+                        subnet.get("network_id"),
+                        subnet_id,
+                        subnet.get("name"),
+                        subnet.get("cidr"),
+                        31 if subnet.get("ip_version") == 4 else 32,
+                        subnet.get("gateway_ip")
+                    )
+                    self.insert(INSERT_SOAM_SUBNET, params)
+                    logger.debug(INSERT_SOAM_SUBNET % params)
+            # port
+            result_ports = neutron.get_port_list({"network_id": network_id})
+            if result_ports.get("success"):
+                ports = result_ports["success"].get("ports")
+                for port_detail in ports:
+                    params = (
+                        auth_url,
+                        port_detail.get("network_id"),
+                        port_detail.get("device_id"),
+                        port_detail.get("id"),
+                        port_detail.get("name"),
+                        9 if port_detail.get("status") else 12,
+                        7 if port_detail.get("admin_state_up") else 8
+                    )
+                    self.insert(INSERT_SOAM_PORT, params)
+                    logger.debug(INSERT_SOAM_PORT % params)
+                    # fixed ip
+                    fixed_ips = port_detail.get("fixed_ips")
+                    for fixed_ip in fixed_ips:
+                        params = (
+                            auth_url,
+                            fixed_ip.get("subnet_id"),
+                            port_detail.get("id"),
+                            fixed_ip.get("ip_address")
+                        )
+                        self.insert(INSERT_SOAM_FIXED_IP, params)
+                        logger.debug(INSERT_SOAM_FIXED_IP % params)
+
+    def insert_server(self, auth_url, nova, service_id, server_id, glance):
+        result_server = nova.get_server(server_id)
+        if result_server.get("success"):
+            server = result_server["success"].get("server")
+            # flavor
+            result_flavor = nova.get_flavor(server.get("flavor").get("id"))
+            flavor = {}
+            if result_flavor.get("success"):
+                flavor = result_flavor["success"].get("flavor")
+            # image
+            result_image = glance.get_image(server.get("image").get("id"))
+            image = {}
+            if result_image.get("success"):
+                image = result_image["success"]
+            params = (
+                auth_url,
+                service_id,
+                server.get("equipment_key"),  #
+                server.get("id"),
+                server.get("name"),
+                flavor.get("id"),
+                flavor.get("name"),
+                flavor.get("ram"),
+                flavor.get("vcpus"),
+                flavor.get("disk"),
+                image.get("id"),
+                image.get("name"),
+                server.get("OS-EXT-SRV-ATTR:host"),
+                9 if server.get("status") else 12,
+                server.get("OS-EXT-STS:power_state")
+            )
+            self.insert(INSERT_SOAM_SERVER, params)
+
+    def insert_volume(self, auth_url, cinder, service_id, volume_id):
+
+        result_volume = cinder.get_volume_by_id(volume_id)
+        if result_volume.get("success"):
+            volume = result_volume["success"].get("volume")
+            params = (
+                auth_url,
+                service_id,
+                volume.get("attachments")[0].get("server_id"),
+                volume.get("id"),
+                volume.get("name"),
+                volume.get("os-vol-host-attr:host"),
+                volume.get("description"),
+                volume.get("volume_type"),
+                volume.get("availability_zone")
+            )
+            self.insert(INSERT_SOAM_VOLUME, params)

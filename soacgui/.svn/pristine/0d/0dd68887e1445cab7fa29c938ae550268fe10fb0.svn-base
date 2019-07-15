@@ -1,0 +1,357 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="tab-area">
+    <div class="pop01_d02">
+        <div class="pop01_d03 tabBtn info click">세부 정보*</div>
+        <div class="pop01_d03 tabBtn source">소스*</div>
+        <div class="pop01_d03 tabBtn flavor">Flavor*</div>
+        <div class="pop01_d03 tabBtn network">네트워크*</div>
+        <div class="pop01_d03 tabBtn port">네트워크 포트</div>
+        <div class="pop01_d03 tabBtn security">시큐리티 그룹</div>
+        <div class="pop01_d03 tabBtn keyPair">키 페어</div>
+        <div class="pop01_d03 tabBtn configuration">구성</div>
+        <div class="pop01_d03 tabBtn metadata">메타데이터</div>
+    </div>
+    <div class="pop01_d06">
+        <form id="createFrm">
+            <!-- 세부 정보 -->
+            <div class="tabBody info">
+                <div class="pop01_d04">
+                    <div class="pop01_d05">이름*</div>
+                    <input class="pop01_text01" name="name" value="">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="pop01_d04">
+                    <div class="pop01_d05">가용구역</div>
+                    <!--OS-EXT-AZ:availability_zone-->
+                    <select class="pop01_sel01" name="availability_zone">
+                        {% for availability_zone in availabilityZoneInfo %}
+                        <option>{{ availability_zone.zoneName }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="pop01_d04">
+                    <div class="pop01_d05">갯수*</div>
+                    <input type="number" class="pop01_text01" name="min_count" value="1" min="1">
+                </div>
+            </div>
+            <!-- 소스 -->
+            <div class="tabBody source"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">부팅 소스 선택</div>
+                <select class="pop_sel01" id="bootingSource">
+                    <option>이미지</option>
+                    <option>가상서버 스넵샷</option>
+                    <option>볼륨</option>
+                    <option>볼륨 스넵샷</option>
+                </select>
+                <div class="clear_float"></div>
+                <div class="pop_d02">새로운 볼륨 생성</div>
+                <div id="newVolumeRadioArea" class="group-btn-radio">
+                    <input type="hidden" id="newVolume" value="0" />
+                    <button type="button" data-value="1" class="btn-radio">예</button>
+                    <button type="button" data-value="0" class="btn-radio">아니오</button>
+                </div>
+                <div class="clear_float"></div>
+                <div id="newVolumeArea">
+                    <div class="pop_d02">볼륨 크기 (GB)</div>
+                    <input type="number" id="volumeSize" value="1" min="0" class="input-pop"/>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">가상서버 삭제시 볼륨 삭제</div>
+                    <div id="syncVolumeRadioArea" class="group-btn-radio">
+                        <button type="button" data-value="1" class="btn-radio">예</button>
+                        <button type="button" data-value="0" class="btn-radio">아니오</button>
+                        <input type="hidden" id="syncVolume" value="0" />
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="pop_d02">할당된</div>
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="source_allocated">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>업데이트 완료</th>
+                        <th>크기</th>
+                        <th>유형</th>
+                        <th>가시성</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="6">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <!--<input type="text" placeholder="필터" id="sourceFilter">-->
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="source_available">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>업데이트 완료</th>
+                        <th>크기</th>
+                        <th>유형</th>
+                        <th>가시성</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for image in images %}
+                    <tr data-id="{{ image.id }}" data-filter="{{ image.name }}">
+                        <td>{{ image.name }}</td>
+                        <td>{{ image.updated_at }}</td>
+                        <td>{{ image.size }}</td>
+                        <td>{{ image.type }}</td>
+                        <td>{{ image.visible }}</td>
+                        <td><button type="button" class="btnAdd">+</button></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr><td colspan="6">사용 가능한 항목 없음</td></tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- Flavor -->
+            <div class="tabBody flavor" hidden>
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="flavor_allocated">
+                    <thead>
+                    <tr>
+                        <th >이름</th>
+                        <th>VCPUS</th>
+                        <th>RAM</th>
+                        <th>디스크 총계</th>
+                        <th>Root 디스크</th>
+                        <th>Ephemeral 디스크</th>
+                        <th>공용</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="8">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <!--<input type="text" placeholder="필터" id="flavorFilter">-->
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="flavor_available">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>VCPUS</th>
+                        <th>RAM</th>
+                        <th>디스크 총계</th>
+                        <th>Root 디스크</th>
+                        <th>Ephemeral 디스크</th>
+                        <th>공용</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for flavor in flavors %}
+                    {% get_dict flavor "OS-FLV-EXT-DATA:ephemeral" as ephemeral_disk %}
+                    <tr data-id="{{ flavor.id }}" data-filter="{{ flavor.name }}">
+                        <td>{{ flavor.name }}</td>
+                        <td>{{ flavor.vcpus }}</td>
+                        <td>{{ flavor.ram }} MB</td>
+                        <td>{{ flavor.disk|add:ephemeral_disk }} GB</td>
+                        <td>{{ flavor.disk }} GB</td>
+                        <td>{{ ephemeral_disk }} GB</td>
+                        <td>{% get_dict flavor "os-flavor-access:is_public" as is_public %}{% if is_public %}예{% else %}아니오{% endif %}</td>
+                        <td><button type="button" class="btnAdd">+</button></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    {% if not flavors %}
+                    <tr><td colspan="8">사용 가능한 항목 없음</td></tr>
+                    {% endif %}
+                    </tfoot>
+                </table>
+            </div>
+            <!-- 네트워크 -->
+            <div class="tabBody network"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="network_allocated">
+                    <thead>
+                    <tr>
+                        <th>네트워크</th>
+                        <th>서브넷 특징</th>
+                        <th>공유</th>
+                        <th>관리자 상태</th>
+                        <th>상태</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="6">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <!--<input type="text" placeholder="필터" id="networkFilter">-->
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="network_available">
+                    <thead>
+                    <tr>
+                        <th>네트워크</th>
+                        <th>서브넷 특징</th>
+                        <th>공유</th>
+                        <th>관리자 상태</th>
+                        <th>상태</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for network in networks %}
+                    <tr data-id="{{ network.id }}" data-filter="{{ network.name }}">
+                        <td>{{ network.name }}</td>
+                        <td>{% for subnet in network.subnets %}{% if forloop.counter0 > 0 %}<br/>{% endif %}{{subnet}}{% endfor %}</td>
+                        <td>{% if network.shared %}예{% else %}아니오{% endif %}</td>
+                        <td>{% if network.admin_state_up %}UP{% else %}DOWN{% endif %}</td>
+                        <td>{{ network.status }}</td>
+                        <td><button type="button" class="btnAdd">+</button></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot {% if networks %}hidden{% endif %}>
+                    <tr><td colspan="6">사용 가능한 항목 없음</td></tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- 네트워크 포트 -->
+            <div class="tabBody port" hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="networkport_allocated">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>IP</th>
+                        <th>관리자 상태</th>
+                        <th>상태</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="5">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <!--<input type="text" placeholder="필터" id="networkportFilter">-->
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="networkport_available">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>IP</th>
+                        <th>관리자 상태</th>
+                        <th>상태</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for port in ports %}
+                    <tr data-id="{{port.id}}" data-filter="{{port.name}}">
+                        <td>{% if port.name %}{{ port.name }}{% else %}{{port.id}}{% endif %}</td>
+                        <td>{% for ips in port.fixed_ips %}{{ ips.ip_address }}{% endfor %}</td>
+                        <td>{{ port.admin_state_up }}</td>
+                        <td>{{ port.status }}</td>
+                        <td><button type="button" class="btnAdd">+</button></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot {% if ports %}hidden{% endif %}>
+                    <tr><td colspan="5">사용 가능한 항목 없음</td></tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- 시큐리티 그룹 -->
+            <div class="tabBody security"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="security_allocated">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>설명</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="3">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용 가능</div>
+                <!--<input type="text" placeholder="필터" id="securityFilter">-->
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="security_available">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>설명</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--<tr data-id="1" data-filter="default"><td>default</td><td>Default security group</td><td><button class="btnAdd">+</button></td></tr>-->
+                    </tbody>
+                    <tfoot><tr><td colspan="3">사용 가능한 항목 없음</td></tr></tfoot>
+                </table>
+            </div>
+            <div class="tabBody keyPair"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="keypair_allocated">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>Fingerprint</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용 가능</div>
+                <!--<input type="text" placeholder="필터" id="kaypairFilter">-->
+                <div class="clear_float"></div>
+                <table class="pop01_tab01" id="keypair_available">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>Fingerprint</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="tabBody configuration"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">이름</div>
+            </div>
+            <div class="tabBody metadata"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">이름</div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="submit_server">
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+</div>
+{% endblock modal_footer %}

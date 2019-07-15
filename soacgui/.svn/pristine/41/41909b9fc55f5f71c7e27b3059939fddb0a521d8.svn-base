@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">라우터</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 click">라우터</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="router_list">
+    <div class="ind_d02">
+        <div class="ind_d05">라우터</div>
+        <div class="clear_float"></div>
+    </div>
+    <img class="all_check_bt01" src='{% static "img/dashboard/admin/routers/router_new_bt_01.png" %}' alt="#"
+         id="createRouter">
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+
+    <div class="clear_float"></div>
+    <table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0">
+    </table>
+</div>
+
+<div class="clear_float"></div>
+<div class="rs_d03" id="info_tab">
+    <div class="rs_d04 tab-btn router_info click">개요</div>
+    <div class="rs_d04 tab-btn interface">인터페이스</div>
+    <div class="rs_d04 tab-btn static_path">정적 경로</div>
+    <div class="clear_float"></div>
+
+    <div class="rs_d05 tab-body" id="router_info" style="display:block;">
+        <div id="router_info_detail">
+            <table class="mypage_tab01">
+            </table>
+        </div>
+        <!--        <tr>
+                    <th class="ind_th01">설명</th><td class="ind_td01" id="description"></td>
+                </tr>-->
+        <!--        <tr>
+                    <th class="ind_th01">L3 에이전트</th>
+                    <td class="ind_td01">
+                        <table class="ind_tab01">
+                            <thead>
+                                <tr>
+                                    <th class="ind_th01"><strong>호스트</strong></th>
+                                    <th class="ind_th01"><strong>ID</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ind_td01">&lt;!&ndash; openstack &ndash;&gt;</td>
+                                    <td class="ind_td01">&lt;!&ndash; <a href="/dashboard/admin/routers/8399a441-4ebf-4661-bcee-9e06a1fec21f/l3_agent_list">8399a441-4ebf-4661-bcee-9e06a1fec21f</a> &ndash;&gt;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="ind_th01">가용성 존</th><td class="ind_td01" id="availability_zones"></td>
+                </tr>-->
+        <div class="division">
+            <div class="clear_float"></div>
+            <img class="mypage_img01" src='{%static "img/dashboard/common/mypage_icon_02.png"%}' alt="#">
+            <div class="mypage_d01">외부 게이트웨이</div>
+        </div>
+        <div class="clear_float"></div>
+        <!--<hr class="header_rule">-->
+        <div id="external_gateway">
+            <table class="mypage_tab01">
+                <!--<tr>
+                    <th class="mypage_td01">네트워크 이름</th><td class="mypage_td02" id="network_name"></td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01">네트워크 ID</th><td class="mypage_td02" id="network_id"></td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01">외부 fixed IP</th>
+                    <td class="mypage_td02" id="external_fixed_ips">
+                    -->
+                <!--<ul>
+                    <li><strong>서브넷 ID</strong> <a href="/dashboard/project/networks/subnets/8764c66c-4fa8-4b4e-82c8-ec0a76d31449/detail">8764c66c-4fa8-4b4e-82c8-ec0a76d31449</a></li>
+                    <li><strong>IP 주소</strong> 172.24.4.8</li>
+                </ul>--><!--
+                    </td>
+                </tr>
+                <tr>
+                    <th class="mypage_td01">SNAT</th><td class="mypage_td02" id="enable_snat"></td>
+                </tr> -->
+            </table>
+        </div>
+    </div>
+    <div class="rs_d05 tab-body" id="interface">
+        <img class="all_check_bt01" src='{% static "img/dashboard/admin/networks/port_plus_bt_01.png" %}' alt="#"
+             id="createPort">
+        <div class="clear_float"></div>
+        <table class="mypage_tab01 index" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+    <div class="rs_d05 tab-body" id="static_path">
+        <table class="mypage_tab01 index" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+    <input type="hidden" id="selectRouterId"/>
+    <input type="hidden" id="selectRouterName"/>
+</div>
+{% include "admin/routers/modal.html" %}
+<script src='{% static "js/admin/routers/index.js" %}'></script>
+<script>
+//{% autoescape off %}{{ routerList }}{% endautoescape %},
+</script>
+<style>
+    .table-horizontal th {
+        float: left;
+        withh: 160px;
+        clear: left;
+        text-align: right;
+        overflow: hitden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    th {
+        font-weight: bold;
+    }
+</style>
+{% endblock content %}

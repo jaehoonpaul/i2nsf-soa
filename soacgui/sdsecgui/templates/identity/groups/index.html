@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load commontags %}
+{% block header %}
+{% load staticfiles %}
+<div class="head_d05 click">그룹</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="group_list" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">그룹</div>
+        <div class="clear_float"></div>
+    </div>
+    <button class="btn-ok" id="create_group">그룹 생성</button>
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+            <tr>
+                <th class="name">이름</th>
+                <th class="description">설명</th>
+                <th class="id">그룹 ID</th>
+                <th class="action">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for group in groups %}
+            <tr data-id="{{ group.id }}" data-filter="{{ group.name }}">
+                <td class="name link">
+                    <a href="/dashboard/identity/groups/{{ group.id }}/detail">{{ group.name }}</a>
+                </td>
+                <td class="description">{{ group.description }}</td>
+                <td class="id">{{ group.id }}</td>
+                <td>
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 btnUpdate">Members 관리</div>
+                        <div class="button_group_d02 action">
+                            <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                        </div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="edit_group actionGroup_a01"><div>그룹 편집</div></a>
+                            <a href="#" class="delete_group actionGroup_a01"><div>프로젝트 삭제</div></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in groups|length|range:15 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="tl" colspan="4">Displaying {{ groups|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script src='{% static "js/identity/groups/index.js" %}'></script>
+{% endblock content %}

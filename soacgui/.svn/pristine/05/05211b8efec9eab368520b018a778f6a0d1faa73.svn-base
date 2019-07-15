@@ -1,0 +1,154 @@
+{% extends 'service/right_pop.html' %}
+{% load commontags %}
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_loadbalancer.png" alt="#">
+<div class="right_d01 type">로드밸런서</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02">이름</div>
+<div class="right_d03 name">{{ data.name }}</div>
+<div class="right_d02">알고리즘</div>
+<div class="right_d03">{{ data.lb_algorithm }}</div>
+<div class="right_d04">Persistence</div>
+<div class="right_d03">{{ data.persistence }}</div>
+{% for detail in data.detail %}
+<div class="right_d04">상태</div>
+<div class="right_d03">{{ detail.lb_provisioning_status }}</div>
+{% endfor %}
+<div class="right_d04">프로토콜</div>
+<div class="right_d03">{{ data.protocol }}</div>
+{% if data.cookie_name %}
+<div class="right_d04">Cookie Name</div>
+<div class="right_d03">{{ data.cookie_name|default:"-" }}</div>
+{% endif %}
+<div class="right_d04">공유</div>
+<div class="right_d03">{% if data.public_vip %}예{% else %}아니오{% endif %}</div>
+<!--<div class="right_d04">Tenant Net</div>-->
+<!--<div class="right_d03">{{ data.tenant_net }}</div>-->
+<div class="right_d04">프로토콜 포트</div>
+<div class="right_d03">{{ data.protocol_port }}</div>
+
+<div class="right_d02">Pool Member</div>
+<div class="right_d03">이름: {{ data.pool_member.name }}</div>
+<div class="right_d03">서브넷: {{ data.pool_member.subnet }}</div>
+<div class="right_d03">프로토콜 포트: {{ data.pool_member.protocol_port }}</div>
+<div class="right_d03">부하분산 가중치: {{ data.pool_member.weight }}</div>
+
+{% if data.monitor %}
+<div class="right_d02">Monitor</div>
+<!--<div class="right_d03">name: {{ data.monitor.name }}</div>-->
+<div class="right_d03">Delay: {{ data.monitor.delay }}</div>
+<div class="right_d03">Max Retries: {{ data.monitor.max_retries }}</div>
+<div class="right_d03">Http Method: {{ data.monitor.http_method }}</div>
+<div class="right_d03">Timeout: {{ data.monitor.timeout }}</div>
+<div class="right_d03">Type: {{ data.monitor.type }}</div>
+{%endif%}
+{% for detail in data.detail %}
+<div class="right_d02">가상 네트워크</div>
+{% for lb_vip in detail.lb_vip_list %}
+<div class="right_d03">고정 IP: {{ lb_vip.fixed_ip_address }}</div>
+<div class="right_d03">Floating IP: {{ lb_vip.floating_ip_address }}</div>
+{% endfor %}
+{% endfor %}
+{% endblock resourceInfo %}
+
+{% comment %}
+<div class="right_d02">detail</div>
+{% for detail in data.detail %}
+    {% for key, val in detail.items %}
+        {% if key == "lb_pools" or key == "lb_vip_list" or key == "lb_listeners" or key == "lb_monitors" %}
+        {% else %}
+            <div class="right_d04">{{ key }}</div>
+            <div class="right_d03">{{ val }}</div>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+{% for detail in data.detail %}
+    {% for key, val in detail.items %}
+        {% if key == "lb_pools" or key == "lb_vip_list" or key == "lb_listeners" or key == "lb_monitors" %}
+            <div class="right_d02">{{ key }}</div>
+            {% for val1 in val %}
+            {% for key2, val2 in val1.items %}
+            <div class="right_d03">{{ key2 }}: {{ val2 }}</div>
+            {% endfor %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+
+
+<div class="right_d02">이름</div>
+<div class="right_d03 name">test_loadbalancer01</div>
+<div class="right_d04">pool_member</div>
+<div class="right_d03">subnet: test_network_in_subnet</div>
+<div class="right_d03">protocol_port: 80</div>
+<div class="right_d03">name: test_poolmember01</div>
+<div class="right_d03">weight: 1</div>
+<div class="right_d04">lb_algorithm</div>
+<div class="right_d03">ROUND_ROBIN</div>
+<div class="right_d04">protocol</div>
+<div class="right_d03">HTTP</div>
+<div class="right_d04">cookie_name</div>
+<div class="right_d03"></div>
+<div class="right_d04">public_vip</div>
+<div class="right_d03">True</div>
+<div class="right_d04">tenant_net</div>
+<div class="right_d03">test_network_in</div>
+<div class="right_d04">protocol_port</div>
+<div class="right_d03">80</div>
+<div class="right_d04">persistence</div>
+<div class="right_d03">source_ip</div>
+<div class="right_d04">monitor</div>
+<div class="right_d03">name: test_monitoring01</div>
+<div class="right_d03">delay: 5</div>
+<div class="right_d03">max_retries: 5</div>
+<div class="right_d03">http_method: </div>
+<div class="right_d03">timeout: 5</div>
+<div class="right_d03">type: TCP</div>
+<div class="right_d02">detail</div>
+            <div class="right_d04">lb_vip_address</div>
+            <div class="right_d03">192.168.124.3</div>
+            <div class="right_d04">lb_vip_subnet_id</div>
+            <div class="right_d03">a32f5489-c334-457b-9b68-adc96db86bc9</div>
+            <div class="right_d04">lb_id</div>
+            <div class="right_d03">b021a4ae-7f8a-464f-8596-7aec09be5b9d</div>
+            <div class="right_d04">lb_name</div>
+            <div class="right_d03">test_loadbalancer01</div>
+            <div class="right_d04">lb_vip_port_id</div>
+            <div class="right_d03">d8024c63-4df8-4324-ba72-4e60f0c32020</div>
+            <div class="right_d04">lb_provisioning_status</div>
+            <div class="right_d03">ACTIVE</div>
+            <div class="right_d02">lb_vip_list</div>
+            <div class="right_d03">router_id: fb4feaff-93b1-4564-8698-2ca8a67db277</div>
+            <div class="right_d03">floating_network_id: 324f4b67-edb6-4237-8764-349c9a86a055</div>
+            <div class="right_d03">fixed_ip_address: 192.168.124.3</div>
+            <div class="right_d03">floating_ip_address: 10.10.200.44</div>
+            <div class="right_d03">port_id: d8024c63-4df8-4324-ba72-4e60f0c32020</div>
+            <div class="right_d03">id: a16068b0-9257-44a3-b3e7-67e88854bf0b</div>
+            <div class="right_d02">lb_pools</div>
+            <div class="right_d03">pool_protocol: HTTP</div>
+            <div class="right_d03">pool_name: test_poolmember01</div>
+            <div class="right_d03">pool_listeners: [{u'id': u'273f2ec3-c2d3-407a-80e9-855c99ac9bf4'}]</div>
+            <div class="right_d03">pool_id: 9bdb43d7-b138-417c-8181-53d780723000</div>
+            <div class="right_d03">pool_healthmonitor_id: 03962a1f-abc2-401f-8e44-79d25a454d0c</div>
+            <div class="right_d03">pool_lb_algorithm: ROUND_ROBIN</div>
+            <div class="right_d03">pool_loadbalancers: [{u'id': u'b021a4ae-7f8a-464f-8596-7aec09be5b9d'}]</div>
+            <div class="right_d03">pool_members: [{u'id': u'fb6f7d58-4eec-4a19-805f-4a564fec0ac6'}, {u'id': u'ee20663e-6c95-4ee5-a829-7620d9764086'}]</div>
+            <div class="right_d02">lb_listeners</div>
+            <div class="right_d03">listener_loadbalancers: [{u'id': u'b021a4ae-7f8a-464f-8596-7aec09be5b9d'}]</div>
+            <div class="right_d03">listener_protocol_port: 80</div>
+            <div class="right_d03">listener_protocol: HTTP</div>
+            <div class="right_d03">listener_id: 273f2ec3-c2d3-407a-80e9-855c99ac9bf4</div>
+            <div class="right_d03">listener_name: test_2network_autoscaling-listener-b4avkqq55tox</div>
+            <div class="right_d03">listener_default_pool_id: 9bdb43d7-b138-417c-8181-53d780723000</div>
+            <div class="right_d02">lb_monitors</div>
+            <div class="right_d03">monitor_delay: 5</div>
+            <div class="right_d03">name: monitor</div>
+            <div class="right_d03">monitor_pools: [{u'id': u'9bdb43d7-b138-417c-8181-53d780723000'}]</div>
+            <div class="right_d03">monitor_id: 03962a1f-abc2-401f-8e44-79d25a454d0c</div>
+            <div class="right_d03">monitor_timeout: 5</div>
+            <div class="right_d03">monitor_max_retries: 5</div>
+            <div class="right_d03">monitor_type: TCP</div>
+{% endcomment %}

@@ -1,0 +1,102 @@
+# _*_coding:utf-8_*_
+import ast
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+import json
+
+from sdsecgui.tools.openstack_restapi import NeutronRestAPI
+from sdsecgui.tools.keystone_exception import Unauthorized
+
+
+def get_subnet_list(request):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+
+    if request.method == 'POST':
+        try:
+            neutron = NeutronRestAPI(auth_url, token)
+            fields = ["name", "id"]
+            result = neutron.get_subnet_list(fields=fields)
+        except Unauthorized as e:
+            result = {"error": {"title": e.message, "message": e.details, "code": 401}}
+        return JsonResponse(result)
+
+
+def create_subnet(request):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+
+    if request.method == 'POST':
+        data = json.loads(request.POST.get("data"))
+        try:
+            neutron = NeutronRestAPI(auth_url, token)
+            result = neutron.createSubnet(data)
+        except Unauthorized as e:
+            result = {"error": {"title": e.message, "message": e.details, "code": 401}}
+        return JsonResponse(result)
+
+
+def action_subnet(request, subnet_id, action):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+
+    if request.method == 'POST':
+        try:
+            neutron = NeutronRestAPI(auth_url, token)
+            if action == "detail":
+                result = neutron.get_subnet(subnet_id)
+
+            elif action == "update":
+                data = json.loads(request.POST.get("data"))
+                result = neutron.updateSubnet(subnet_id, data)
+
+            elif action == "delete":
+                result = neutron.deleteSubnet(subnet_id)
+
+            else:
+                result = {"error": {"title": "Not Found", "message": "지원하지 않는 기능입니다.", "code": 404}}
+
+        except Unauthorized as e:
+            result = {"error": {"title": e.message, "message": e.details, "code": 401}}
+        return JsonResponse(result)
+    else:
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/admin/networks/subnets/" + subnet_id)
+
+        if action == "detail":
+            return render(request, 'admin/networks/subnets/info.html', {'subnet_id': subnet_id})
+
+
+def subnet_modal(request, subnet_id=None):
+    data = {"modal_title": request.GET.get("modal_title")}
+    auth_url = request.session.get("auth_url")
+    token = request.session.get('passToken')
+
+    if subnet_id:
+        try:
+            neutron = NeutronRestAPI(auth_url, token)
+            result = neutron.get_subnet(subnet_id)
+            if result.get("success"):
+                subnet = result["success"].get("subnet")
+                allocation_pools_str = ""
+                for idx, allocation_pool in enumerate(subnet.get("allocation_pools")):
+                    if idx != 0:
+                        allocation_pools_str += "\n"
+                    allocation_pools_str += allocation_pool.get("start") + ", " + allocation_pool.get("end")
+                subnet["allocation_pools"] = allocation_pools_str
+
+                dns_nameservers_str = "\n".join(subnet.get("dns_nameservers"))
+                subnet["dns_nameservers"] = dns_nameservers_str
+
+                host_routes_str = ""
+                for idx, host_route in enumerate(subnet.get("host_routes")):
+                    if idx != 0:
+                        host_routes_str += "\n"
+                        host_routes_str += host_route.get("destination") + ", " + host_route.get("nexthop")
+                subnet["host_routes"] = host_routes_str
+                data["subnet"] = subnet
+        except Unauthorized as e:
+            return JsonResponse({"error": {"title": e.message, "message": e.details, "code": 401}})
+
+    return render(request, 'admin/networks/subnets/modal.html', data)

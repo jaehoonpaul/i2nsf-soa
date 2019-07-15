@@ -1,0 +1,68 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+{% load commontags %}
+{% block modal_body %}
+    <table class="pop-tab-01" style="width: 700px;">
+        <tr id="areaPortNetworkId">
+            <th class="pop_input_td01"><label for="inputPortNetworkId">네트워크 ID</label></th>
+            <td class="pop_input_td02"><input type="text" name="portNetworkId" id="inputPortNetworkId" disabled/></td>
+        </tr>
+        <tr id="areaPortNetworkName">
+            <th class="pop_input_td01"><label for="inputPortNetworkName">네트워크 이름</label></th>
+            <td class="pop_input_td02"><input type="text" name="portNetworkName" id="inputPortNetworkName" disabled/></td>
+        </tr>
+        <tr id="areaPortId">
+            <th class="pop_input_td01"><label for="inputPortId">포트 ID</label></th>
+            <td class="pop_input_td02"><input type="text" name="portId" id="inputPortId" disabled/></td>
+        </tr>
+        <tr id="areaPortName">
+            <th class="pop_input_td01"><label for="inputPortName">포트 이름</label></th>
+            <td class="pop_input_td02"><input type="text" name="portName" id="inputPortName" value="{{ port.name }}"/></td>
+        </tr>
+        <tr id="areaPortAdmin">
+            <th class="pop_input_td01"><label for="inputPortAdmin">관리자 상태</label></th>
+            <td class="pop_input_td02">
+                <select name="admin" id="inputPortAdmin" data-selected="{% if port.status is 'UP' %}1{% else %}0{% endif %}">
+                    <option value="1">UP</option>
+                    <option value="0">DOWN</option>
+                </select>
+            </td>
+        </tr>
+        <tr id="areaPortDeviceId">
+            <th class="pop_input_td01"><label for="inputPortDeviceId">장치 ID</label></th>
+            <td class="pop_input_td02"><input type="text" name="portDeviceId" id="inputPortDeviceId" value="{{ port.device_id }}"/></td>
+        </tr>
+        <tr id="areaPortDeiceOwner">
+            <th class="pop_input_td01"><label for="inputPortDeiceOwner">장치 소유자</label></th>
+            <td class="pop_input_td02"><input type="text" name="portDeviceOwner" id="inputPortDeiceOwner" value="{{ port.device_owner }}"/></td>
+        </tr>
+        <tr id="areaPortBindingHostId">
+            <th class="pop_input_td01"><label for="inputPortBindingHostId">바인딩: 호스트</label></th>
+            <td class="pop_input_td02"><input type="text" name="portBindingHostId" id="inputPortBindingHostId" value="{% get_dict port 'binding:host_id' %}"/></td>
+        </tr>
+        <tr id="areaPortBindingVnicType">
+            <th class="pop_input_td01"><label for="inputPortBindingVnicType">바인딩: VNIC 유형</label></th>
+            <td class="pop_input_td02">
+                <select name="portBindingVnicType" id="inputPortBindingVnicType" data-selected="{% get_dict port 'binding:vnic_type' %}">
+                    <option value="normal">기본</option>
+                    <option value="direct">Direct</option>
+                    <option value="macvtap">MacVTap</option>
+                    <!--<option value="baremetal">Baremetal</option>-->
+                    <!--<option value="direct-physical">Direct-Physical</option>-->
+                    <!--<option value="virtio-forwarder">Virtio-Forwarder</option>-->
+                </select>
+            </td>
+        </tr>
+    </table>
+{% endblock modal_body %}
+{% block modal_footer %}
+    <div class="clear_float"></div>
+    <div class="pop_d03">
+        <div class="pop_plus_bt_img01" id="createPortSubmit" hidden style="display:inline-block;">
+            <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+        </div>
+        <div class="pop_cancel_bt_img01" id="createPortCancel" style="display:inline-block;">
+            <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+        </div>
+    </div>
+{% endblock modal_footer %}

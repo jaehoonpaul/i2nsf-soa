@@ -1,0 +1,179 @@
+/* partitions */
+/*.contents{
+    width:100%;
+    height:88%;
+    padding: 0px;
+    margin:0px;*/
+    /*height:auto;*/
+    /*padding: 0px 0px 0px 10px;*/
+    /*overflow:hidden;*//*
+}*/
+
+#vis {
+    width:100%;
+    height:100%;
+}
+
+svg {
+    /*background-color: #FFF;*/
+    margin: 0px 0px 0px 0px;
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    /*border: 1px solid #ddd;*/
+}
+
+/*svg:not(.active):not(.ctrl) {
+    cursor: crosshair;
+}*/
+
+path.link {
+    fill: none;
+    stroke: #999;
+    stroke-width: 2px;
+    cursor: default;
+}
+
+svg:not(.active):not(.ctrl) path.link {
+    cursor: pointer;
+}
+
+path.link.selected {
+    stroke-dasharray: 10,2;
+}
+
+path.link.dragline {
+    pointer-events: none;
+}
+
+path.link.hidden {
+    stroke-width: 0;
+}
+
+/* partitions */
+path.subset {
+    stroke-width: 100px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    opacity: .3;
+}
+
+/* partitions */
+circle.bead {
+    pointer-events: none;
+}
+
+circle.node {
+    stroke-width: 1.5px;
+    cursor: pointer;
+}
+
+circle.node.reflexive {
+    stroke: #000 !important;
+    stroke-width: 3.5px;
+}
+
+circle.item {
+    stroke-width: 1.5px;
+    cursor: pointer;
+}
+
+circle.item.reflexive {
+    stroke: #000 !important;
+    stroke-width: 3.5px;
+}
+
+text {
+    font-family: Noto Sans KR;
+    /*fill:#52525a;*/
+    text-anchor: middle;
+    /*font-weight: bold;*/
+    font-size: 10px;
+}
+
+#node_info {
+
+    border: 1px solid red;
+    width : 511px;
+    height : 500px;
+}
+
+/*body{
+    overflow-x:hidden;
+    overflow-y:auto;
+}*/
+
+input.service{
+    padding: 0px 12px;
+    height:20px;
+}
+
+button.service{
+    padding: 0px 12px;
+    height: 20px;
+    width: 160px;
+}
+.combo{
+    margin: 16px 0 0 20px;
+}
+.dropdown-menu{
+    font-size: 10px;
+}
+
+button.service p{
+    width: 130px;
+    float: left;
+}
+
+button.find_service{
+    height: 20px;
+    padding-top: 2px;
+    font-size: 10px;
+}
+
+select.service *{
+    font-family:"Noto Sans KR";
+    font-size:10px;
+}
+
+textarea.service{
+    padding: 4px 8px;
+    display:inline-block;
+    margin:5px 0 0 12px;
+    width:268px;
+}
+.service{
+    font-family:"Noto Sans KR";
+    font-size:10px;
+}
+.service_info{
+    font-family:"Noto Sans KR";
+    font-size:10px;
+    padding: 0px 12px;
+}
+input.service_info{
+    height:20px;
+}
+textarea.service_info{
+    padding:5px 12px;
+}
+
+.td_bt{
+    width:0px;
+}
+
+.table.service > tbody > tr > td.td_nm,.table > tbody > tr > td.td_bt{
+    padding:0px;
+}
+.table.service{
+    margin:10px 0 0 0;
+}
+.pop01_d02{
+    margin-bottom: 10px;
+}
+.modal-footer table td{
+    text-align:center;
+}

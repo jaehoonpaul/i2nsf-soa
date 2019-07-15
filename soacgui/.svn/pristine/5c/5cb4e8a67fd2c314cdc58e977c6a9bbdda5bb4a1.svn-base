@@ -1,0 +1,80 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="p50">
+    <div class="tab-area">
+        <div class="rs_d04 tab-btn with-subnet">서브넷</div>
+        <div class="rs_d04 tab-btn with-subnet">서브넷 세부 정보</div>
+        <div class="clear_float"></div>
+        <form id="subnetFrm">
+            <div class="tab-body" style="width: 100%;">
+                <table class="pop-tab-01" style="width: 700px;">
+                    <tr id="areaNetworkSubnetName">
+                        <th class="pop_input_td01"><label for="input_subnet_name">서브넷 이름</label></th>
+                        <td class="pop_input_td02"><input type="text" name="name" id="input_subnet_name" value="{{ subnet.name }}"/></td>
+                    </tr>
+                    <tr id="areaNetworkAddress">
+                        <th class="pop_input_td01"><label for="input_cidr">네트워크 주소</label></th>
+                        <td class="pop_input_td02"><input type="text" name="cidr" id="input_cidr" value="{{ subnet.cidr }}"/></td>
+                    </tr>
+                    <tr id="areaNetworkIpv">
+                        <th class="pop_input_td01"><label for="input_ip_version">IP 버전</label></th>
+                        <td class="pop_input_td02">
+                            <select name="ip_version" id="input_ip_version">
+                                <option value="4"{% if subnet.ip_version != 6 %} selected{% endif %}>IPv4</option>
+                                <option value="6"{% if subnet.ip_version == 6 %} selected{% endif %}>IPv6</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="areaNetworkGateway">
+                        <th class="pop_input_td01"><label for="input_gateway_ip">게이트웨이 IP</label></th>
+                        <td class="pop_input_td02"><input type="text" name="gateway_ip" id="input_gateway_ip" value="{{ subnet.gateway_ip }}"/></td>
+                    </tr>
+                    <tr id="areaNetworkNoGateway">
+                        <th class="pop_input_td01"><label for="inputNetworkNoGateway">게이트웨이 비활성</label></th>
+                        <td class="pop_input_td02"><input type="checkbox" name="enable_gateway" id="inputNetworkNoGateway"/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="tab-body" style="width: 100%;">
+                <table class="pop-tab-01" style="width: 700px;">
+                    <tr id="areaNetworkUseDhcp">
+                        <th class="pop_input_td01"><label for="input_enable_dhcp">DHCP 사용</label></th>
+                        <td class="pop_input_td02"><input type="checkbox" name="enable_dhcp" id="input_enable_dhcp"{% if subnet.enable_dhcp %} checked{%endif%}/>
+                        </td>
+                    </tr>
+                    <tr id="areaNetworkPool">
+                        <th class="pop_input_td01"><label for="inputNetworkPool">풀 할당</label></th>
+                        <td class="pop_input_td02">
+                            <textarea name="allocation_pools" id="inputNetworkPool" placeholder="풀에 할당된 IP 주소 :&#x0a;한 줄에 하나씩 시작 주소, 끝 주소를 입력합니다.&#x0a;(예, 192.168.1.100, 192.168.1.120)">{{ subnet.allocation_pools }}</textarea>
+                        </td>
+                    </tr>
+                    <tr id="areaNetworkDns">
+                        <th class="pop_input_td01"><label for="inputNetworkDns">DNS 네임 서버</label></th>
+                        <td class="pop_input_td02">
+                            <textarea name="dns_nameservers" id="inputNetworkDns" placeholder="이 서브넷에 대한 DNS 서버의 IP주소 :&#x0a;한 줄에 하나씩 입력합니다.">{{ subnet.dns_nameservers }}</textarea>
+                        </td>
+                    </tr>
+                    <tr id="areaNetworkHost">
+                        <th class="pop_input_td01"><label for="inputNetworkHost">호스트 라우터</label></th>
+                        <td class="pop_input_td02">
+                            <textarea name="host_routes" id="inputNetworkHost" placeholder="추가 라우트 설정 :&#x0a;한 줄에 하나씩 destination_cidr과 nexthop을 입력합니다.&#x0a;(예, 192.168.200.0/24,10.56.1.254)">{{ subnet.host_routes }}</textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+    <div class="clear_float"></div>
+    <div class="pop_d03">
+        <button id="tab-prev-btn" class="btn-normal">&lt; 이전</button>
+        <button id="tab-next-btn" class="btn-normal">다음 &gt;</button>
+        <button id="createNetworkSubmit" class="btn-confirm" hidden >확인</button>
+        <button id="createNetworkCancel" class="btn-cancel" hidden data-dismiss="modal">취소</button>
+    </div>
+{% endblock modal_footer %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load commontags %}
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">개요</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+{% load staticfiles %}
+<link href='{% static "lib/datepicker/css/datepicker.css" %}' rel="stylesheet" type="text/css"/>
+<div class="head_d05 click">개요</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<!--
+<div class="quota-dynamic">
+  <h3 class="quota-heading">사용량 요약</h3>
+</div>
+<div class="usage_info_wrapper">
+  <form action="?" method="get" id="date_form" class="form-inline ng-pristine ng-valid">
+    <!--<h3>사용량을 조회할 기간을 선택하세요:</h3>
+    <div class="datepicker form-group">
+      <label>시작일:</label> <input class="datepicker" data-date-format="yyyy-mm-dd" id="id_start" name="start" value="" type="text">
+    </div>
+    <div class="datepicker form-group">
+      <label>종료일:</label><input class="datepicker" data-date-format="yyyy-mm-dd" id="id_end" name="end" value="" type="text">
+    </div>
+    <button class="btn btn-primary" type="submit">제출</button>
+    <small>날짜는 YYYY-mm-dd 형식이어야 합니다.</small>
+  </form>
+  <p id="activity">
+    <span>활성화된 가상서버: </span>
+    <span>사용 중인 RAM: MB</span>
+    <span>선택 기간 중 VCPU 사용 시간: </span>
+    <span>선택 기간 중 GB 사용 시간: </span>
+    <span>선택 기간 중 RAM 사용 시간: </span>
+  </p>
+</div>
+<div id="usage">
+    <table class="ind_tab01 index" cellpadding="0" border="0" cellspacing="0">
+    </table>
+</div>
+-->
+
+<div class="rs_d01 min_h_none">
+    <div class="ind_d02">
+        <div class="ind_d05">사용량 조회</div>
+        <div class="clear_float"></div>
+    </div>
+    <form action="?" method="get" id="date_form">
+        <div class="rs_d06">기간</div>
+        <input class="rs_text01" data-date-format="yyyy-mm-dd" id="id_start" name="start" value="{{ start_date }}"
+               type="text"/>
+        <div class="rs_d07">~</div>
+        <input class="rs_text02" data-date-format="yyyy-mm-dd" id="id_end" name="end" value="{{ end_date }}"
+               type="text"/>
+        <button type="submit" class="check_bt01"><img src="/static/img/common/btn/check_bt_01.png" alt="#"></button>
+        <div class="clear_float"></div>
+    </form>
+    <table class="rs_tab02" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <td class="rs_td01">활성화된 가상서버</td>
+            <td class="rs_td01">활성화된 RAM</td>
+            <td class="rs_td01">VCPU-시간(VCPU갯수 * 사용시간)</td>
+            <td class="rs_td01">디스크-시간(GB * 사용시간)</td>
+            <td class="rs_td01">메모리-시간(MB * 사용시간)</td>
+        </tr>
+        <tr>
+            <td class="rs_td04">{{ total_usage.instance_cnt }}개</td>
+            <td class="rs_td04">{{ total_usage.memory_mb|filesizeformat }}</td>
+            <td class="rs_td04">{{ total_usage.total_vcpus_usage|floatformat:2 }}</td>
+            <td class="rs_td04">{{ total_usage.total_local_gb_usage|floatformat:2 }}</td>
+            <td class="rs_td04">{{ total_usage.total_memory_mb_usage|floatformat:2 }}</td>
+        </tr>
+    </table>
+    <div class="clear_float"></div>
+    <!--</div>
+
+    <div class="rs_d01" id="usage">
+        <div class="ind_d02">
+            <div class="ind_d05">사용량</div>
+            <div class="clear_float"></div>
+        </div>-->
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#" id="btnDownloadCvs">-->
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th>프로젝트</th>
+            <th>VCPUs</th>
+            <th>디스크</th>
+            <th>RAM</th>
+            <th>VCPU시간</th>
+            <th>디스크 시간</th>
+            <th>메모리 시간</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for usage in usage_list %}
+        <tr>
+            <td><a class="list_a01" href="/dashboard/identity/projects/{{ usage.project.id }}/detail">{{
+                usage.project.name }}</a></td>
+            <td>{{ usage.server_usages_time.vcpus }}</td>
+            <td>{{ usage.server_usages_time.local_gb|filesizeformat }}</td>
+            <td>{{ usage.server_usages_time.memory_mb|filesizeformat }}</td>
+            <td>{{ usage.total_vcpus_usage|floatformat:2 }}</td>
+            <td>{{ usage.total_local_gb_usage|floatformat:2 }}</td>
+            <td>{{ usage.total_memory_mb_usage|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+        {% for value in usage_list|length|range:10 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="rs_td03 tl" colspan="7">Displaying {{ usage_list|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="clear_float"></div>
+</div>
+
+<script src='{% static "js/admin/index.js" %}'></script>
+<script src='{% static "lib/datepicker/js/bootstrap-datepicker.js" %}'></script>
+
+{% endblock content %}

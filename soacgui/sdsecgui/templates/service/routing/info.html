@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block headerTitle %}
+<div class="head_d02">서비스</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">{{ service_id }}</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">라우팅 정책 설정</div>
+{% endblock headerTitle %}
+
+{% block header %}
+<a href="#" id="serviceTab"><div class="head_d05">서비스 토폴로지</div></a>
+<a href="#" id="chainTab"><div class="head_d05">서비스 체이닝</div></a>
+<a href="#" id="telemeterTab"><div class="head_d05">서비스 모니터링</div></a>
+<img class="all_service_bt01" id="cancelBtn" src='{% static "img/common/btn/cancel_bt_01.png" %}' hidden alt="#">
+<img class="all_service_bt01" id="saveBtn" src='{% static "img/dashboard/security/security_regist_bt_01.png" %}' hidden alt="#">
+<img class="all_service_bt01" id="modifyBtn" src='{% static "img/dashboard/security/security_edit_bt_01.png" %}' hidden alt="#">
+<!--<a href="/dashboard/service" id="service_list" hidden style="float:right;"><div style="margin:15px 20px 0 0; float:left;"><img src='{% static "img/service_list_bt.png" %}' alt="#"></div>-->
+{% endblock header %}
+
+{% block content %}
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">목적지 기반 라우팅</div>
+        <div class="clear_float"></div>
+    </div>
+    <div id="dst_route">
+        <table class="rs_tab02 tl" cellpadding="0" border="0" cellspacing="0">
+            <colgroup>
+                <col width="7%">
+                <col width="9%">
+                <col width="7%">
+                <col width="13%">
+                <col width="17%">
+                <col width="7%">
+                <col width="12%">
+                <col width="12%">
+                <col width="16%">
+            </colgroup>
+            <tbody>
+            <tr>
+                <th class="rs_td01 use">id/Use</th>
+                <th class="rs_td01 iface">Iface</th>
+                <th class="rs_td01 metric">Metric</th>
+                <th class="rs_td01 destination">Destination</th>
+                <th class="rs_td01 genmask">Genmask</th>
+                <th class="rs_td01 flags">Flags</th>
+                <th class="rs_td01 ref">Ref</th>
+                <th class="rs_td01 gateway">Gateway</th>
+                <th class="rs_td01 customHtml">액션</th>
+            </tr>
+            {% for dst in dst_rule %}
+            <tr>
+                <th class="rs_td01 use">{{ dst.Use }}</th>
+                <th class="rs_td01 iface">{{ dst.Iface }}</th>
+                <th class="rs_td01 metric">{{ dst.Metric }}</th>
+                <th class="rs_td01 destination">{{ dst.Destination }}</th>
+                <th class="rs_td01 genmask">{{ dst.Genmask }}</th>
+                <th class="rs_td01 flags">{{ dst.Flags }}</th>
+                <th class="rs_td01 ref">{{ dst.Ref }}</th>
+                <th class="rs_td01 gateway">{{ dst.Gateway }}</th>
+                <th class="rs_td01 customHtml">액션</th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="clear_float"></div>
+</div>
+{% endblock content %}

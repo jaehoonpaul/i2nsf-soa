@@ -1,0 +1,178 @@
+# _*_coding:utf-8_*_
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+import json
+
+from django.views.decorators.csrf import csrf_exempt
+
+from sdsec.settings import config
+from sdsecgui.tools.openstack_restapi import NeutronRestAPI, KeystoneRestAPI
+
+# set_log_dir()
+# logger = get_logger("myapp.myLogger")
+from sdsecgui.tools.keystone_exception import Unauthorized
+
+
+@csrf_exempt
+def get_network_list(request):
+    # logger.info("get_network_list")
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    if request.method == "GET":
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/admin/networks")
+    neutron = NeutronRestAPI(auth_url, token)
+    query = {}
+    if request.method == "GET" and request.GET.get("project_id"):
+        query["project_id"] = request.GET.get("project_id")
+    elif request.method == "POST" and request.POST.get("project_id"):
+        query["project_id"] = request.POST.get("project_id")
+    result = neutron.get_network_list(q=query)
+
+    if result.get("success"):
+        keystone = KeystoneRestAPI(auth_url, token)
+        projects = keystone.get_project_list(fields={"fields": ["id", "name"]})
+        subnets = neutron.get_subnet_list(fields=["id", "name", "cidr"])
+        for network in result["success"].get("networks"):
+            # project id로 project_name 추가
+            if projects.get("success"):
+                for project in projects["success"].get("projects"):
+                    if project.get("id") == network.get("tenant_id"):
+                        network["project_name"] = project.get("name")
+            # project id로 project_name 추가끝
+            # subnet id로 subnetList 추가
+            if subnets.get("success"):
+                network["subnets"] = [subnet for subnet_id in network.get("subnets") for subnet in subnets["success"].get("subnets") if subnet.get("id") == subnet_id]
+            # subnet id로 subnetList 추가끝
+        result = result.get("success")
+    if request.is_ajax():
+        return JsonResponse(result)
+    else:
+        if request.method == "GET":
+            try:
+                soam_sync = bool(config.get("SETTINGS", "PORTAL_SYNC") == "True")
+            except Exception as e:
+                soam_sync = False
+            result["sync"] = soam_sync  # TODO: soam sync delete
+            return render(request, 'admin/networks/index.html', result)
+
+
+@csrf_exempt
+def get_network(request, network_id):
+    if request.method == 'GET' and request.is_ajax():
+        # logger.info("get_network")
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+
+        neutron = NeutronRestAPI(auth_url, token)
+        result = neutron.get_network(network_id)
+        if result.get("success"):
+            network = result["success"].get("network")
+            # subnet id로 subnetList 추가
+            subnets = []
+            for subnet_id in network.get("subnets"):
+                subnet = neutron.get_subnet(subnet_id)
+                if subnet.get("success"):
+                    subnets.append(subnet.get("success").get("subnet"))
+            network["subnets"] = subnets
+            # subnet id로 subnetList 추가끝
+            # network id로 portList 추가
+            ports = neutron.get_port_list({"network_id": network.get("id")})
+            if ports.get("success"):
+                network["ports"] = ports.get("success").get("ports")
+            # network id로 portList 추가끝
+            dhcpAgents = neutron.getDHCPAgentHostingNetworkList(network_id)
+            if dhcpAgents.get("success"):
+                network["dhcpAgents"] = dhcpAgents.get("success").get("agents")
+            return render(request, 'admin/networks/info.html', {'network': network})
+        return JsonResponse(result)
+    else:
+        return redirect("/dashboard/admin/networks?network_id=" + network_id)
+
+
+def create_network(request):
+    # logger.info("create_network")
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+
+    if request.method == 'POST':
+        data = json.loads(request.POST.get("data"))
+        try:
+            neutron = NeutronRestAPI(auth_url, token)
+            result = neutron.createNetwork(data)
+            return JsonResponse(result)
+        except Unauthorized as e:
+            result = {"error": {"title": e.message, "message": e.details, "code": 401}}
+        return JsonResponse(result)
+
+def update_network(request, network_id):
+    # logger.info("update_network")
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+
+    if request.method == 'POST':
+        data = json.loads(request.POST.get("data"))
+        try:
+            neutron = NeutronRestAPI(auth_url, token)
+            result = neutron.updateNetwork(network_id, data)
+            return JsonResponse(result)
+        except Unauthorized as e:
+            result = {"error": {"title": e.message, "message": e.details, "code": 401}}
+        return JsonResponse(result)
+
+
+def delete_network(request, network_id):
+    # logger.info("delete_network")
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+
+    if request.method == 'POST':
+        try:
+            neutron = NeutronRestAPI(auth_url, token)
+            result = neutron.deleteNetwork(network_id)
+            return JsonResponse(result)
+        except Unauthorized as e:
+            result = {"error": {"title": e.message, "message": e.details, "code": 401}}
+        return JsonResponse(result)
+
+
+def network_modal(request):
+    auth_url = request.session.get("auth_url")
+    token = request.session.get("passToken")
+    network_id = request.GET.get("network_id")
+    data = {"modal_title": request.GET.get("modal_title")}
+    if network_id:
+        neutron = NeutronRestAPI(auth_url, token)
+        result = neutron.get_network(network_id)
+        if result.get("success"):
+            data["network"] = result["success"].get("network")
+
+    return render(request, 'admin/networks/modal.html', data)
+
+
+def sync_modal(request, network_id):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    neutron = NeutronRestAPI(auth_url, token)
+    result = neutron.get_network(network_id)
+    return render(request, 'admin/sync_modal.html', {'data': result["success"]["network"]})
+
+
+def sync(request, network_id):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    neutron = NeutronRestAPI(auth_url, token)
+    service_id = request.POST.get("service_id")
+    from sdsecgui.db.soa_db_connector import SOAManagerDBConnector
+    from sdsecgui.tools.ctrlengine import ControlEngine
+    control = ControlEngine(request.session.get("ctrl_header"))
+    try:
+        m_conn = SOAManagerDBConnector.getInstance()
+        m_conn.insert_network(auth_url, control, neutron, service_id, network_id)
+        result = True
+    except Exception as e:
+        from sdsec.settings import logger
+        logger.debug(e.message)
+        result = False
+    return JsonResponse({"result": result})

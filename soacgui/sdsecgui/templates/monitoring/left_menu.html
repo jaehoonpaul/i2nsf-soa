@@ -1,0 +1,29 @@
+<div class="sub_left_menu">
+    <div class="sub_left_menu_d01 projects">
+        <a href="/dashboard/identity">{{ _("프로젝트") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 users">
+        <a href="/dashboard/identity/users">{{ _("사용자") }}</a>
+    </div>
+    <!--<div class="sub_left_menu_d01 groups">
+        <a href="/dashboard/identity/groups">{{ _("그룹") }}</a>
+    </div>-->
+    <div class="sub_left_menu_d01 roles">
+        <a href="/dashboard/identity/roles">{{ _("역할") }}</a>
+    </div>
+</div>
+<script>
+    $(function(){
+        var selSubMenu = ""
+        var urlStr = $(location).attr('pathname');
+        var match = new RegExp("/dashboard/identity/(\\w+)/.*").exec(urlStr);
+        if (match) {
+            selSubMenu = match[1];
+        } else {
+            selSubMenu = "projects";
+        }
+        $("."+selSubMenu).addClass("sub_left_menu_d01_click");
+        $("."+selSubMenu).removeClass("sub_left_menu_d01");
+    });
+
+</script>

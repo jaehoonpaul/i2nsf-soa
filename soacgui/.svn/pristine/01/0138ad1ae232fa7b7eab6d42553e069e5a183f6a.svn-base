@@ -1,0 +1,97 @@
+{% extends 'service/right_pop.html' %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_virtual_machine.png" alt="#">
+<div class="right_d01 type">가상머신</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02 "></div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">이름 *</div>
+    <!-- TODO: name인지 server_name인지 확인필요, 생성시엔 name으로되있음 -->
+    <input class="pop03_text01" name="name" placeholder="이름" type="text" value="{% if data.name %}{{ data.name }}{% else %}{{ data.server_name }}{% endif %}" autofocus>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">가용 구역 *</div>
+    <select class="pop03_sel01" name="availability">
+        <option value="nova">nova</option>
+    </select>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">부팅 소스 *</div>
+    <select class="pop03_sel01" name="booting_source_type" data-selected="{{ data.booting_source_type }}">
+        <option value="image">이미지</option>
+        <option value="image_snapshot">이미지 스냅샷</option>
+        <option value="volume">볼륨</option>
+        <option value="volume_snapshot">볼륨 스냅샷</option>
+    </select>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <img class="pop03_img02" src="/static/img/dashboard/common/search_bt_01.png" onclick="searchResource('image')" alt="#">
+    <input name="image" class="pop03_text02" placeholder="목록에서 선택하세요." disabled type="text" value="{{ data.image }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">가상머신 사양 *</div>
+    <img class="pop03_img02" src="/static/img/dashboard/common/search_bt_01.png" onclick="searchResource('flavor')"
+         alt="#">
+    <input name="flavor" class="pop03_text02" placeholder="목록에서 선택하세요." disabled type="text" value="{{ data.flavor }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d04 " onclick="networkInterfaceListToggle(this)">
+    <div class="pop03_d05 ">네트워크 인터페이스</div>
+    <img class="pop03_img01" src="/static/img/dashboard/common/arrow_02.png" alt="#"></div>
+<div class="vnet_list" hidden>
+    {% for tenant_net in data.tenant_net_list %}
+    <div class="vnet_group tenant_net0">
+        <div class="vnet" name="tenant_net_list">
+            <div class="pop03_d02">
+                <div class="pop03_d03 ">네트워크(eth{{ forloop.counter0 }}) 이름:</div>
+                <span class="vnet_name">{{ tenant_net.tenant_net }}</span>
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02"><input class="pop03_text01" name="ip_address" placeholder="IP 주소" value="{{ tenant_net.ip_address }}" type="text">
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02"><input class="pop03_text01" name="mac_address" placeholder="MAC 주소" value="{{ tenant_net.mac_address }}" type="text">
+                <div class="clear_float"></div>
+            </div>
+            <div class="clear_float"></div>
+            <div class="pop03_d02">
+                <div class="pop03_d03 ">공용 IP 허용:</div>
+                <input class="pop03_check01" name="public_ip" type="checkbox"{% if tenant_net.public_ip %} checked{% endif %}>
+                <div class="clear_float"></div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="pop03_d06 " onclick="securityToggle(this)">
+    <div class="pop03_d05 ">세부정보</div>
+    <img class="pop03_img01" src="/static/img/dashboard/common/arrow_02.png" alt="#"></div>
+<div class="security_group" hidden>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">시큐리티 그룹</div>
+        <img class="pop03_img02" src="/static/img/dashboard/common/search_bt_01.png"
+             onclick="searchResource('security_group')" alt="#">
+        <input name="security_group" class="pop03_text02 " placeholder="목록에서 선택하세요." type="text" value="{{ data.security_group }}" disabled>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">키 페어</div>
+        <img class="pop03_img02" src="/static/img/dashboard/common/search_bt_01.png"
+             onclick="searchResource('key_name')" alt="#">
+        <input name="key_name" class="pop03_text02 " placeholder="목록에서 선택하세요." type="text" value="{{ data.key_name }}" disabled>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">사용자 스크립트<br>(16KB 이내)</div>
+        <input class="pop03_text03" name="custom_script" type="text" value="{{ data.custom_script }}">
+        <div class="clear_float"></div>
+    </div>
+</div>
+{% endblock resourceInfo %}

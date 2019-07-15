@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load commontags %}
+{% block header %}
+{% load staticfiles %}
+<div class="head_d05 click">사용자</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="user_list" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">사용자</div>
+        <div class="clear_float"></div>
+    </div>
+    <button id="create_user" class="btn-ok">사용자 생성</button>
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+            <tr>
+                <th class="name">이름</th>
+                <th class="description">설명</th>
+                <th class="email">Email</th>
+                <th class="id">사용자 ID</th>
+                <th class="enabled">활성화됨</th>
+                <th class="domain_id">도메인 이름</th>
+                <th class="action">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr data-id="{{ user.id }}" data-filter="nova">
+                <td class="name link"><a href="/dashboard/identity/users/{{ user.id }}/detail">{{ user.name }}</a></td>
+                <td class="description">{{ user.description }}</td>
+                <td class="email">{{ user.email }}</td>
+                <td class="id">{{ user.id }}</td>
+                <td class="enabled">{{ user.enabled }}</td>
+                <td class="domain_id">{{ user.domain_id }}</td>
+                <td>
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 btnUpdate">수정</div>
+                        <div class="button_group_d02 action">
+                            <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                        </div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="edit_password actionGroup_a01"><div>비밀번호 변경</div></a>
+                            <a href="#" class="set_active actionGroup_a01"><div>사용여부 변경</div></a>
+                            <a href="#" class="delete_user actionGroup_a01"><div>사용자 삭제</div></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in users|length|range:15 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="tl" colspan="7">Displaying {{ users|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script src='{% static "js/identity/users/index.js" %}'></script>
+{% endblock content %}

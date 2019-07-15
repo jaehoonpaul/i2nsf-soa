@@ -1,0 +1,71 @@
+{% load zabbixtags %}
+<table class="pop-tab-01" style="width: calc(100% - 40px); margin-right: 20px; margin-left: 20px;">
+    <colgroup>
+        <col style="width:15%;">
+        <col style="width:85%;">
+    </colgroup>
+    <tr>
+        <th>스텝</th>
+        <td>
+            <input type="text" name="esc_step_from" id="esc_step_from" class="short" value="{{ operation.esc_step_from }}">
+            -
+            <input type="text" name="esc_step_to" id="esc_step_to" class="short" value="{{ operation.esc_step_to }}">
+            (0 - 무한)
+        </td>
+    </tr>
+    <tr>
+        <th>스텝</th>
+        <td>
+            <input type="text" name="esc_period" id="esc_period" class="normal" value="{{ operation.esc_period }}">
+            (0 - 기본 액션을 사용)
+        </td>
+    </tr>
+    <!--<tr>
+        <th>오퍼레이션 종류</th>
+        <td>
+            <select name="operationtype" id="operationtype">
+                <option value="0"{% if operation.operationtype == '0' %} selected{%endif%}>메시지 송신</option>
+            </select>
+        </td>
+    </tr>-->
+    <!--<tr>-->
+        <!--<th>사용자 그룹</th>-->
+        <!--<td>-->
+
+        <!--</td>-->
+    <!--</tr>-->
+    <tr id="opmessage_usr">
+        <th>사용자</th>
+        {% if operation.opmessage_usr %}
+        <td data-user_id="{{ operation.opmessage_usr.0.userid }}">
+            {% get_user_info operation.opmessage_usr.0.userid %}
+        </td>
+        {% else %}
+        <td data-user_id="{{ user.0.userid }}">
+            {{ user.0.alias }} ({{ user.0.name }} {{ user.0.surname }})
+        </td>
+        {% endif %}
+    </tr>
+    <tr>
+        <th>미디어 타입</th>
+        <td>
+            <select name="mediatype" id="mediatype">
+                {% for media in mediatype %}
+                <option value="{{ media.mediatypeid }}"{% if media.mediatypeid == operation.opmessage.mediatypeid %} selected{%endif%}>{{ media.description }}</option>
+                {% endfor %}
+            </select>
+        </td>
+    </tr>
+    <!--<tr>
+        <th>디폴트 메시지</th>
+        <td>
+            <input type="checkbox" name="default_msg" id="default_msg"{% if operation.opmessage.default_msg != '0' %} checked{% endif %}>
+        </td>
+    </tr>-->
+    <tr>
+        <td colspan="2" class="txt-ac">
+            <button type="button" class="short" id="operation_add_submit">확인</button>
+            <button type="button" class="short" id="operation_add_cancel">취소</button>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,14 @@
+# _*_coding:utf-8_*_
+from django.conf.urls import url
+
+from sdsecgui.dashboard.admin.host_aggregates import views
+
+app_name = "aggregates"
+urlpatterns = [
+    url(r'^$', views.getAggregateList, name='aggregates'),
+    url(r'^create$', views.create_aggregate, name='create'),
+    url(r'^(?P<aggregate_id>[\w\-]+)/update$', views.update_aggregate, name='update'),
+    url(r'^(?P<aggregate_id>[\w\-]+)/delete$', views.delete_aggregate, name='delete'),
+    url(r'^(?P<aggregate_id>[\w\-]+)/action$', views.action_aggregate, name='action'),
+    url(r'^modal$', views.aggregate_modal, name='aggregates_modal'),
+]

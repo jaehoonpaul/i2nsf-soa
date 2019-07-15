@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block headerTitle %}
+<style>
+	.right_d01{height : 100%;width : 65%; margin:0px 0px 0px 100px;}
+	.datepicker.dropdown-menu{z-index:10000 !important;}
+	svg {cursor:pointer;}
+	#chartDraw {height:556px;}
+	#detailChart {height:556px;}
+	#datePicker{visibility:hidden;}
+	.selectList { width:150px; height: 30px; float:right; margin:10px; 10px; 0px; 0px;}
+	#networkListDiv { width:100%; height: 50px;}
+	#alarmTbl{height:90%; margin : 10px; 10px; 10px; 0px;}
+	.rs_d03 {height:100%; width:100%;}
+</style>
+<div class="head_d02">서비스</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">서비스 모니터링</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03" id="service_name">{{ service_name }}</div>
+{% endblock headerTitle %}
+
+{% block header %}
+<a href="#" id="serviceTab"><div class="head_d05">서비스 토폴로지</div></a>
+<a href="#" id="chainTab"><div class="head_d05">서비스 체이닝</div></a>
+<a href="#" id="telemeterTab"><div class="head_d05 click">서비스 모니터링</div></a>
+<!--<img class="header_title_img03" id="modifyBtn" src='{% static "img/service_created.png" %}' alt="#">-->
+
+<a href="/dashboard/telemeter" id="service_list">
+    <img class="all_service_bt01" src='{% static "img/dashboard/service/all_service_bt_01.png" %}' alt="#">
+</a>
+{% endblock header %}
+
+{% block content %}
+
+<!--<link rel="stylesheet" href="{% static 'css/direct.app.css' %}">-->
+<style>
+    .modal-content{
+        width:560px;
+    }
+</style>
+<!--<div id="vis" ondragstart="return false" onselectstart="return false" style="float:left;"></div>-->
+<link rel="stylesheet" href="{% static 'css/chain.css' %}">
+<!--<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>-->
+<script src="{% static 'js/service/interact.min.js' %}"></script>
+<!--<script src="{% static 'js/telemeter/service.js' %}"></script>-->
+<script>
+var serviceDetailFromPost;
+$(function(){
+    var urlStr = $(location).attr('pathname');
+    var match = new RegExp("/dashboard/telemeter/([\\w-]+)/.+").exec(urlStr);
+    var service_id = match[1];
+    $("#serviceTab").attr("href", "/dashboard/service/" +service_id + "/detail");
+    $("#chainTab").attr("href", "/dashboard/service/" +service_id + "/chaining");
+    $("#routingTab").attr("href", "/dashboard/service/" +service_id + "/routing");
+
+    {% if service_detail %}
+        serviceDetailFromPost = {% autoescape off %}{{ service_detail }}{% endautoescape %};
+        $('#chainTab').removeAttr("href");
+        $("#chainTab").click(function(){postMove("/dashboard/telemeter/" +service_id + "/chaining/", JSON.stringify(serviceDetailFromPost))});
+        getService(serviceDetailFromPost);
+        $("#chainTab").css("cursor", "pointer");
+    {% endif %}
+});
+</script>
+<div class="instance_d03">
+    <div class="instance_d01">가상서버</div>
+    <select class="instance_sel01" id="selectInstanceList" style="float:left;">
+        {% for server in servers %}
+        <option value='{{ server.vm_id }}'>{{ server.vm_name }}</option>
+        {% endfor %}
+    </select>
+    <div class="instance_d02" id="instanceStatus"></div>
+    <div class="instance_d02" id="instanceIP"></div>
+    <div class="clear_float"></div>
+ </div>
+<div class="rs_d03" id="resourceMonitoring">
+    <a href="#" class="tab_title">
+        <div class="rs_d04 tab-btn" data-meter_group="memory">MEMORY</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div class="rs_d04 tab-btn" data-meter_group="cpu">CPU</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div class="rs_d04 tab-btn" data-meter_group="disk">DISK</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div class="rs_d04 tab-btn" data-meter_group="network">NETWORK</div>
+    </a>
+    <a href="#" class="tab_title">
+        <div class="rs_d04 tab-btn">알람목록</div>
+    </a>
+    <!--<img src='{% static "img/common/btn/all_check_bt_01.png" %}' alt="#" style="float:right">-->
+    <div class="clear_float"></div>
+    <div id="memoryDiv" class="chart rs_d05 tab-body" style="height:100%; display:block;">
+        <div>
+            <img class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+        </div>
+        <div class="clear_float"></div>
+        <div id="memory1" class="memory simpleChart" data-meter_name="memory">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="memory2" class="memory simpleChart" data-meter_name="memory.resident">
+            {% include "common/progress.html" %}
+        </div>
+        <div class="clear_float"></div>
+    </div>
+    <div id="cpuDiv" class="chart rs_d05 tab-body" style="height:100%;" hidden>
+        <div>
+            <img class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+        </div>
+        <div class="clear_float"></div>
+        <div id="cpu1" class="cpu simpleChart" data-meter_name="cpu">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="cpu2" class="cpu simpleChart" data-meter_name="cpu.delta">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="cpu3" class="cpu simpleChart" data-meter_name="cpu_util">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="cpu4" class="cpu simpleChart" data-meter_name="vcpus">
+            {% include "common/progress.html" %}
+        </div>
+        <div class="clear_float"></div>
+    </div>
+    <div id="diskDiv" class="chart rs_d05 tab-body" style="height:100%;" hidden>
+        <div>
+            <img class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+        </div>
+        <div class="clear_float"></div>
+        <div id="disk1" class="disk simpleChart" data-meter_name="disk.read.requests">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk2" class="disk simpleChart" data-meter_name="disk.write.requests">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk3" class="disk simpleChart" data-meter_name="disk.read.bytes">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk4" class="disk simpleChart" data-meter_name="disk.write.bytes">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk5" class="disk simpleChart" data-meter_name="disk.read.requests.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk6" class="disk simpleChart" data-meter_name="disk.write.requests.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk7" class="disk simpleChart" data-meter_name="disk.read.bytes.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk8" class="disk simpleChart" data-meter_name="disk.write.bytes.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk9" class="disk simpleChart" data-meter_name="disk.root.size">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk10" class="disk simpleChart" data-meter_name="disk.ephemeral.size">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk11" class="disk simpleChart" data-meter_name="disk.capacity">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk12" class="disk simpleChart" data-meter_name="disk.allocation">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="disk13" class="disk simpleChart" data-meter_name="disk.usage">
+            {% include "common/progress.html" %}
+        </div>
+        <div class="clear_float"></div>
+    </div>
+    <div id="networkDiv" class="chart rs_d05 tab-body" style="height:100%;" hidden>
+        <div>
+            <img class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+            <select id="networkList" class="all_check_bt01"></select>
+        </div>
+        <div class="clear_float"></div>
+        <div id="network1" class="network simpleChart" data-meter_name="network.incoming.bytes">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="network2" class="network simpleChart" data-meter_name="network.outgoing.bytes">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="network3" class="network simpleChart" data-meter_name="network.incoming.packets">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="network4" class="network simpleChart" data-meter_name="network.outgoing.packets">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="network5" class="network simpleChart" data-meter_name="network.incoming.bytes.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="network6" class="network simpleChart" data-meter_name="network.outgoing.bytes.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="network7" class="network simpleChart" data-meter_name="network.incoming.packets.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div id="network8" class="network simpleChart" data-meter_name="network.outgoing.packets.rate">
+            {% include "common/progress.html" %}
+        </div>
+        <div class="clear_float"></div>
+    </div>
+    <div id="alarmDiv" class="rs_d05  tab-body" style="height:100%;"  hidden>
+    </div>
+</div>
+<link href='{% static "lib/datepicker/css/datepicker.css" %}' rel="stylesheet" type="text/css" />
+<script src='{% static "lib/datepicker/js/bootstrap-datepicker.js" %}'></script>
+
+<script src='{% static "lib/chartjs/Chart.bundle.min.js" %}'></script>
+<script src='{% static "lib/chartjs/chartjs-plugin-annotation.min.js" %}'></script>
+<script src='{% static "lib/chartjs/chartjs-plugin-draggable.js" %}'></script>
+<script src='{% static "lib/chartjs/drawchart.js" %}'></script>
+
+<script src="{% static 'js/telemeter/telemeter_common.js' %}"></script>
+<script src="{% static 'js/telemeter/detail_chart.js' %}"></script>
+<script src="{% static 'js/telemeter/info.js' %}"></script>
+
+<script>
+</script>
+
+{% endblock content %}

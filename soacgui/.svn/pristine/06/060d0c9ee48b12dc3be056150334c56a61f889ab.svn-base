@@ -1,0 +1,11 @@
+$(function() {
+    $("select[name=endpoint_type]").on("change", function() {
+        if ($(this).val() == "url") {
+            $(".endpoint-ip").hide();
+            $(".endpoint-url").show();
+        } else {
+            $(".endpoint-ip").show();
+            $(".endpoint-url").hide();
+        }
+    });
+});

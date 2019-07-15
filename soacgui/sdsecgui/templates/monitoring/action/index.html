@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load zabbixtags %}
+
+{% block header %}
+{% load staticfiles %}
+<a href="/dashboard/monitoring"><div class="head_d05">전체 모니터링</div></a>
+<a href="#"><div class="head_d05 click">액션</div></a>
+<a href="/dashboard/monitoring/history"><div class="head_d05">알림 이력</div></a>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">액션</div>
+    </div>
+        <div class="clear_float"></div>
+        <button id="create_action" class="btn-ok">액션생성</button>
+        <div class="clear_float"></div>
+        <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+            <tr>
+                <th>이름</th>
+                <th>조건</th>
+                <th>오퍼레이션</th>
+                <th>상태</th>
+                <th>액션</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for action in actions %}
+            <tr data-action_id="{{ action.actionid }}">
+                <td class="action_detail">{{ action.name }}</td>
+                <td>
+                    <ul>
+                    {% for condition in action.filter.conditions %}
+                        <li>
+                        {% get_conditiontype condition.conditiontype %}
+                        {% get_operator condition.operator %}
+                        {% get_trigger_info_and_host condition.value %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td class="rs_td02">
+                    <ul>
+                        <li>
+                            사용자:
+                            {% for operation in action.operations %}
+                            {% if forloop.counter0 != 0 %}
+                            ,
+                            {% endif %}
+                            {% for user in operation.opmessage_usr %}
+                            {% get_user_info user.userid %}
+                            via
+                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                            {% endfor %}
+                            {% endfor %}
+                        </li>
+                        <li>
+                            그룹:
+                            {% for operation in action.operations %}
+                            {% if forloop.counter0 != 0 %}
+                            ,
+                            {% endif %}
+                            {% for group in operation.opmessage_grp %}
+                            {% get_group_info group.usrgrpid %}
+                            via
+                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                            {% endfor %}
+                            {% endfor %}
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    {% if action.status == '0' %}
+                    <span>활성</span>
+                    {% elif action.status == '1' %}
+                    <span>비활성</span>
+                    {% endif %}
+                </td>
+                <td><!--{{ action }}--></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="clear_float"></div>
+    </div>
+<script src="{% static 'js/monitoring/action.js' %}"></script>
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load commontags %}
+{% block header %}
+{% load staticfiles %}
+<div class="head_d05 click">역할</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="role_list" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">역할</div>
+        <div class="clear_float"></div>
+    </div>
+    <button id="create_role" class="btn-ok">역할 생성</button>
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+            <tr>
+                <th class="name">역할 이름</th>
+                <th class="id">역할 ID</th>
+                <th class="action">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for role in roles %}
+            <tr data-id="{{ role.id }}" data-filter="{{ role.name }}">
+                <td class="name">{{ role.name }}</td>
+                <td class="id">{{ role.id }}</td>
+                 <td>
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 btnUpdate">수정</div>
+                        <div class="button_group_d02 action">
+                            <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                        </div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="delete_role actionGroup_a01"><div>역할 삭제</div></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in roles|length|range:15 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="tl" colspan="3">Displaying {{ roles|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script src='{% static "js/identity/roles/index.js" %}'></script>
+{% endblock content %}

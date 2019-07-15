@@ -1,0 +1,347 @@
+# _*_coding:utf-8_*_
+import ast
+import json
+import logging
+
+import datetime
+
+import time
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
+from sdsecgui.tools.ctrlengine import ControlEngine
+from sdsecgui.tools.openstack_restapi import AodhRestAPI, NovaRestAPI, NeutronRestAPI, GlanceRestAPI, CeilometerRestAPI
+from sdsecgui.tools.keystone_exception import Unauthorized
+
+logger = logging.getLogger("myapp.myLogger")
+
+
+@csrf_exempt
+def get_alarm_list(request):
+    """
+    :param request:
+    :return:  {
+        u'alarm_actions': [
+            u'http://192.168.10.25:8080/alarm'
+        ],
+        u'project_id': u'227c72fcda1241b59b1241548649700c',
+        u'ok_actions': [],
+        u'이름 name': u'InstanceStatusAlarm',
+        u'생성일 - 9시간 timestamp': u'2017-07-20T04:17:29.392703',
+        u'설명 description': u'An event alarm kkkk',
+        u'time_constraints': [],
+        u'enabled': True,
+        u'state_timestamp': u'2017-07-20T04:17:29.392703',
+        u'이름에 링크 주소 alarm_id': u'0f276622-a037-4b9d-b7af-3014b52352f2',
+        u'state': u'ok',
+        u'insufficient_data_actions': [u'http://192.168.10.25:8080/nodata'],
+        u'repeat_actions': False,
+        u'user_id': u'f266e9e2e0fe43dfb2f9492851d470cd',
+        u'event_rule': {
+            u'query': [
+                {
+                    u'field': u'traits.instance_id',
+                    u'type': u'string',
+                    u'value': u'9d3f7a1a-fd78-43d3-8294-5ae0789bf76e',
+                    u'op': u'eq'
+                }, {
+                    u'field': u'traits.state',
+                    u'type': u'string',
+                    u'임계값1 value': u'error',
+                    u'임계값2 op': u'eq'
+                }
+            ],
+            u'타입1 event_type': u'compute.instance.update'
+        },
+        u'type': u'event',
+        u'severity': u'moderate'
+    }
+    """
+    domain_name = request.session.get("domain_name")
+    description = request.session.get("description")
+    token = request.session.get('passToken')
+    project_id = request.session.get('project_id')
+    auth_url = request.session.get("auth_url")
+    ctrl_header = request.session.get("ctrl_header")
+    control = ControlEngine(ctrl_header)
+    aodh = AodhRestAPI(auth_url, token)
+    query = {
+        "query": [
+            {
+                "field": "project",
+                "op": "eq",
+                "value": project_id
+            },
+        ]
+    }
+    if request.method == 'GET':
+        service_id = request.GET.get("service_id")
+    else:
+        service_id = request.POST.get("service_id")
+    result_vms = control.get_service_vm(service_id)
+    result_alarms = aodh.get_alarm_list(query)
+    alarm_list = []
+    if result_vms.get("success") and result_alarms.get("success"):
+        for alarm in result_alarms["success"]:
+            for vm in result_vms["success"].get("vm_list"):
+                if vm.get("vm_id") in alarm["threshold_rule"]["query"][0]["value"] or "image" in alarm["threshold_rule"]["meter_name"]:
+                    alarm_list.append(alarm)
+
+    # try:
+    #     pass
+    #     for alarm in alarmList:
+    #         queryList = alarm.event_rule.get("query")
+    #         alarm.event_rule["target"] = filter(lambda x: x.get("field") in targetList, queryList)[0]  # TODO: 우선 instance만
+    #         threshold = filter(lambda x: x.get("field") in meterNameList, queryList)[0]
+    #         alarm.event_rule["target"]["meter_name"] = threshold.get("field")  # TODO: 전부 넣어야함 memory등등
+    #         alarm.event_rule["target"]["op"] = threshold.get("op")
+    #         alarm.event_rule["target"]["threshold"] = threshold.get("value")
+    #         del alarm.event_rule["target"]["type"]
+    #         del alarm.event_rule["query"]
+    # except Unauthorized as e:
+    #     request.session["error"] = {"title":e.message, "message":e.details}
+    #     if request.method == 'POST':
+    #         return JsonResponse({"error":{"title":e.message, "message":e.details}})
+    #     else:
+    #         request.session["error"] = {"title": e.message, "message": e.details, "code":401}
+    #         return redirect("/dashboard/login/?auth_url=" + auth_url + "&domain_name=" + domain_name + "&description=" + description)
+    if request.method == 'POST':
+        return JsonResponse({"success": {'alarmList': alarm_list}})
+    else:
+        token = request.session.get('passToken')
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/telemeter/alarms")
+        return render(request, 'telemeter/alarms/index.html', {"alarmList": alarm_list})
+
+
+@csrf_exempt
+def get_alarm_detail(request, alarm_id):
+    token = request.session.get('passToken')
+    domain_name = request.session.get("domain_name")
+    auth_url = request.session.get("auth_url")
+    description = request.session.get("description")
+    aodh = AodhRestAPI(auth_url, token)
+
+    try:
+        alarm = aodh.get_alarm(alarm_id).get("success")
+        resource_query = filter(lambda query: query["field"] == "resource_id" or query["field"] == "metadata.user_metadata.stack", alarm["threshold_rule"]["query"])
+        if len(resource_query) > 0:
+            resource_id = resource_query[0].get("value")
+            server_result = NovaRestAPI(auth_url, token).get_server(resource_id)
+            if server_result.get("success"):
+                server = server_result["success"].get("server")
+                alarm["threshold_rule"]["resource_name"] = server.get("name")
+            else:
+                alarm["threshold_rule"]["resource_name"] = resource_id
+        # alarm["threshold_rule"]["query"][0]["name"] = NovaRestAPI(auth_url, token).get_server(
+        #     alarm["threshold_rule"]["query"][0]["value"], {"fields": ["name"]})
+        q = request.POST.get("q")
+        if q:
+            q = json.loads(q)
+        aodh = AodhRestAPI(auth_url, token)
+        histories = aodh.get_alarm_history(alarm_id, q)
+        if histories.get("success"):
+            histories = histories["success"]
+        # TODO: user_name줘야함
+    except Unauthorized as e:
+        request.session["error"] = {"title": e.message, "message": e.details, "code": 401}
+        return redirect("/dashboard/login/?auth_url=" + auth_url + "&domain_name=" + domain_name + "&description=" + description)
+    if request.method == 'POST':
+        return JsonResponse({"success": {'alarm': alarm, 'histories': histories}})
+    else:
+        token = request.session.get('passToken')
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/telemeter/alarms/" + alarm_id)
+        modal_title = request.GET.get("modal_title")
+        return render(request, 'telemeter/alarms/info.html', {"alarm": alarm, "modal_title": modal_title, 'histories': histories})
+
+
+def create_alarm(request):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    if request.is_ajax() and request.method == 'POST':
+        data = json.loads(request.POST.get("data"))
+        aodh = AodhRestAPI(auth_url, token)
+        logger.debug("=======data: %s", data)
+        result = aodh.create_alarm(data)
+        logger.debug("=======result:" + str(result))
+        return JsonResponse(result)
+    else:
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/telemeter/alarms/create_alarm")
+        modal_title = request.GET.get("modal_title")
+        return render(request, 'telemeter/alarms/create.html', {"modal_title": modal_title})
+
+
+def update_alarm(request, alarm_id):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    aodh = AodhRestAPI(auth_url, token)
+    if request.is_ajax() and request.method == 'POST':
+        data = json.loads(request.POST.get("data"))
+        logger.debug("=======data:{}".format(request.POST.get("data")))
+        logger.debug("=======dataLoads:{}".format(data))
+        result = aodh.update_alarm(alarm_id, data)
+        logger.debug("=======result:" + str(result))
+        return JsonResponse(result)
+    else:
+        modal_title = request.GET.get("modal_title")
+        try:
+            alarm = aodh.get_alarm(alarm_id).get("success")
+        except Exception as e:
+            alarm = {'error': {'message': str(e), 'code': 401, 'title': 'Unauthorized'}}
+            logger.error(e)
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/telemeter/alarms/update_alarm")
+        return render(request, 'telemeter/alarms/create.html', {"alarm": alarm, "modal_title": modal_title})
+
+
+def delete_alarm(request, alarm_id):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        aodh = AodhRestAPI(auth_url, token)
+        result = aodh.delete_alarm(alarm_id)
+        logger.debug("=======result:" + str(result))
+        return JsonResponse(result)
+
+
+@csrf_exempt
+def getAlarmHistory(request, alarm_id):
+    if request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        q = request.POST.get("q")
+        if q:
+            q = json.loads(q)
+        aodh = AodhRestAPI(auth_url, token)
+        result = aodh.get_alarm_history(alarm_id, q)
+        # logger.debug("=======result:" + str(result))
+        return JsonResponse(result)
+
+
+@csrf_exempt
+def get_alarm_history_by_instance_id(request, instance_id):
+    if request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        now = datetime.datetime.now()
+        """
+        weeks, days, hours, minutes, seconds, milliseconds, microseconds
+        """
+        yesterday = now - datetime.timedelta(days=1)
+        q = [{
+            "field": "timestamp",
+            "op": "ge",
+            "value": yesterday.strftime("%Y-%m-%dT%H:%M:%S"),
+            "type": "datetime"
+        }]
+        logger.debug(yesterday.strftime("%Y-%m-%dT%H:%M:%S"))
+
+        aodh = AodhRestAPI(auth_url, token)
+        alarm_list = aodh.get_alarm_list()
+        if alarm_list.get("success"):
+            alarm_list = alarm_list["success"]
+            alarmIdList = []
+            alarmNameDic = {}
+
+            for alarm in alarm_list:
+                logger.debug("=============alarm==============")
+                # logger.debug(alarm)
+                for query in alarm.get("threshold_rule").get("query"):
+                    if query.get("value") == instance_id:
+                        logger.debug("=============append alarm_id==============")
+                        alarmIdList.append(alarm.get("alarm_id"))
+                        alarmNameDic[alarm.get("alarm_id")] = alarm.get("name")
+                        break
+            logger.debug("============= create alarmIdList Complete===============")
+            alarmIdList = list(set(alarmIdList))
+            logger.debug(alarmIdList)
+
+            # alarmIdList = filter(lambda alarm: alarm in filter(lambda query: query.get("value") == instance_id, alarm.query), alarm_list)
+            # result = []
+            # for alarm_id in alarmIdList:
+            #     result += ceilometer.get_alarm_history(alarm_id, q).get("success")
+            # logger.debug("=======result:" + str(len(result)))
+            # return JsonResponse({"success":{"history":result}})
+            q = {"query": q}
+            result = {}
+            for alarm_id in alarmIdList:
+                temp = aodh.get_alarm_history(alarm_id, q)
+                result[alarmNameDic[alarm_id]] = temp.get("success")[:5]
+            result = {"success": {"history": result}}
+        else:
+            result = alarm_list
+        return JsonResponse(result)
+
+
+@csrf_exempt
+def accept_alarm_actions(request):
+    """
+    POST / HTTP/1.1
+    <a few HTTP headers>
+    {
+        "severity": "low",
+        "alarm_name": "cpuhigh",
+        "current": "alarm",
+        "alarm_id": "0231eadd-4f42-4741-adc6-15b789c6d5b9",
+        "reason": "Transition to alarm due to 1 samples outside threshold, most recent: 80.2078739279",
+        "reason_data": {
+            "count": 1,
+            "most_recent": 80.20787392791595,
+            "type": "threshold",
+            "disposition": "outside"
+        },
+        "previous": "insufficient data"
+    }
+    """
+    if request.method == 'POST':
+        logger.debug(u"알람발생 POST\n\tread: {}\n\ttype: {}".format(request.read(), type(request.read())))
+        return JsonResponse({"success": True})
+    else:
+        logger.debug(u"알람발생 GET")
+        logger.debug(request.GET.keys())
+        values = request.META.items()
+        logger.debug(values)
+        return JsonResponse({"success": True})
+
+
+def get_resources(request):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    if request.method == 'POST':
+        nova = NovaRestAPI(auth_url, token)
+        glance = GlanceRestAPI(auth_url, token)
+        ceilometer = CeilometerRestAPI(auth_url, token)
+
+        result = {"success": {}, "error": {"err_msg_list": []}}
+        result_servers = nova.get_server_list(fields=["id", "name"])
+        result_images = glance.get_image_list()
+        result_resources = ceilometer.get_resource_list()
+        resources = result_resources.get("success")
+
+        if type(result_resources) == str:
+            message = ast.literal_eval(result_resources.replace("null", "None")).get("error_message").get("faultstring")
+            result["error"]["err_msg_list"].append({"title": "Not Found", "message": message, "code": 404})
+        elif resources and result_servers.get("success"):
+            for server in result_servers["success"].get("servers"):
+                network_interfaces = [
+                    {"id": sample.get('resource_id'), "name": sample.get("name")}
+                    for sample in resources
+                    if server.get("id") in sample.get('resource_id') and "tap" in sample.get('resource_id')
+                ]
+                server['networkInterfaceList'] = network_interfaces
+        elif not resources and result_servers.get("success"):
+            result["error"]["err_msg_list"].append({"error": {"message": "not found networkList", "title": "Not Found", "code": 404}})
+
+        if result_servers.get("success"):
+            result["success"].update(result_servers.get("success"))
+        if result_images.get("success"):
+            result["success"].update(result_images.get("success"))
+        if result_servers.get("error"):
+            result["error"]["err_msg_list"].append(result_servers.get("error"))
+        if result_images.get("error"):
+            result["error"]["err_msg_list"].append(result_images.get("error"))
+        logger.debug(result)
+        return JsonResponse(result)

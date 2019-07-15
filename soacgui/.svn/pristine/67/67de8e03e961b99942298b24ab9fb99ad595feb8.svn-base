@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load commontags %}
+
+{% block style %}
+{% endblock style %}
+
+{% block headerTitle %}
+<div class="head_d02">서비스</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">Intent 기반 서비스 생성</div>
+{% endblock headerTitle %}
+{% block header %}
+<a href="/dashboard/service/intent/rule"><div class="head_d05">Rule</div></a>
+<div class="head_d05 click">Endpoint</div>
+<div class="head_d05 intent-new-service">Intent 기반 서비스 생성</div>
+<div class="clear_float"></div>
+{% endblock header %}
+
+{% block content %}
+<!-- 여기에 내용 채우면 됨 -->
+
+<input id="getCreateRegData" value="" type="hidden">
+<div class="rs_d01" id="intentServiceCreate">
+    <div class="ind_d02">
+        <div class="ind_d05">Endpoint 목록</div>
+        <div class="clear_float"></div>
+    </div>
+
+	<button id="createReg" class="btn-ok">Endpoint 생성</button>
+	<div class="clear_float"></div>
+	<table id="endpointList" class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup>
+            <col style="width: calc(33% - 20px);">
+            <col style="width: calc(34% - 20px);">
+            <col style="width: calc(33% - 20px);">
+            <col style="width: 60px;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="name">이름</th>
+                <th class="metadata">메타데이터</th>
+                <th class="subnets">종류</th>
+                <th class="subnets">액션</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for endpoint in endpoints %}
+            <tr data-key="{{ endpoint.endpoint_key }}" data-metadata="{{ endpoint.metadata }}" data-end="{% parse_json endpoint.name %}">
+                <td class="name link">
+                    <a class="" href="#"></a>{{ endpoint.name }}</td>
+                </td>
+                <td class="metadata">{{ endpoint.metadata_str }}</td>
+                <td class="shared">{{ endpoint.endpoint_type }}</td>
+                <td>
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 btn-resend">재전송</div>
+                        <div class="button_group_d02 action">
+                            <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                        </div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="actionGroup_a01 btn-update"><div>endpoint 수정</div></a>
+                            <a href="#" class="actionGroup_a01 btn-delete"><div>endpoint 삭제</div></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in endpoint|length|range:5 %}
+            <tr>
+                <td> </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="rs_td03 tl" colspan="4">Displaying  item</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="clear_float"></div>
+<div id="info_tab" class="rs_d03">
+</div>
+
+<script src='{% static "js/service/intent/endpoint/index.js" %}'></script>
+{% endblock content %}

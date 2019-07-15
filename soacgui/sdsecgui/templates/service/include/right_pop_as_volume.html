@@ -1,0 +1,46 @@
+{% extends 'service/right_pop.html' %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_volume.png" alt="#">
+<div class="right_d01 type">{{ _("볼륨") }}</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02 "></div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">{{ _("이름") }} *</div>
+    <input class="pop03_text01" name="name" placeholder="{{ _('이름') }}" type="text" value="{{ data.name }}" autofocus>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">{{ _('볼륨 유형') }}</div>
+    <select class="pop03_sel01" name="type">
+        <option value="None"{% if data.type != 'a' %} selected{% endif %}>None</option>
+    </select>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">{{ _('볼륨 종류') }}</div>
+    <select class="pop03_sel01" name="image_type" data-selected="{{ data.image_type|default:'image' }}">
+        <option value="none">None</option>
+        <option value="image">{{ _('이미지') }}</option>
+        <option value="snapshot">{{ _('스냅샷') }} ({{ _('미개발') }})</option>
+    </select>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <img class="pop03_img02" src="/static/img/dashboard/common/search_bt_01.png" onclick="searchResource('volume_image')" alt="#">
+    <input name="volume_image" class="pop03_text02 " placeholder="{{ _('목록에서 선택하세요') }}." disabled type="text" value="{{ data.volume_image }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">{{ _('볼륨 크기') }} (GB) *</div>
+    <input class="pop03_text01" name="size" type="text" value="{{ data.size }}">
+    <div class="clear_float"></div>
+</div>
+<!--<div class="pop03_d02">-->
+    <!--<div class="pop03_d03 ">{{ _('볼륨 마운트 위치') }}</div>-->
+    <!--<input class="pop03_text01" name="vm_template" placeholder="{{ _('가상 머신을 연결하세요') }}." disabled type="text" value="{{ data.vm_template }}">-->
+    <!--<div class="clear_float"></div>-->
+<!--</div>-->
+{% endblock resourceInfo %}

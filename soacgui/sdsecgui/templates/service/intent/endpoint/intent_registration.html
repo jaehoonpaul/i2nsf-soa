@@ -1,0 +1,32 @@
+{% load staticfiles %}
+{% load commontags %}
+
+<div class="rs_d04 tab-btn click">endpoint</div>
+<div class="clear_float"></div>
+<div class="rs_d05 tab-body" style="display:block;">
+    <div class="division">
+        <div class="clear_float"></div>
+        <img class="mypage_img01" src="/static/img/dashboard/common/mypage_icon_02.png" alt="#">
+        <div class="mypage_d01">Endpoint</div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="mypage_tab01">
+        <colgroup></colgroup>
+        <tbody>
+            <tr>
+                <th class="mypage_td01">이름</th>
+                <td class="mypage_td02">{{ rule.destination_target.name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">종류</th>
+                <td class="mypage_td02">{{ rule.destination_target.endpoint_type }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">IP 범위</th>
+                <td class="mypage_td02">{{ rule.destination_target.range }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="clear_float"></div>
+</div>
+<div class="clear_float"></div>

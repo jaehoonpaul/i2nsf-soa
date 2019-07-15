@@ -1,0 +1,292 @@
+# _*_ coding:utf-8 _*_
+import json
+import ast
+import logging
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from sdsecgui.dashboard.skeletonLib import ControllerEngine
+from sdsecgui.tools.ctrlengine import ControlEngine
+from sdsecgui.tools.keystone_exception import Unauthorized
+from sdsecgui.tools.openstack_restapi import GlanceRestAPI, KeystoneRestAPI, NovaRestAPI, \
+    CeilometerRestAPI
+from sdsecgui.cmodels.instance import Instance
+
+logger = logging.getLogger("myapp.myLogger")
+
+
+def detailService(request, service_id):
+    token = request.session.get('passToken')
+    ctrl_header = request.session.get("ctrl_header")
+    if request.method =="POST" and request.is_ajax():
+        control = ControlEngine(ctrl_header)
+        # control = ControllerEngine()  # TODO: debugging용
+        service = control.get_service(service_id)
+        return JsonResponse(service)
+    else:
+        if not token:
+            response = redirect("/dashboard/domains/?next=/dashboard/telemeter/metering/" + service_id)
+        else:
+            control = ControlEngine(ctrl_header)
+            service = control.get_service(service_id)
+            if service.get("success"):
+                service_detail = service["success"].get("service_detail")
+                servers = service_detail.get("vm_list")
+                response = render(request, 'telemeter/info.html', {"servers": servers, "service_name": service_detail.get("name")})
+            else:
+                response = render(request, 'telemeter/info.html', {"error": service})
+        logger.info("detailService_end")
+        return response
+
+# def getMetersList(request, vm_id):
+#     token = request.session.get('passToken')
+#     domain_name = request.session.get("domain_name")
+#     project_name = request.session.get("project_name")
+#     auth_url = request.session.get("auth_url")
+#     ceilometer = CeilometerRestAPI(auth_url, token)
+#     cpu_delta = ceilometer.getMeterList()
+#     raise Exception("이거 언제쓰나?")
+
+    # return JsonResponse(cpu_delta)
+
+# get_samples
+@csrf_exempt
+def getNetworkList(request, resource_id):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    ceilometer = CeilometerRestAPI(auth_url, token)
+    result_resources = ceilometer.get_resource_list()
+    if type(result_resources) == str:
+        result = {"error": {"title": "Not Found", "message": ast.literal_eval(result_resources.replace("null", "None")).get("error_message").get("faultstring"), "code": 404}}
+    elif result_resources.get("success"):
+        resources = result_resources.get("success")
+        if resources:
+            result = [
+                sample.get('resource_id')
+                for sample in resources
+                if resource_id in sample.get('resource_id') and "tap" in sample.get('resource_id')
+            ]
+            result = {'success': {'network_interfaces': result}}
+        else:
+            result = {"error": {"message": "not found networkList", "title": "Not Found", "code": 404}}
+    else:
+        result = result_resources
+
+    # resources = resources.get("resources")
+
+    return JsonResponse(result)
+
+
+@csrf_exempt
+def getStatistics(request, meter_name):
+    if request.method == 'POST' and request.is_ajax():
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        data = json.loads(request.POST.get("data"))
+        query = data.get("query")
+        period = data.get("period")
+        groupby = data.get("groupby")
+        aggregates = data.get("aggregates")
+
+        ceilometer = CeilometerRestAPI(auth_url, token)
+
+        result = ceilometer.getStatisticsList(meter_name, query, period, groupby, aggregates)
+
+        return JsonResponse(result)
+
+
+@csrf_exempt
+def getStatisticsList(request):
+    if request.method =="POST":
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        data = json.loads(request.POST.get("data"))
+        query = data.get("query")
+        period = data.get("period")
+        groupby = data.get("groupby")
+        aggregates = data.get("aggregates")
+
+        try:
+            ceilometer = CeilometerRestAPI(auth_url, token)
+        except Unauthorized as e:
+            result = {"error": {"title": e.message, "message": e.details, "code": 401}}
+            return JsonResponse(result)
+
+        #temptuple = (meter_name, query, period, groupby, aggregates)
+        statisticsList = {}
+        meterNameList = [
+            "memory", "memory.resident",
+            "cpu", "cpu.delta", "cpu_util", "vcpus",
+            "disk.read.requests", "disk.write.requests",
+            "disk.read.bytes", "disk.write.bytes",
+            "disk.read.requests.rate", "disk.write.requests.rate",
+            "disk.read.bytes.rate", "disk.write.bytes.rate",
+            "disk.root.size", "disk.ephemeral.size", "disk.capacity", "disk.allocation", "disk.usage",
+        ]
+        networkMeterNameList = [
+            "network.incoming.bytes",
+            "network.outgoing.bytes",
+            "network.incoming.packets",
+            "network.outgoing.packets",
+            "network.incoming.bytes.rate",
+            "network.outgoing.bytes.rate",
+            "network.incoming.packets.rate",
+            "network.outgoing.packets.rate"
+        ]
+        for q in query:
+            if q.get("field") == "resource":
+                resource_id = q.get("value")
+                resourceList = ceilometer.get_resource_list()
+
+                statisticsList["success"] = {
+                    meterName: ceilometer.getStatisticsList(meterName, query, period, groupby, aggregates).get("success") for meterName in meterNameList
+                }
+                if resourceList.get("success"): # resourceList = 네트워크리스트
+                    resources = resourceList.get("success")
+                    networks = [
+                        sample.get('resource_id')
+                        for sample in resources
+                        if resource_id in sample.get('resource_id') and "tap" in sample.get('resource_id')
+                    ]
+                    networks = {'success': {'network_interfaces': networks}}
+                    networkList = networks.get("success").get("network_interfaces")
+
+                    statisticsList.get("success")["network"] = {}
+                    for network in networkList:
+                        for q in query:
+                            if q.get("field") == "resource":
+                                q["value"] = network
+                                break
+                        statisticsList.get("success").get("network")[network] = {
+                            networkMeterName: ceilometer.getStatisticsList(networkMeterName, query, period, groupby, aggregates).get("success") for networkMeterName in networkMeterNameList
+                        }
+                else:
+                    statisticsList.get("success")["network"] = {}
+        if statisticsList["success"] == []:
+            raise Exception(u"대상이 없습니다.")
+
+
+        return JsonResponse(statisticsList)
+
+# def getNewSamplesExample(request, vm_id):
+#     token = request.session.get('passToken')
+#     domain_name = request.session.get("domain_name")
+#     project_name = request.session.get("project_name")
+#     sess = login(token, domain_name, project_name)
+#     ceilometer = CeilometerClient(sess)
+#
+#     cpu_delta = ceilometer.getNewSamplesExample()
+#
+#     return JsonResponse(cpu_delta)
+# def getMeterList(request, vm_id):
+#     token = request.session.get('passToken')
+#     domain_name = request.session.get("domain_name")
+#     project_name = request.session.get("project_name")
+#     sess = login(token, domain_name, project_name)
+#     ceilometer = CeilometerClient(sess)
+#     meterList = ceilometer.getMeterList()
+#     cpuUtilSample = ceilometer.getCpuUtilSample()
+#
+#     return JsonResponse([cpuUtilSample, meterList])
+
+
+@csrf_exempt
+def get_instance_by_id(request):
+    token = request.session.get('passToken')
+    domain_name = request.session.get("domain_name")
+    project_name = request.session.get("project_name")
+    description = request.session.get("description")
+    auth_url = request.session.get("auth_url")
+    vm_id = request.POST.get("vm_id")
+
+    nova = NovaRestAPI(auth_url, token)
+    glance = GlanceRestAPI(auth_url, token)
+    keystone = KeystoneRestAPI(auth_url, token)
+
+    instance = nova.get_server(vm_id)
+    flavor = nova.get_flavor(instance.get("success").get("server").get("flavor")["id"])
+    if instance.get("success").get("server").get("image"):
+        image = glance.get_image(instance.get("success").get("server").get("image").get("id"))
+    else:
+        image = {"success":{}}
+
+    instance["success"]["server"]["flavor"] = flavor.get("success").get("flavor")
+    instance["success"]["server"]["image"] = image.get("success")
+    instance["success"]["server"]["project_name"] = keystone.get_project(instance.get("success").get("server").get("tenant_id")).get("success").get("project").get("name")
+    result = instance
+    return JsonResponse(result)
+
+
+@csrf_exempt
+def get_statistics_meter_list(request, meter_group_name):
+    if request.method =="POST":
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        data = json.loads(request.POST.get("data"))
+        query = data.get("query")
+        period = data.get("period")
+        groupby = data.get("groupby")
+        aggregates = data.get("aggregates")
+
+        ceilometer = CeilometerRestAPI(auth_url, token)
+
+        #temptuple = (meter_name, query, period, groupby, aggregates)
+        statistics_list = {}
+        meter_name_list = [
+            "memory", "memory.resident",
+            "cpu", "cpu.delta", "cpu_util", "vcpus",
+            "disk.read.requests", "disk.write.requests",
+            "disk.read.bytes", "disk.write.bytes",
+            "disk.read.requests.rate", "disk.write.requests.rate",
+            "disk.read.bytes.rate", "disk.write.bytes.rate",
+            "disk.root.size", "disk.ephemeral.size", "disk.capacity", "disk.allocation", "disk.usage",
+        ]
+        meter_name_list = [meterName for meterName in meter_name_list if meterName == meter_group_name]
+        network_meter_name_list = [
+            "network.incoming.bytes",
+            "network.outgoing.bytes",
+            "network.incoming.packets",
+            "network.outgoing.packets",
+            "network.incoming.bytes.rate",
+            "network.outgoing.bytes.rate",
+            "network.incoming.packets.rate",
+            "network.outgoing.packets.rate"
+        ]
+        for q in query:
+            if q.get("field") == "resource":
+                statistics_list["success"] = {
+                    meterName: ceilometer.getStatisticsList(meterName, query, period, groupby, aggregates).get("success") for meterName in meter_name_list
+                }
+                if meter_group_name == "network":
+                    resource_id = q.get("value")
+                    resource_list = ceilometer.get_resource_list()
+
+                    resources = resource_list.get("success").get("resources")
+                    networks = [
+                        sample.__dict__.get('resource_id')
+                        for sample in resources
+                        if resource_id in sample.__dict__.get('resource_id') and "tap" in sample.__dict__.get('resource_id')
+                    ]
+                    networks = {'success': {'network_interfaces': networks}}
+                    network_list = networks.get("success").get("network_interfaces")
+
+                    statistics_list.get("success")["network"] = {}
+                    for network in network_list:
+                        for q in query:
+                            if q.get("field") == "resource":
+                                q["value"] = network
+                                break
+                        statistics_list.get("success").get("network")[network] = {
+                            networkMeterName: ceilometer.getStatisticsList(networkMeterName, query, period, groupby, aggregates).get("success") for networkMeterName in network_meter_name_list
+                        }
+        if statistics_list["success"]:
+            raise Exception(u"대상이 없습니다.")
+
+        return JsonResponse(statistics_list)
+
+
+def detail_pop(request):
+    modal_title = request.GET.get("modal_title")
+    return render(request, 'telemeter/detail_chart.html', {"modal_title": modal_title})

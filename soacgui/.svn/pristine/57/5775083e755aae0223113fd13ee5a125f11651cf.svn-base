@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+{% block headerTitle %}
+            <div class="head_d02">서비스</div>
+            <img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03" id="service_name">서비스 모니터링</div>
+{% endblock headerTitle %}
+
+{% block header %}
+<a href="/dashboard/service/new_service">
+    <div class="head_d05 click">통계조회</div>
+    <img class="all_service_bt01" src="/static/img/common/btn/service_new_bt_01.png" alt="#">
+</a>
+<div class="clear_float"></div>
+{% endblock header %}
+
+
+{% block content %}
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">서비스 목록</div>
+        <div class="clear_float"></div>
+    </div>
+    <table class="rs_tab02" cellpadding="0" border="0" cellspacing="0">
+        <thead>
+            <tr>
+                <td class="rs_td01">이름</td>
+                <td class="rs_td01">프로젝트</td>
+                <td class="rs_td01">사용자</td>
+                <td class="rs_td01">설명</td>
+                <td class="rs_td01">상태</td>
+                <td class="rs_td01">서비스 체이닝 수</td>
+                <td class="rs_td01">생성일</td>
+                <td class="rs_td01">수정일</td>
+                <td class="rs_td01">Actions</td>
+            </tr>
+        </thead>
+        <tbody id="grid-container"></tbody>
+    </table>
+    <div class="clear_float"></div>
+</div>
+
+    <!--<div id="grid-container">-->
+    <!--</div>-->
+<!--<link rel="stylesheet" href="{% static 'css/direct.list.css' %}">-->
+<!--<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>-->
+<!--<script src="{% static 'js\telemeter\service_list.js' %}"></script>-->
+<script>
+    //var error_msg_list = {% autoescape off %}{{error_msg_list}}{% endautoescape %};
+</script>
+{% endblock content %}

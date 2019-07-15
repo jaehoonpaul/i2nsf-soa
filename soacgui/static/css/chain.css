@@ -1,0 +1,186 @@
+@CHARSET "UTF-8";
+
+#resource {
+    cursor: pointer;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.sc_title {
+	font-size: 12px;
+	fill: #b0b5c9;
+}
+
+.sfc_title {
+	font-size: 16px;
+	font-weight: bold;
+	text-anchor: start;
+	fill: #4e515e;
+}
+
+.res_txt {
+	font-size: 11px;
+	fill: #4e515e;
+}
+
+.func_txt {
+	font-size: 11px;
+	font-weight: bold;
+	fill: #4e515e;
+}
+
+/*.res_txt {
+	fill: #4e515e;
+	font-weight: bold;
+	font-size: 14px;
+	text-anchor: middle;
+}*/
+
+/* popover */
+.container {padding:40px;}
+.form-control {width:120px;}
+.popover {
+            min-width:200px; !important;
+            max-width:800px; !important;
+			margin-top: 0px !important;
+    		margin-left: 11px !important;
+}
+/*.popover-content {
+width:400px !important;
+}*/
+
+
+/* popover end */
+/*
+svg {
+	width: 1920px;
+	height: 1300px;
+*//* 	border: #000 dotted 1px; *//*
+*//* 	background-color: #fff; *//*
+}*/
+
+.forceLine {
+	stroke: red;
+	stroke-width: 5;
+}
+
+/*.bgbox {
+	fill: white;
+	stroke: #d2d3d4;
+	stroke-width: 1;
+	rx: 30px;
+	ry: 30px;
+*//* 	opacity: 0.2; *//*
+}*/
+/*
+.fc_drop {
+	fill: #e3f0fc;
+	rx: 20px;
+	ry: 20px;
+}
+
+.sf_drop {
+	fill: #e3f0fc;
+	rx: 20px;
+	ry: 20px;
+}*/
+
+/*.inout {
+	fill: #4b73eb;
+	r: 8px;
+}*/
+
+.exec_btn {
+	/*r: 18px;
+	stroke: #d2d3d4;
+	stroke-width: 1;
+	*/cursor: pointer;
+}
+
+/*.arrow {
+	fill: #a1abc3;
+	stroke: #a1abc3;
+	stroke-width: 2;
+}*/
+
+.btn-add {
+	cursor: pointer;
+/* 	fill: green;
+	r: 44px;
+	stroke: #d2d3d4;
+	stroke-width: 1;
+	*/
+}
+
+.set-resource {
+    cursor: pointer;
+}
+
+/*.btn-resource {
+	r: 40px;
+	stroke: #d2d3d4;
+	stroke-width: 1;
+}*/
+
+.drop-target {
+	fill: white;
+	stroke: #22a2ed;
+	stroke-width: 2;
+}
+
+.drop-active {
+	stroke: #22a2ed;
+	stroke-width: 2;
+}
+
+/*.can-drop {
+	fill: green;
+}*/
+
+
+/* #outer-dropzone { */
+/* 	height: 140px; */
+/* } */
+
+/* #inner-dropzone { */
+/* 	height: 80px; */
+/* } */
+
+/* .dropzone { */
+/* 	background-color: #ccc; */
+/* 	border: dashed 4px transparent; */
+/* 	border-radius: 4px; */
+/* 	margin: 10px auto 30px; */
+/* 	padding: 10px; */
+/* 	width: 80%; */
+/* 	transition: background-color 0.3s; */
+/* } */
+
+/* .drop-active { */
+/* 	border-color: #aaa; */
+/* } */
+
+/* .drop-target { */
+/* 	background-color: #29e; */
+/* 	border-color: #fff; */
+/* 	border-style: solid; */
+/* } */
+
+/* .drag-drop { */
+/* 	display: inline-block; */
+/* 	min-width: 40px; */
+/* 	padding: 2em 0.5em; */
+/* 	color: #fff; */
+/* 	background-color: #29e; */
+/* 	border: solid 2px #fff; */
+/* 	-webkit-transform: translate(0px, 0px); */
+/* 	transform: translate(0px, 0px); */
+/* 	transition: background-color 0.3s; */
+/* } */
+
+/* .drag-drop.can-drop { */
+/* 	color: #000; */
+/* 	background-color: #4e4; */
+/* } */

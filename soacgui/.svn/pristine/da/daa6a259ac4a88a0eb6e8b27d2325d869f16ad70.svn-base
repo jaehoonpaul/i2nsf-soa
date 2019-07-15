@@ -1,0 +1,98 @@
+$(function() {
+    $(".contents_d01").css("overflow-x", "hidden");
+    $("#createRule").on("click", function() {
+        PopupUtil({
+            url: "/dashboard/service/intent/rule_modal",
+            title: gettext(gettext("룰 생성")),
+            width: 800,
+            success: function(result) {
+            }
+        });
+    });
+
+    $(".btn-create-intent").on("click", function() {
+        var ruleKey = $(this).parents("tr").data("key");
+        var rule_data = $(this).parents("tr").data("rule_data");
+        location.href = "/dashboard/service/intent/new_service?rule_key=" + ruleKey;
+    });
+    var actionGroup = new ActionGroup({
+        "selector":"#ruleList",
+        "clickEvent":function() {
+            var rule_key = $(this).parents("tr").data("key");
+            var rule_name = $(this).parents("tr").data("name");
+            if ($(this).hasClass("btn-update")) {
+                updateRule(rule_key);
+            // src 삭제 클릭시 확인 팝업
+            } else if ($(this).hasClass("btn-delete")) {
+                deleteRule(rule_key, rule_name);
+            }
+        }
+    });
+    actionGroup.setCloseEvent();
+    actionGroup.run();
+
+    $("#deleteSubmit").off("click");
+
+    $("#deleteSubmit").on("click", function() {
+        var url = $("#modalDelete").data("url");
+        var data = {};
+        data["rule_name"] = $("#modalDelete").data("rule_name");
+        $("#modalDelete").modal("hide");
+        U.showProgress();
+        U.ajax({
+            url: url,
+            data: data,
+            success:function(jsonData) {
+                var deleteStr = data["rule_name"] + gettext("가 삭제되었습니다.");
+                if (typeof jsonData.success != "undefined") {
+                    U.lobiboxMessage(deleteStr, 'info', gettext('삭제'));
+                } else {
+                    U.lobibox(jsonData.message, 'error', gettext('삭제 실패'));
+                }
+                location.reload();
+//                $("#modalDelete").modal("hide");
+            }
+        });
+    });
+
+    $("#ruleList").on("click", ".link", function() {
+        $("#info_tab").loadPage({
+            url: "/dashboard/service/intent/rule/" + $(this).parents("tr").data("key") + "/detail",
+            success: function() {
+                var infoTab = new TabUtil({selector:"#info_tab"}).run();
+                $("#updateRule").off("click");
+                $("#deleteRule").off("click");
+                $("#updateRule").on("click", function() {
+                    var rule_key = $(this).data("key");
+                    updateRule(rule_key);
+                });
+                $("#deleteRule").on("click", function() {
+                    var rule_key = $(this).data("key");
+                    var rule_name = $(this).data("name");
+                    deleteRule(rule_key, rule_name);
+                });
+            }
+        });
+    });
+    $("#ruleList .link:eq(0)").click();
+    $(".intent-new-service").on("click", function() {
+        Alert(gettext("Rule에서 intent 기반 서비스 생성을 누르세요."));
+    });
+});
+
+function deleteRule(rule_key, rule_name) {
+    $("#modalDelete").data("rule_key", rule_key);
+    $("#modalDelete").data("rule_name", rule_name);
+    $("#modalDelete .modal-body").text("Rule(" + rule_name + gettext(")을 삭제하시겠습니까?"));
+    $("#modalDelete").data("url", "/dashboard/service/intent/rule/" + rule_key + "/delete").modal();
+}
+
+function updateRule(rule_key) {
+    PopupUtil({
+        url: "/dashboard/service/intent/rule/" + rule_key + "/update",
+        title: gettext("룰 수정"),
+        width: 800,
+        success: function(result) {
+        }
+    });
+}

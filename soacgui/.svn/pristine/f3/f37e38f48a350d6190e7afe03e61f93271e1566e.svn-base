@@ -1,0 +1,149 @@
+# _*_coding:utf-8_*_
+import json
+import subprocess
+import time
+
+from hyper import HTTP20Connection, tls
+from hyper.common.exceptions import ConnectionResetError
+from hyper.compat import ssl, ignore_missing
+from hyper.contrib import HTTP20Adapter
+import requests
+import logging
+
+from hyper.tls import SUPPORTED_NPN_PROTOCOLS
+
+from sdsec.settings import config
+from sdsecgui.tools.custom_httpclient import CustomHTTPClient
+
+logger = logging.getLogger("myapp.myLogger")
+section = "SETTINGS"
+LOG_LEVEL = config.get(section, "LOG_LEVEL")
+
+
+class SecurityControllerRestAPI:
+    def __init__(self):
+        self.ROOT_URL = config.get(section, "SEC_CTRL_HOST")
+        self.CLIENT_CERT = config.get(section, "CLIENT_CERT")
+        self.NETCONF_PATH = config.get(section, "NETCONF_PATH")
+        self.NETCONF_HOST = config.get(section, "NETCONF_HOST")
+        # self.CLIENT_KEY = config.get(section, "CLIENT_KEY")
+        # self.CERT_SERVER = config.get(section, "CERT_SERVER")
+        # self.PAY_LOAD = {"somId": "myID"}
+        # self.CERT = (self.CLIENT_CERT, self.CLIENT_KEY)
+        self.CERT = (self.CLIENT_CERT)
+        self.HEADERS = {'Accept': '*/*', "Content-Type": "application/json"}
+        self.MAX_RETRIES = 5
+
+    def post_method1(self, url, json_data):
+        # s = requests.session()
+        # s.mount(url, HTTP20Adapter())
+        # response = s.post(url, data={}, verify=False, cert=self.CLIENT_CERT)
+        # CustomHTTPClient.confirm_status(response)
+        # ssl_context = tls.init_context()
+        # ssl_context.check_hostname = False
+        # ssl_context.verify_mode = ssl.CERT_NONE
+        # ssl_context.load_cert_chain(certfile=self.CERT)
+        # ssl_context.set_npn_protocols(['h2'])
+        # ssl_context.load_verify_locations(cafile=self.CERT)
+        host_port = self.ROOT_URL.replace("https://", "").split(":")
+        adapter = HTTP20Adapter()
+        conn = adapter.get_connection(host_port[0], host_port[1], 'https', cert=self.CLIENT_CERT)
+        conn._conn.ssl_context.check_hostname = False
+        conn._conn.ssl_context.verify_mode = ssl.CERT_NONE
+
+        # conn = HTTP20Connection(url_port[0], url_port[1], ssl_context=ssl_context, secure=True, force_proto="ipv4")
+        # json_payload = json.dumps(json_data, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+        json_payload = json.dumps(json_data)
+        stream_id = conn.request('POST', url, json_payload)
+        response = conn.get_response(stream_id=stream_id)
+        return self.confirm_status(response, url, "POST", json_data=json_payload)
+
+    def post_method(self, url, json_data, retry_count=0):
+        host_port = self.ROOT_URL.replace("https://", "").split(":")
+        context = tls.init_context(self.CLIENT_CERT)
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        if type(json_data) == dict:
+            json_payload = json.dumps(json_data)
+        else:
+            json_payload = json_data
+
+        conn = HTTP20Connection(host_port[0], host_port[1], 'https', ssl_context=context, force_proto="h2")
+        log_str = """
+        ============================= Request ===============================
+        [CURL POST] {}
+        BODY: {}
+        """.format(url, json_data)
+        logger.info(log_str)
+        stream_id = conn.request('POST', url, json_payload)
+        response = conn.get_response(stream_id=stream_id)
+        result = self.confirm_status(response, url, "POST", json_data=json_data)
+        return result
+
+    def get_method(self, url):
+        url_port = self.ROOT_URL.replace("https://", "").split(":")
+        adapter = HTTP20Adapter()
+        conn = adapter.get_connection(url_port[0], url_port[1], 'https', cert=self.CLIENT_CERT)
+        conn._conn.ssl_context.check_hostname = False
+        conn._conn.ssl_context.verify_mode = ssl.CERT_NONE
+
+        stream_id = conn.request('GET', url)
+        response = conn.get_response(stream_id)
+        return self.confirm_status(response, url, "GET", header=self.HEADERS)
+
+    def get_service_template_by_rule(self, json_data):
+        url = "/restconf/data/ietf-i2nsf-cfi-policy:i2nsf-cfi"
+        return self.post_method(url, json_data)
+
+    def insert_endpoint(self, json_data):
+        url = "/restconf/data/ietf-i2nsf-cfi-policy:i2nsf-cfi"
+        result = self.post_method(url, json_data)
+        return result
+    #
+    # def test_security_controller(self):
+    #     url = "/restconf/data/ietf-i2nsf-cfi-policy:i2nsf-cfi"
+    #     return self.get_method(url)
+    #
+    # def send_floating_ip(self, json_data):
+    #     url = "/restconf/data/ietf-i2nsf-cfi-policy:i2nsf-cfi"
+    #     return self.post_method(url, json_data)
+
+    def insert_nsf(self, nsf_xml):
+        command = "sudo {} --host {} {}".format(self.NETCONF_PATH, self.NETCONF_HOST, nsf_xml)
+        logger.info("execute command: {}".format(command))
+        result = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        return result
+
+
+    @staticmethod
+    def confirm_status(response, url, method, header=None, json_data=None):
+        status = response.status
+        flag = False
+
+        temp_response = response.read()
+        if status == 400:
+            contents = {"error": {"message": "BadRequest", "code": 400, "title": "SecurityControllerMessage", "detail": temp_response}}
+        elif status == 404:
+            contents = {"error": {"message": "NotFound - URL", "code": 404, "title": "SecurityController", "detail": temp_response}}
+        elif status == 500:
+            try:
+                contents = json.loads(temp_response)
+            except Exception as e:
+                contents = {"error": {"message": e.message, "code": 500, "title": "SecurityController ResponseBody JsonError"}}
+        else:
+            flag = True
+            try:
+                contents = json.loads(temp_response)
+            except Exception as e:
+                # contents = {"error": {"message": e.message, "code": 500, "title": "SecurityController ResponseBody JsonError"}}
+                contents = temp_response
+        if LOG_LEVEL == "DEBUG":
+            log_str = """
+            ============================= Response ===============================
+            status: {}
+            contents: {}
+            response: {}
+            =========================== end Response =============================
+            """.format(str(status), contents, temp_response)
+            logger.info(log_str)
+        return contents

@@ -1,0 +1,651 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-05 07:21+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: jinsik kang <kangjinsik@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: static/js/base.js:198 static/js/service/service_info_html.js:166
+msgid "서비스 생성"
+msgstr "Create service"
+
+#: static/js/base.js:204
+msgid "Intent 기반 서비스 생성"
+msgstr "Create Intent Based Service"
+
+#: static/js/base.js:209
+msgid "서비스 조회"
+msgstr "service"
+
+#: static/js/base.js:213 static/js/service/service_list.js:88
+msgid "서비스 체이닝"
+msgstr "Service Chaining"
+
+#: static/js/base.js:217 static/js/service/service_list.js:89
+msgid "서비스 모니터링"
+msgstr "Service Monitoring"
+
+#: static/js/base.js:326
+msgid "현재 접속중인 도메인입니다."
+msgstr ""
+
+#: static/js/base.js:342 static/js/security/right_pop.js:1179
+#: static/js/security/right_pop.js:1196 static/js/service/right_pop.js:999
+#: static/js/service/right_pop.js:1016 static/js/service/service_list.js:108
+msgid "프로젝트"
+msgstr "Project"
+
+#: static/js/security/right_pop.js:269 static/js/service/right_pop.js:460
+msgid "저장되었습니다."
+msgstr "Save Complete."
+
+#: static/js/security/right_pop.js:269
+#: static/js/service/intent/endpoint/index.js:82
+#: static/js/service/right_pop.js:460
+msgid "성공"
+msgstr "Success"
+
+#: static/js/security/right_pop.js:439 static/js/security/right_pop.js:440
+#: static/js/security/right_pop.js:536 static/js/security/right_pop.js:537
+#: static/js/security/right_pop.js:1052 static/js/security/right_pop.js:1131
+#: static/js/security/right_pop.js:1236 static/js/service/right_pop.js:870
+#: static/js/service/service.js:286 static/js/service/service_list.js:107
+msgid "이름"
+msgstr "Name"
+
+#: static/js/security/right_pop.js:444 static/js/security/right_pop.js:1181
+#: static/js/security/right_pop.js:1198 static/js/service/right_pop.js:1001
+#: static/js/service/right_pop.js:1018
+msgid "관리자 상태"
+msgstr "Admin status"
+
+#: static/js/security/right_pop.js:450 static/js/security/right_pop.js:1202
+#: static/js/service/right_pop.js:1022
+msgid "외부 네트워크"
+msgstr "External Network"
+
+#: static/js/security/right_pop.js:451
+msgid "외부 네트워크를 연결하세요"
+msgstr "Please connect External network"
+
+#: static/js/security/right_pop.js:455
+msgid "인터페이스 추가"
+msgstr "Create Interfaces"
+
+#: static/js/security/right_pop.js:456
+msgid "가상 네트워크를 연결하세요.'"
+msgstr "Please connect network"
+
+#: static/js/security/right_pop.js:541
+msgid "보안장비 종류"
+msgstr "Security Device Type"
+
+#: static/js/security/right_pop.js:546 static/js/security/right_pop.js:1217
+#: static/js/service/right_pop.js:1037
+msgid "가용 구역"
+msgstr "Available Zone"
+
+#: static/js/security/right_pop.js:553
+msgid "부팅 소스"
+msgstr "Boot Source"
+
+#: static/js/security/right_pop.js:554
+msgid "이미지 스냅샷"
+msgstr "Image Snapshot"
+
+#: static/js/security/right_pop.js:554 static/js/security/right_pop.js:943
+#: static/js/service/right_pop.js:748
+msgid "볼륨"
+msgstr "Volume"
+
+#: static/js/security/right_pop.js:554
+msgid "볼륨 스냅샷"
+msgstr "Volume Snapshot"
+
+#: static/js/security/right_pop.js:559 static/js/security/right_pop.js:564
+#: static/js/security/right_pop.js:579
+msgid "목록에서 선택하세요"
+msgstr "Select in List"
+
+#: static/js/security/right_pop.js:563
+msgid "가상머신 사양"
+msgstr "Flavor"
+
+#: static/js/security/right_pop.js:568
+msgid "네트워크 인터페이스"
+msgstr "Network Interfaces"
+
+#: static/js/security/right_pop.js:574
+msgid "세부정보"
+msgstr "Detail"
+
+#: static/js/security/right_pop.js:578
+msgid "시큐리티 그룹"
+msgstr "Security Group"
+
+#: static/js/security/right_pop.js:765 static/js/security/right_pop.js:773
+#: static/js/security/right_pop.js:1034 static/js/security/right_pop.js:1047
+#: static/js/security/right_pop.js:1273 static/js/service/right_pop.js:851
+#: static/js/service/right_pop.js:865 static/js/service/right_pop.js:1093
+msgid "이미지"
+msgstr "Image"
+
+#: static/js/security/right_pop.js:934 static/js/service/right_pop.js:736
+msgid "라우터"
+msgstr "Router"
+
+#: static/js/security/right_pop.js:937 static/js/service/right_pop.js:740
+msgid "네트워크"
+msgstr "Network"
+
+#: static/js/security/right_pop.js:940 static/js/service/right_pop.js:744
+msgid "가상머신"
+msgstr "Virtual Machine"
+
+#: static/js/security/right_pop.js:946 static/js/service/right_pop.js:751
+msgid "방화벽"
+msgstr "Fire Wall"
+
+#: static/js/security/right_pop.js:949 static/js/service/right_pop.js:757
+msgid "로드밸런서"
+msgstr "Loadbalancer"
+
+#: static/js/security/right_pop.js:952 static/js/service/right_pop.js:760
+msgid "인터넷"
+msgstr "Internet"
+
+#: static/js/security/right_pop.js:1052
+msgid "업데이트 일시"
+msgstr "Update at"
+
+#: static/js/security/right_pop.js:1052 static/js/service/service.js:301
+msgid "크기"
+msgstr "Size"
+
+#: static/js/security/right_pop.js:1057 static/js/security/right_pop.js:1136
+msgid "선택"
+msgstr "Select"
+
+#: static/js/security/right_pop.js:1131 static/js/security/right_pop.js:1244
+#: static/js/service/right_pop.js:951 static/js/service/right_pop.js:1064
+msgid "디스크"
+msgstr "Disk"
+
+#: static/js/security/right_pop.js:1131 static/js/service/right_pop.js:951
+msgid "임시 디스크"
+msgstr "Temp Disk"
+
+#: static/js/security/right_pop.js:1174 static/js/service/service.js:293
+#: static/js/service/service_list.js:111
+msgid "상태"
+msgstr "Status"
+
+#: static/js/security/right_pop.js:1183 static/js/service/right_pop.js:1003
+msgid "외부 게이트웨이"
+msgstr "External Gateway"
+
+#: static/js/security/right_pop.js:1190 static/js/service/right_pop.js:1010
+msgid "네트워크 이름"
+msgstr "Network Name"
+
+#: static/js/security/right_pop.js:1191 static/js/service/right_pop.js:1011
+msgid "서브넷"
+msgstr "Subnet"
+
+#: static/js/security/right_pop.js:1192 static/js/security/right_pop.js:1193
+#: static/js/service/right_pop.js:1012 static/js/service/right_pop.js:1013
+msgid "인터페이스"
+msgstr "Interfaces"
+
+#: static/js/security/right_pop.js:1200
+msgid "공유"
+msgstr "Public"
+
+#: static/js/security/right_pop.js:1211 static/js/service/right_pop.js:1031
+msgid "물리적인 네트워크"
+msgstr "Physical Network"
+
+#: static/js/security/right_pop.js:1219 static/js/security/right_pop.js:1287
+#: static/js/service/right_pop.js:1039 static/js/service/right_pop.js:1107
+msgid "생성 일시"
+msgstr "Create at"
+
+#: static/js/security/right_pop.js:1221 static/js/service/right_pop.js:1041
+msgid "갱신 일시"
+msgstr "Update at"
+
+#: static/js/security/right_pop.js:1223 static/js/service/right_pop.js:1043
+msgid "생성된 이후 시간"
+msgstr "Created Time"
+
+#: static/js/security/right_pop.js:1225 static/js/service/right_pop.js:1045
+msgid "호스트"
+msgstr "Host"
+
+#: static/js/security/right_pop.js:1270 static/js/service/right_pop.js:1090
+msgid "키 이름"
+msgstr "Key Name"
+
+#: static/js/security/right_pop.js:1289 static/js/service/right_pop.js:1109
+msgid "마운트 정보"
+msgstr "Mount Info"
+
+#: static/js/security/right_pop.js:1301 static/js/service/right_pop.js:1121
+msgid "연결모드"
+msgstr "Connect mode"
+
+#: static/js/service/common_topology.js:345
+msgid "CTRL을 누른 상태에서 드래그를 하면 아이콘을 이동할 수<br/>있습니다."
+msgstr "You can move the icon <br/>by holding down CTRL while dragging."
+
+#: static/js/service/common_topology.js:345
+#: static/js/service/common_topology.js:457
+#: static/js/service/common_topology.js:481
+#: static/js/service/common_topology.js:484
+#: static/js/service/common_topology.js:507
+#: static/js/service/common_topology.js:516
+#: static/js/service/common_topology.js:523
+#: static/js/service/common_topology.js:548
+#: static/js/service/common_topology.js:557
+#: static/js/service/common_topology.js:567 static/js/service/right_pop.js:144
+#: static/js/service/right_pop.js:192 static/js/service/right_pop.js:196
+#: static/js/service/right_pop.js:200 static/js/service/right_pop.js:210
+#: static/js/service/right_pop.js:453 static/js/service/right_pop.js:455
+#: static/js/service/right_pop.js:457 static/js/service/right_pop.js:1201
+#: static/js/service/service.js:11 static/js/service/service.js:14
+#: static/js/service/service.js:461 static/js/service/service.js:637
+msgid "정보"
+msgstr "Information"
+
+#: static/js/service/common_topology.js:350
+msgid "취소"
+msgstr "Cancel"
+
+#: static/js/service/common_topology.js:351
+msgid ""
+"작업중인 데이터를 전부 지우고<br/><br/> 리스트 페이지로 이동하시겠습니까?"
+msgstr "Delete all working data and going to list page?"
+
+#: static/js/service/common_topology.js:457
+#: static/js/service/common_topology.js:557
+msgid "잘못된 연결 입니다."
+msgstr "It is a wrong connection."
+
+#: static/js/service/common_topology.js:481
+#: static/js/service/common_topology.js:507
+#: static/js/service/common_topology.js:548
+msgid ""
+"'은 이미 연결 되었거나 이미 존재하는<br/>이름입니다. 이름을 변경후 연결해주세"
+"요."
+msgstr ""
+"is already connected or existed name. Please change the name and connect it."
+
+#: static/js/service/common_topology.js:484
+msgid "'은 이미 다른 라우터에 연결되었습니다."
+msgstr "is already connected to other router."
+
+#: static/js/service/common_topology.js:516
+msgid "network의 이름을 변경후 연결해주세요."
+msgstr "Change the network's name and connect it."
+
+#: static/js/service/common_topology.js:523
+msgid "이미 "
+msgstr "already"
+
+#: static/js/service/common_topology.js:523
+msgid "에 연결되있습니다."
+msgstr "is conected."
+
+#: static/js/service/common_topology.js:567
+msgid "볼륨("
+msgstr "Volume("
+
+#: static/js/service/common_topology.js:567
+msgid ")은 이미 가상서버("
+msgstr ")is already virtual server("
+
+#: static/js/service/common_topology.js:567
+msgid ")에 연결 되어있습니다.<br/>연결 해제 후 다시 시도해주세요."
+msgstr ")connected. Try again after disconnecting."
+
+#: static/js/service/common_topology.js:1029
+#: static/js/service/service_info_html.js:137
+msgid "저장하기"
+msgstr "Save"
+
+#: static/js/service/common_topology.js:1030
+msgid "입력중인 정보창이 열려있습니다.<br/><br/>저장하시겠습니까?"
+msgstr "Current information window is opening. Will you save it?"
+
+#: static/js/service/common_topology.js:1462
+msgid "해당자원이 존재하지 않습니다."
+msgstr "Corresponding resources are not existed."
+
+#: static/js/service/common_topology.js:1471
+msgid "연결 정보가 올바르지 않습니다."
+msgstr "Conneting information is wrong."
+
+#: static/js/service/common_topology.js:1471
+msgid "에러"
+msgstr "Error"
+
+#: static/js/service/common_topology.js:2236
+msgid "오토스케일링 그룹에는 Volume만 추가할 수 있습니다."
+msgstr "Only Volume can be added in autoscaling group."
+
+#: static/js/service/intent/endpoint/index.js:8
+msgid "Endpoint 생성"
+msgstr "Creating Endpoint"
+
+#: static/js/service/intent/endpoint/index.js:31
+msgid "Endpoint 수정"
+msgstr "Revising Endpoint"
+
+#: static/js/service/intent/endpoint/index.js:54
+#: static/js/service/intent/rule/index.js:46
+msgid "가 삭제되었습니다."
+msgstr "is deleted."
+
+#: static/js/service/intent/endpoint/index.js:56
+#: static/js/service/intent/rule/index.js:48 static/js/service/right_pop.js:29
+#: static/js/service/service.js:231 static/js/service/service.js:524
+#: static/js/service/service_list.js:168
+msgid "삭제"
+msgstr "Delete"
+
+#: static/js/service/intent/endpoint/index.js:58
+#: static/js/service/intent/rule/index.js:50
+msgid "삭제 실패"
+msgstr "Fail to delete"
+
+#: static/js/service/intent/endpoint/index.js:65
+#: static/js/service/intent/rule/index.js:79
+msgid "Rule에서 intent 기반 서비스 생성을 누르세요."
+msgstr "Press Intent based service creating in Rule"
+
+#: static/js/service/intent/endpoint/index.js:73
+msgid ")을 삭제하시겠습니까?"
+msgstr ") delete?"
+
+#: static/js/service/intent/endpoint/index.js:82
+msgid "전송"
+msgstr "Send"
+
+#: static/js/service/intent/endpoint/index.js:84
+msgid "전송 실패"
+msgstr "Fail to send"
+
+#: static/js/service/intent/rule/index.js:6
+msgid "룰 생성"
+msgstr "is created"
+
+#: static/js/service/intent/rule/index.js:93
+msgid "룰 수정"
+msgstr "is revised"
+
+#: static/js/service/right_pop.js:7
+msgid "닫기"
+msgstr "close"
+
+#: static/js/service/right_pop.js:8
+msgid "저장하지 않고 닫으시겠습니까?"
+msgstr "Not Saved And Close?"
+
+#: static/js/service/right_pop.js:30
+msgid "삭제하시겠습니까?"
+msgstr "delete?"
+
+#: static/js/service/right_pop.js:64
+msgid "scaling in/out 정책은 하나 이상 존재해야 합니다."
+msgstr "scaling in/out Policy is One More"
+
+#: static/js/service/right_pop.js:144 static/js/service/right_pop.js:453
+msgid "같은 이름을 가진 "
+msgstr "Same name "
+
+#: static/js/service/right_pop.js:144
+msgid "가 존재합니다."
+msgstr "already exist"
+
+#: static/js/service/right_pop.js:192
+msgid "CIDR 범위는 0~32입니다."
+msgstr "CIDR range is 0~32"
+
+#: static/js/service/right_pop.js:196 static/js/service/right_pop.js:210
+msgid "CIDR 표기법이 올바르지 않습니다."
+msgstr "CIDR is wrong."
+
+#: static/js/service/right_pop.js:200
+msgid "IP 주소의 범위는 0.0.0.0 ~ 255.255.255.255 입니다."
+msgstr "Range is 0.0.0.0 ~ 255.255.255.255 of IP address."
+
+#: static/js/service/right_pop.js:283
+msgid "이미 존재하는 CIDR입니다."
+msgstr "Already exist CIDR."
+
+#: static/js/service/right_pop.js:283
+msgid "확인 후 다시 시도해주세요."
+msgstr "Please Check, retry"
+
+#: static/js/service/right_pop.js:453
+msgid "(이)가 존재합니다."
+msgstr "is existed."
+
+#: static/js/service/right_pop.js:455
+msgid "같은 주소를 가진 네트워크가 존재합니다."
+msgstr "The same name of network is existed."
+
+#: static/js/service/right_pop.js:457
+msgid "이름이 중복되는 정책이 존재합니다."
+msgstr "The same name of policy is existed."
+
+#: static/js/service/right_pop.js:754
+msgid "오토스케일링"
+msgstr "Autoscaling"
+
+#: static/js/service/right_pop.js:1201
+msgid "가상 네트워크를 연결하세요."
+msgstr "Please connect network"
+
+#: static/js/service/service.js:11
+msgid "같은 이름의 보안장비가 존재합니다."
+msgstr "The same name of security equiment is existed."
+
+#: static/js/service/service.js:14
+msgid "보안장비 이름은 필수항목입니다."
+msgstr "The name of security equiment is neccessary."
+
+#: static/js/service/service.js:313
+msgid "주소"
+msgstr "Address"
+
+#: static/js/service/service.js:315
+msgid "게이트웨이 주소"
+msgstr "Gateway Address"
+
+#: static/js/service/service.js:324
+msgid "상세 정보 조회"
+msgstr "Check detail information"
+
+#: static/js/service/service.js:335
+msgid "스냅샷 생성"
+msgstr "Create Snapshot"
+
+#: static/js/service/service.js:343
+msgid "볼륨 연결 해제"
+msgstr "Disconnect to Volume"
+
+#: static/js/service/service.js:345
+msgid "볼륨 연결"
+msgstr "Connect to Volume"
+
+#: static/js/service/service.js:354
+msgid "볼륨 삭제"
+msgstr "Delete to Volume"
+
+#: static/js/service/service.js:361
+msgid "포트 조회"
+msgstr "Check Port"
+
+#: static/js/service/service.js:372
+msgid "서버 종료"
+msgstr "Quit the server"
+
+#: static/js/service/service.js:379
+msgid "서버 일시정지"
+msgstr "Pause the server"
+
+#: static/js/service/service.js:386
+msgid "서버 재부팅"
+msgstr "Reboot the server"
+
+#: static/js/service/service.js:393
+msgid "콘솔창 열기"
+msgstr "Open console"
+
+#: static/js/service/service.js:400
+msgid "서버 시작"
+msgstr "Start the server"
+
+#: static/js/service/service.js:408
+msgid "서버 재시작"
+msgstr "Restart the server"
+
+#: static/js/service/service.js:418
+msgid "서버 강제 재부팅"
+msgstr "Reboot the server by force"
+
+#: static/js/service/service.js:433 static/js/service/service.js:437
+msgid "정책 관리"
+msgstr "Manage the Policies"
+
+#: static/js/service/service.js:459
+msgid "인터페이스 관리"
+msgstr "Manage the Interfaces"
+
+#: static/js/service/service.js:461
+msgid "준비중입니다"
+msgstr "Coming soon."
+
+#: static/js/service/service.js:465 static/js/service/service.js:469
+msgid "라우팅 정책 설정"
+msgstr "Configurate Routing Policies"
+
+#: static/js/service/service.js:495 static/js/service/service.js:546
+msgid "오토스케일링 그룹 접기"
+msgstr "Folding the autoscaling group"
+
+#: static/js/service/service.js:503 static/js/service/service.js:554
+msgid "오토스케일링 그룹 펼치기"
+msgstr "Spread out the autoscaling group"
+
+#: static/js/service/service.js:513
+msgid "편집"
+msgstr "Edit"
+
+#: static/js/service/service.js:568 static/js/service/service.js:572
+msgid "아이콘 위치 고정 해제"
+msgstr "Remove fixing the Icon position"
+
+#: static/js/service/service.js:570 static/js/service/service.js:574
+msgid "아이콘 위치 고정"
+msgstr "Fixing the Icon position"
+
+#: static/js/service/service.js:626
+msgid "(재)시작"
+msgstr "(Re)Start"
+
+#: static/js/service/service.js:628
+msgid "재부팅"
+msgstr "Reboot"
+
+#: static/js/service/service.js:631
+msgid "종료"
+msgstr "Exit"
+
+#: static/js/service/service.js:634
+msgid "일시정지"
+msgstr "Pause"
+
+#: static/js/service/service_info_html.js:138
+msgid "입력중인 정보창이 닫혀있지 않습니다.<br/><br/>저장하시겠습니까?"
+msgstr "Current information window is opening. Will you save it?"
+
+#: static/js/service/service_info_html.js:187
+msgid "이름은 영어로 입력하세요."
+msgstr ""
+
+#: static/js/service/service_list.js:83
+msgid "서비스 수정"
+msgstr "Edit service"
+
+#: static/js/service/service_list.js:87
+msgid "서비스 토폴로지"
+msgstr "Service Topology"
+
+#: static/js/service/service_list.js:91
+msgid "서비스 일시정지"
+msgstr "Pause the Service"
+
+#: static/js/service/service_list.js:92
+msgid "서비스 재시작"
+msgstr "Restart the Service"
+
+#: static/js/service/service_list.js:93
+msgid "서비스 삭제"
+msgstr "Delete the Service"
+
+#: static/js/service/service_list.js:109
+msgid "사용자"
+msgstr "User"
+
+#: static/js/service/service_list.js:110
+msgid "설명"
+msgstr "Exaplanation"
+
+#: static/js/service/service_list.js:112
+msgid "체이닝 수"
+msgstr "Number of Chaining"
+
+#: static/js/service/service_list.js:113
+msgid "생성일"
+msgstr "Date of creation"
+
+#: static/js/service/service_list.js:114
+msgid "수정일"
+msgstr "Date of revision"
+
+#: static/js/service/service_list.js:115
+msgid "액션"
+msgstr "Action"
+
+#: static/js/service/service_list.js:169
+msgid "를 삭제하시겠습니까?"
+msgstr "delete?"
+
+#: static/js/service/service_list.js:176
+msgid "삭제 실패: "
+msgstr "Fail to delete"
+
+#: static/js/service/service_list.js:179
+msgid "삭제 요청 성공"
+msgstr "Success to the delete requirement"
+
+#: static/js/service/topology.js:588
+msgid "불러오기"
+msgstr "Call"
+
+#: static/js/service/topology.js:589
+msgid "작업중인 데이터가 있습니다. 데이터를 불러오겠습니까?"
+msgstr "Working data is existed. Will you call the data?"

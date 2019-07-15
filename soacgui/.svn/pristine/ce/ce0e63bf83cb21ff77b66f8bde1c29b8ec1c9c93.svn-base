@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load commontags %}
+{% block sub_left_menu %}
+{% include "service/sub_left_menu.html" %}
+{% endblock sub_left_menu %}
+
+
+{% block headerTitle %}
+<div class="head_d02">서비스</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">Intent 기반 서비스 생성</div>
+{% endblock headerTitle %}
+{% block header %}
+<a href="/dashboard/service/intent/rule"><div class="head_d05">Rule</div></a>
+<a href="/dashboard/service/intent/endpoint"><div class="head_d05">Endpoint</div></a>
+<div class="head_d05 click">Intent 기반 서비스 생성</div>
+<img class="all_service_bt01" id="saveBtn" src='{% static "img/dashboard/service/service_plus_bt_01.png" %}'
+     hidden alt="#">
+<div class="clear_float"></div>
+{% endblock header %}
+
+{% comment %}
+{% include "service/right_pop.html" %}
+{% endcomment %}
+
+{% block content %}
+<script src="{% static 'js/enscroll-0.6.2.min.js' %}"></script>
+<script src="{% static 'js/service/routing/index.js' %}"></script>
+<div class="right_pop" id="scrollbox" hidden style="float:right;"></div>
+<link rel="stylesheet" href="{% static 'css/direct.app.css' %}">
+<style>
+    .contents_d01 {
+        overflow-x:hidden;
+    }
+    .contents {
+        position:fixed; width:100%; height:100%;
+        padding:0;
+    }
+    .modal-content{
+        width:560px;
+    }
+    .btn.removevm{
+        background-color:#354052;
+        /*background-color:#e6603b;*/
+        color:#fff;
+        font-size:12px;
+        height:27px;
+        line-hight:27px;
+        padding:2px 12px;
+    }
+    .btn.removevm:hover{
+        background-color:#3f4a5d;
+        /*background-color:#ef6944;*/
+        color:#fff;
+    }
+    .btn.addvm{
+        font-size:12px;
+        height:27px;
+        line-hight:27px;
+        padding:2px 12px;
+    }
+    .btn.openclose{
+    /*
+        background-color:#4daf7c;
+        color:#fff;
+    */
+        font-size:12px;
+        height:27px;
+        line-hight:27px;
+        padding:2px 12px;
+    }
+    /*
+    .btn.openclose:hover{
+        background-color:#59b987;
+        color:#fff;
+    }
+    */
+    .btn.deletediv{
+        background-color:#354052;
+        color:#fff;
+        font-size:12px;
+        height:27px;
+        line-hight:27px;
+        padding:2px 12px;
+        float:right;
+    }
+    .btn.deletediv:hover{
+        background-color:#3f4a5d;
+        color:#fff;
+    }
+    .btn.service1{
+        padding: 0px 12px;
+        height: 20px;
+        width: 350px;
+        font-size:10px;
+        font-family: "Noto Sans KR";
+    }
+    .service_select{
+        margin-top:15px;
+    }
+
+    .btn.detail_info{
+        background-color:#4daf7c;
+        color:#fff;
+        font-size:12px;
+        height:27px;
+        line-hight:27px;
+        padding:2px 12px;
+    }
+    .btn.detail_info:hover{
+        background-color:#59b987;
+        color:#fff;
+    }
+    .btn.detail_info.network_interface{
+        margin:3px 0 0 92px;
+    }
+    .btn.detail_info.security{
+        margin:3px 0 0 162px;
+    }
+    .btn.detail_info.network_detail{
+        margin:3px 0 0 162px;
+    }
+    .table-bordered > tbody > tr > td{
+        border:0px;
+    }
+    .table > tbody > tr > td{
+        border-top: 0px solid #ddd;
+    }
+
+</style>
+<div style="position:fixed;width:100%;height:100%; padding:0 211px 119px 0;">
+    <div class="clear_float"></div>
+    <div id="vis" ondragstart="return false" onselectstart="return false"></div>
+</div>
+<div class="actionPopUp actionGroup02" hidden="">
+    <a href="#" class="deleteService">
+        <div>서비스 삭제</div>
+    </a>
+    <a href="#" class="pauseService">
+        <div>서비스 일시정지</div>
+    </a>
+</div>
+<link href="{% static 'css/animate.css' %}" rel="stylesheet">
+<link href="{% static 'css/d3-context-menu.css' %}" rel="stylesheet">
+<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>
+<script src="{% static 'js/d3-context-menu.js' %}"></script>
+<script src="{% static 'js/service/topology.js' %}"></script>
+<script src="{% static 'js/service/common_topology.js' %}"></script>
+<script src="{% static 'js/service/service.js' %}"></script>
+<script src="{% static 'js/service/right_pop.js' %}"></script>
+<script src="{% static 'js/service/service_info_html.js' %}"></script>
+<script>
+    $(function() {
+        enscroll("#scrollbox");
+    });
+</script>
+{% endblock content %}
+
+
+
+{% block modal %}
+<!-- Modal -->
+<div id='showServiceModal' class='modal fade' role='dialog'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <h4 class='modal-title'>타이틀</h4>
+            </div>
+            <div class='modal-body'>
+                내용
+            </div>
+            <div class='modal-footer'>
+                <button type='button' class='btn btn-default' data-dismiss='modal'>취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalServiceBody" hidden>
+
+    <div class="pop02_d02">
+        <div class="pop01_d05">이름</div>
+        <input class="pop01_text01" type="text" name="service_name">
+    </div>
+    <div class="clear_float"></div>
+    <div class="pop02_d02">
+        <div class="pop01_d05">설명</div>
+        <textarea class="pop02_area01" rows='3' name='description'></textarea>
+    </div>
+    <div class="clear_float"></div>
+    <div class="pop02_d01"></div>
+    <div class="pop02_d02">
+        <div class="pop01_d08">가상머신 생성 정책 정의</div>
+        <img id='append_policy' class="policy_plus_bt01" src='{% static "img/common/btn/policy_plus_bt_01.png" %}' alt="#">
+    </div>
+    <div class="clear_float"></div>
+    <div id="policy_for_create_vm">
+    </div>
+    {% if sync %}
+    <div class="clear_float"></div>
+    <div class="pop02_d01"></div>
+    <div class="pop02_d02">
+        <div class="pop01_d08">SOAM 연동</div>
+        <input class="pop01_text01" type="checkbox" name="SOAM_synchronize">
+    </div>
+    {% endif %}
+</div>
+<div id="modalServiceFooter" hidden>
+    <div class="pop01_d04">
+        <img id="submit" src='{% static "img/dashboard/common/ok_bt_01.png" %}' alt="#" data-dismiss='modal'>
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss='modal'>
+    </div>
+</div>
+<div id="modalResourceFooter" hidden>
+    <div class="pop01_d04">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss='modal'>
+    </div>
+</div>
+
+
+
+
+<div id="append_policy_html" hidden>
+    <div class="pop02_d02 policy_group">
+        <div class="pop02_d01"></div>
+        <div class="pop02_d02">
+            <div class="pop01_d05">이름</div>
+            <input class="pop01_text01" name="policy_name" type="text">
+        </div>
+        <div class="clear_float"></div>
+        <div class="pop02_d02">
+            <div class="pop01_d05">정책</div>
+            <select class="pop01_sel01" name="policy">
+                <option>ANTI-AFFINITY</option>
+                <option>AFFINITY</option>
+            </select>
+        </div>
+        <div class="clear_float"></div>
+        <div class="pop02_d02">
+            <div class="pop01_d05">적용 대상 가상머신</div>
+            <img class="policy_plus_bt01 openclose" onclick="removeVMinPolicy(this)"
+                 src='{% static "img/dashboard/service/machine_delete_bt_01.png" %}' alt="#">
+            <img class="policy_plus_bt01" onclick="addVMIntoPolicy(this)"
+                 src='{% static "img/dashboard/service/list_open_bt_01.png" %}' alt="#">
+            <div class="clear_float"></div>
+            <table class="pop02_tab01" cellpadding="0" border="0" cellspacing="0" hidden>
+                <thead>
+                <tr>
+                    <td class="rs_td01">가상머신 이름</td>
+                    <td class="rs_td01"></td>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <select class="pop02_area02 service_select" multiple name="server_name"></select>
+        </div>
+        <div class="clear_float"></div>
+        <div class="pop02_d02"></div>
+        <img onclick="deletePolicyHtml(this)" class="policy_plus_bt01 deletediv"
+             src='{% static "img/dashboard/common/del_bt_01.png" %}' alt="#">
+        <div class="clear_float"></div>
+    </div>
+</div>
+{% endblock modal %}

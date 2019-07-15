@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load commontags %}
+{% block header %}
+<div class="head_d05 click">호스트 집합</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<!--
+<h4>호스트 집합</h4>
+<div id="hosts_aggregates">
+    <table class="ind_tab01 index" cellpadding="0" border="0" cellspacing="0"></table>
+</div>
+
+<h4>가용성 존</h4>
+<div id="availability_zones">
+    <table class="ind_tab01 index" cellpadding="0" border="0" cellspacing="0"></table>
+</div>
+-->
+
+<div class="rs_d01" id="hosts_aggregates">
+    <div class="ind_d02">
+        <div class="ind_d05">호스트 집합</div>
+        <div class="clear_float"></div>
+    </div>
+    <button class="btn-ok" id="btnCreate">호스트집합 생성</button>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup>
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 25%;">
+            <col style="width: 20%;">
+            <col style="width: 15%;">
+        </colgroup>
+        <thead>
+        <tr>
+            <th class="name">이름</th>
+            <th class="availability_zone">가용 구역</th>
+            <th class="hosts">호스트</th>
+            <th class="metadata.availability_zone">메타데이터</th>
+            <th class="customHtml">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for aggregate in aggregates %}
+        <tr data-id="{{ aggregate.id }}" data-filter="{{ aggregate.name }}">
+            <td class="name">{{ aggregate.name }}</td>
+            <td class="availability_zone">{{ aggregate.availability_zone }}</td>
+            <td class="hosts">{% for host in aggregate.hosts %}{{ host }}{% endfor %}</td>
+            <td class="metadata.availability_zone">{{ aggregate.metadata.availability_zone }}</td>
+            <td>
+                <div class="button_group_bt02">
+                    <div class="button_group_d01 updateHostAggregates">호스트 집합 편집</div>
+                    <div class="button_group_d02 action">
+                        <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                    </div>
+                    <div class="clear_float"></div>
+                    <div class="actionGroup actionGroup01" hidden>
+                        <a href="#" class="manageHost actionGroup_a01"><div>호스트 관리</div></a>
+                        <a href="#" class="updateMetadata actionGroup_a01"><div>메타데이터 업데이트</div></a>
+                        <a href="#" class="deleteHostAggregates actionGroup_a01"><div>호스트 집합 삭제</div></a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% for value in aggregates|length|range:5 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="rs_td03 tl" colspan="5">Displaying {{ aggregates|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="rs_d01" id="availability_zones">
+    <div class="ind_d02">
+        <div class="ind_d05">가용성 존</div>
+        <div class="clear_float"></div>
+    </div>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+        <tr>
+            <th class="rs_td01 name">가용성 존 이름</th>
+            <th class="rs_td01 hosts">호스트</th>
+            <th class="rs_td01 available">사용가능</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for availabilityZone in availabilityZoneInfo %}
+        <tr data-id="{{ availabilityZone.zoneName }}" data-filter="{{ availabilityZone.zoneName }}">
+            <td class="name">{{ availabilityZone.zoneName }}</td>
+            <td class="hosts">{% for key, value in availabilityZone.hosts.items %}{{ key }}{% endfor %}</td>
+            <td class="available">{{ availabilityZone.zoneState.available }}</td>
+        </tr>
+        {% endfor %}
+        {% for value in availabilityZoneInfo|length|range:5 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="rs_td03 tl" colspan="3">Displaying {{ availabilityZoneInfo|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script src='{% static "js/admin/aggregates/index.js" %}'></script>
+<script src='{% static "js/table_button_util.js" %}'></script>
+<script>
+</script>
+
+{% endblock content%}

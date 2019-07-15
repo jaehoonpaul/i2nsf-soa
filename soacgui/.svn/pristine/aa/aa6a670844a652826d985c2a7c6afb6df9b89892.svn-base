@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="header_title_d01">{{ volume.name }}</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="volume_info">
+    <div class="ind_d02">
+        <div class="ind_d05">{{ volume.name }}</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="mypage_tab01" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th class="mypage_td01">이름</th>     <td class="mypage_td02">{{ volume.name }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">ID</th>       <td class="mypage_td02">{{ volume.id}}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">Status</th>   <td class="mypage_td02">{{ volume.status }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">크기</th>     <td class="mypage_td02">{{ volume.size }}GiB</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">유형</th>     <td class="mypage_td02">{{ volume.type }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">부팅가능</th> <td class="mypage_td02">{{ volume.bootable }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">암호화</th>   <td class="mypage_td02">{{ volume.encrypted }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">생성됨</th>   <td class="mypage_td02">{{ volume.created_at }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">연결된 곳</th><td class="mypage_td02">
+            {% for attach in volume.attachments %}
+                {{attach.device}}의 <a href="/dashboard/admin/instances/{{attach.server_id}}/detail">{{attach.server_id}}</a>
+            {% endfor %}</td>
+        </tr>
+    </table>
+
+    <!--<p class="post{{ forloop.counter }}">{{ post.text|linebreaksbr }}</p>-->
+    <!--<p>{{ volume_list }}</p>-->
+</div>
+{% endblock content %}

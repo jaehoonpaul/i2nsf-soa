@@ -1,0 +1,35 @@
+<!-- Device Registration 탭-->
+
+		<div class="rs_d01">
+			<div class="ind_d02">
+				<div class="ind_d05">Registration field</div>
+				<div class="clear_float"></div>
+			</div>
+			<div class="rs_d02">
+				<p>URL registration</p>
+				<br/>
+				<br/>
+
+				<p>URL Name</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="urlRegName"/>
+				<div class="clear_float"></div>
+
+				<br/>
+				<p>URL</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="urlRegURL"/>
+				<div class="clear_float"></div>
+
+				<br/>
+				<p>[Use comma to separate multiple URLs]</p>
+				<p>[Example: URL1.com, URL2.com]</p>
+			</div>
+		</div>
+
+<script>
+	function getUrlData(){
+		var urlReg = { "URLName" : $("#urlRegName").val(), "URL" : $("#urlRegURL").val()}
+		return urlReg;
+	}
+</script>

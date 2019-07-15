@@ -1,0 +1,314 @@
+# _*_ coding:utf-8 _*_
+from threading import Lock
+
+import pymysql
+
+from sdsecgui.tools.model import SingletonInstane
+from sdsec.settings import config, section, logger
+from sdsecgui.db.soac_query import INSERT_NSF, INSERT_CAPABILITY, INSERT_FIELD, INSERT_SECURITY_RESOURCE_GROUP, \
+    INSERT_NSF_XML, INSERT_REL_SECURITY_NSF, DELETE_SECURITY_RESOURCE_GROUP, SELECT_REL_SECURITY_NSF_BY_SECURITY_ID, \
+    DELETE_REL_SECURITY_NSF, DELETE_NSF, SELECT_SECURITY_ID_BY_NSF_NAME, SEARCH_SERVICE_TEMPLATE_KEY, \
+    SELECT_SERVICE_TEMPLATE
+
+synchronized_lock = Lock()
+def synchronized(method):
+    """
+    A decorator object that can be used to declare that execution of a particular
+    method should be done synchronous. This works by maintaining a lock object on
+    the object instance, constructed for you if you don't have one already, and
+    then acquires the lock before allowing the method to execute. This provides
+    similar semantics to Java's synchronized keyword on methods.
+    """
+    def new_synchronized_method(self, *args, **kwargs):
+        if not hasattr(self, "_auto_lock"):
+            with synchronized_lock:
+                if not hasattr(self, "_auto_lock"):
+                    self._auto_lock = Lock()
+        with self._auto_lock:
+            return method(self, *args, **kwargs)
+    return new_synchronized_method
+
+
+class DBConnector:
+    # conn = None
+    # value = None
+    # DB_IP = None
+    # DB_USER = None
+    # DB_PASS = None
+    # DB_NM = None
+    def __init__(self, db_nm=None, db_user=None, db_pass=None, db_ip=None, db_port=3306):
+        self.DB_NM = db_nm
+        self.DB_USER = db_user
+        self.DB_PASS = db_pass
+        self.DB_IP = db_ip
+        self.DB_PORT = db_port
+        self.conn = None
+        self.value = None
+
+
+    @synchronized
+    def select(self, sql, params=None):
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor(pymysql.cursors.DictCursor) as curs:
+                if params:
+                    curs.execute(sql, params)
+                else:
+                    curs.execute(sql)
+
+                self.value = curs.fetchall()
+        finally:
+            if self.conn:
+                self.conn.close()
+
+        result = []
+        for row in self.value:
+            result.append({k.lower(): v for k, v in row.iteritems()})
+        return result
+
+    def select_one(self, sql, params=None):
+        result = self.select(sql, params)
+        if len(result) == 1:
+            return result[0]
+        return None
+
+    @synchronized
+    def insert(self, sql, params):
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor(pymysql.cursors.DictCursor) as curs:
+                curs.execute(sql, params)
+                self.value = curs.fetchall()
+
+            self.conn.commit()
+        finally:
+            if self.conn:
+                self.conn.close()
+        result = []
+        for row in self.value:
+            result.append({k.lower(): v for k, v in row})
+        return result
+
+    def insert_list(self, sql, params_list):
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor(pymysql.cursors.DictCursor) as curs:
+                for params in params_list:
+                    curs.execute(sql, params)
+                    self.value = curs.fetchall()
+
+            self.conn.commit()
+        finally:
+            if self.conn:
+                self.conn.close()
+        result = []
+        for row in self.value:
+            result.append({k.lower(): v for k, v in row})
+        return result
+
+    def update(self, sql, params):
+        return self.insert(sql, params)
+
+    def delete(self, sql, params):
+        return self.insert(sql, params)
+
+    def execute(self, sql):
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor() as curs:
+                curs.execute(sql)
+
+            self.conn.commit()
+        finally:
+            if self.conn:
+                self.conn.close()
+        return True
+
+
+class SOAControlDBConnector(DBConnector, SingletonInstane):
+    def __init__(self):
+        DBConnector.__init__(self)
+        # config = ConfigParser()
+        # configPath = os.path.join(settings.BASE_DIR, 'SOAC.conf')
+        # config.read(configPath)
+        # section = 'SETTINGS'
+        # self.DEBUG_OPTION = True if config.get(section, 'LOG_LEVEL') == "DEBUG" else False
+        self.DB_NM = config.get(section, 'DB_NM')
+        self.DB_USER = config.get(section, 'DB_USER')
+        self.DB_PASS = config.get(section, 'DB_PASS')
+        self.DB_IP = config.get(section, 'DB_IP')
+        # config, xml 형식으로, DB config 파싱 해서 입력
+
+    def select_service_template_by_nsf_names(self, nsf_names):
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor(pymysql.cursors.DictCursor) as curs:
+                # security pk list 받기
+                find_security_pk_list = []  # [{"domain_key": "?", "security_id": "?"}]
+                for nsf_name in nsf_names:
+                    curs.execute(SELECT_SECURITY_ID_BY_NSF_NAME, nsf_name)
+                    self.value = curs.fetchall()
+                    for row in self.value:
+                        find_security_pk_list.append({k.lower(): v for k, v in row.iteritems()})
+                # template key, security pk 받기
+                curs.execute(SEARCH_SERVICE_TEMPLATE_KEY, len(nsf_names))
+                self.value = curs.fetchall()
+                result_template = {}  # {"?(service_template_key)": [{"domain_key": "?", "security_id": "?"}]}
+                for row in self.value:
+                    temp_template = {k.lower(): v for k, v in row.iteritems()}
+                    template_key = temp_template.get("service_template_key")
+
+                    if not result_template.get(template_key):
+                        result_template[template_key] = []
+
+                    temp_security = {
+                        "security_id": temp_template.get("security_id"),
+                        "domain_key": temp_template.get("domain_key")
+                    }
+                    result_template.get(template_key).append(temp_security)
+
+                # service template 조회
+                for template_key, security_pk_list in result_template.items():
+                    pairs = zip(security_pk_list, find_security_pk_list)
+                    logger.info("\n\n\n\n\n\n{}\n\n\n\n\n".format(pairs))
+                    for x, y in pairs:
+                        if x == y:
+                            curs.execute(SELECT_SERVICE_TEMPLATE, template_key)
+                            self.value = curs.fetchall()
+                            break
+                        else:
+                            self.value = []
+        finally:
+            if self.conn:
+                self.conn.close()
+        result = []
+        for row in self.value:
+            result.append({k.lower(): v for k, v in row.items()})
+        if len(result) == 1:
+            return result[0]
+        return result
+
+
+class SOAControlDomainDBConnector(DBConnector):
+    def __init__(self, db_nm=None, db_user=None, db_pass=None, db_ip=None, db_port=3306):
+        if not type(db_port) == int:
+            db_port = 3306
+        DBConnector.__init__(self, db_nm, db_user, db_pass, db_ip, db_port)
+        self.DB_NM = db_nm
+        self.DB_USER = db_user
+        self.DB_PASS = db_pass
+        self.DB_IP = db_ip
+        self.DB_PORT = db_port
+
+    def insert_nsf(self, nsf_params):
+        nsf_key = ""
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor(pymysql.cursors.DictCursor) as curs:
+                params = (
+                    nsf_params.get("name"),
+                    nsf_params.get("processing"),
+                    nsf_params.get("inbound"),
+                    nsf_params.get("outbound"),
+                    nsf_params.get("initiated"),
+                    nsf_params.get("user_name"),
+                    nsf_params.get("user_name")
+                )
+                curs.execute(INSERT_NSF, params)
+                self.value = curs.fetchall()
+                nsf_key = curs.lastrowid
+                for capability in nsf_params.get("capability_list"):
+                    params = (
+                        nsf_key,
+                        capability.get("name"),
+                        nsf_params.get("user_name"),
+                        nsf_params.get("user_name")
+                    )
+                    curs.execute(INSERT_CAPABILITY, params)
+                    self.value = curs.fetchall()
+                    capability_key = curs.lastrowid
+                    for field in capability.get("field_list"):
+                        params = (
+                            nsf_key,
+                            capability_key,
+                            field.get("name"),
+                            nsf_params.get("user_name"),
+                            nsf_params.get("user_name")
+                        )
+                        curs.execute(INSERT_FIELD, params)
+                        self.value = curs.fetchall()
+
+            self.conn.commit()
+        finally:
+            if self.conn:
+                self.conn.close()
+        result = []
+        for row in self.value:
+            result.append({k.lower(): v for k, v in row})
+        return result, nsf_key
+
+    def insert_nsf_xml(self, security_group_params, nsf_params):
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor(pymysql.cursors.DictCursor) as curs:
+                curs.execute(INSERT_SECURITY_RESOURCE_GROUP, security_group_params)
+                self.value = curs.fetchall()
+
+                curs.execute(INSERT_NSF_XML, nsf_params)
+                self.value = curs.fetchall()
+                nsf_key = curs.lastrowid
+
+                params = (
+                    security_group_params[1],
+                    security_group_params[0],
+                    nsf_key
+                )
+                curs.execute(INSERT_REL_SECURITY_NSF, params)
+                self.value = curs.fetchall()
+            self.conn.commit()
+        finally:
+            if self.conn:
+                self.conn.close()
+        result = []
+        for row in self.value:
+            result.append({k.lower(): v for k, v in row})
+        return result
+
+    def delete_security_resource_group(self, param):
+        try:
+            self.conn = pymysql.connect(host=self.DB_IP, user=self.DB_USER, password=self.DB_PASS, db=self.DB_NM,
+                                        port=self.DB_PORT, charset='utf8')
+            with self.conn.cursor(pymysql.cursors.DictCursor) as curs:
+                curs.execute(SELECT_REL_SECURITY_NSF_BY_SECURITY_ID, (param.get("domain_name"), param.get("security_id")))
+                self.value = curs.fetchall()
+
+                for row in self.value:
+                    rel_security_nsf = {k.lower(): v for k, v in row.iteritems()}
+                    delete_rel_param = (
+                        rel_security_nsf.get("domain_key"),
+                        rel_security_nsf.get("security_id"),
+                        rel_security_nsf.get("nsf_key")
+                    )
+                    curs.execute(DELETE_REL_SECURITY_NSF, delete_rel_param)
+                    self.value = curs.fetchall()
+                    curs.execute(DELETE_NSF, rel_security_nsf.get("nsf_key"))
+                    self.value = curs.fetchall()
+
+                curs.execute(DELETE_SECURITY_RESOURCE_GROUP, param.get("security_id"))
+                self.value = curs.fetchall()
+
+            self.conn.commit()
+        finally:
+            if self.conn:
+                self.conn.close()
+        result = []
+        for row in self.value:
+            result.append({k.lower(): v for k, v in row})
+        return result

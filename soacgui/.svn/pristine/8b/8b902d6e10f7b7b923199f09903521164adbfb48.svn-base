@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ETRI SecCurator</title>
+    {% load staticfiles %}
+    <link href='{% static "lib/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css"/>
+    <link href='{% static "lib/lobibox/dist/css/lobibox.min.css" %}' rel="stylesheet" type="text/css"/>
+    <link href='{% static "css/popup.css" %}' rel="stylesheet" type="text/css"/>
+    <link href='{% static "css/style.css" %}' rel="stylesheet" type="text/css"/>
+    <script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+
+    <script src='{% static "lib/bootstrap/3.3.7/js/bootstrap.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'lib/lobibox/dist/js/notifications.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/tinymce/jquery.tinymce.js' %}"></script>
+    <script src='{% static "js/action_group.js" %}'></script>
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/domain/index.js' %}"></script>
+</head>
+
+<body>
+<div class="contents">
+    <div class="rs_d01">
+        <div class="ind_d02">
+            <div class="ind_d05">도메인</div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="clear_float"></div>
+        <div>
+            <img class="all_check_bt01" id="create_domain" src='{% static "img/dashboard/domain_manage/domain_plus_bt_01.png" %}'>
+        <div class="clear_float"></div>
+        </div>
+        <div class="clear_float"></div>
+        <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+            <colgroup>
+                <col style="width: 4%;">
+                <col style="width: 10%;">
+                <col style="width: 19%;">
+                <col style="width: 19%;">
+                <col style="width: 10%;">
+                <col style="width: 7%;">
+                <col style="width: 10%;">
+                <col style="width: 8%;">
+                <col style="width: 13%;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>순서</th>
+                <th>도메인 명</th>
+                <th>인증URL</th>
+                <th>별칭</th>
+                <th>DB IP</th>
+                <th>DB PORT</th>
+                <th>DB 관리자 계정</th>
+                <th>DB 비밀번호</th>
+                <th>액션</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for domain in domains %}
+            <tr class="domain_row" data-domain_key="{{ domain.domain_key }}" data-seq="{{ domain.order_num }}">
+                <td class="tc">{{ domain.order_num }}</td>
+                <td class="tc name">{{ domain.domain_name }}</td>
+                <td class="tc">{{ domain.auth_url }}</td>
+                <td class="tc">{{ domain.description }}</td>
+                <td class="tc">{{ domain.db_ip }}</td>
+                <td class="tc">{{ domain.db_port }}</td>
+                <td class="tc">{{ domain.db_user }}</td>
+                <td class="tc">*******</td>
+                <td class="tc">
+                    <div class="button_group_d01 update_domain">도메인 수정</div>
+                    <div class="button_group_d02 action">
+                        <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                    </div>
+                    <div class="clear_float"></div>
+                    <div class="actionGroup actionGroup01" hidden>
+                        <a href="#" class="db_set actionGroup_a01"><div>DB 생성</div></a>
+                        <a href="#" class="up_domain actionGroup_a01"><div>순서 △</div></a>
+                        <a href="#" class="down_domain actionGroup_a01"><div>순서 ▽</div></a>
+                        <a href="#" class="delete_domain actionGroup_a01"><div>도메인 삭제</div></a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if domains.length < 5 %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id='commonModal' class='modal fade' role='dialog' data-backdrop="static" style="text-align:center;"></div>
+<div id='modal' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center;">
+    <div class="modal_pop_d01 modal-container" style="width: 800px;">
+        <div class="ind_d02 modal_header">
+            <div class="ind_d05 modal-title"></div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="modal-body" style="background-color: #fff; text-align: left;"></div>
+        <div class="modal-footer"></div>
+    </div>
+</div>
+
+<div id='confirm_modal' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center;">
+    <div class="modal_pop_d01 modal-container" style="width: 600px;">
+        <div class="ind_d02 modal_header">
+            <div class="ind_d05 modal-title"></div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop02_d01"></div>
+            <div class="pop_d03">
+                <img class="pop_plus_bt_img01" src='{% static "img/dashboard/common/ok_bt_01.png" %}' alt="#"
+                     id="confirm">
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#"
+                     data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<style>
+    input {
+        width:95%;
+    }
+</style>
+</html>

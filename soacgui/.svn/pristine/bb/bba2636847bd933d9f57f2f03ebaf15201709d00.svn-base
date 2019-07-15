@@ -1,0 +1,69 @@
+.dd_group {
+    cursor: pointer;
+    float: right;
+}
+
+.dd_group>.dd_btn {
+    color: #fff;
+    border-radius:3px;
+    font-size:13px;
+    background-color: #23adaf;
+    border: 1px solid #1b9395;
+    padding: 5px 10px;
+    display:inline-block;
+    height:25px;
+}
+
+.dd_group>.dd_btn:active {
+    background-color:#229fa1;
+}
+
+.dd_group>.dd_btn>.roles_display {
+    display: inline-block;
+    max-width: 125px;
+    line-height: 1;
+    padding-right: 6px;
+    white-space: nowrap;
+}
+
+.dd_group>.dd_menu {
+    border:1px solid #ccc;
+    position:absolute;
+    background-color:white;
+    border-radius:3px;
+    text-align:left;
+}
+
+.dd_group>.dd_menu>.dd_menu_btn {
+    font-size:13px;
+    display:block;
+    width:100%;
+    padding:7px 10px;
+    height:25px;
+    color:#333;
+    line-height:10px;
+}
+/*.dd_group>.dd_menu>.dd_menu_btn i {
+    display:none;
+}
+.dd_group>.dd_menu>.dd_menu_btn.selected i {
+    display:inline-block;
+}*/
+
+.dd_group>.dd_menu>.dd_menu_btn:hover {
+    background-color:#f7f7f7;
+    text-decoration:none;
+}
+
+.roles_display {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn {
+    font-weight: normal;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+    line-height: 1.42857;
+}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load commontags %}
+{% load staticfiles %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">Flavor</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<!--
+<div class="header_title_d01">Flavor</div>
+<div>
+    <a href="#"><div class="header_title_d04_click tab service_info">Flavor</div></a>
+</div>
+-->
+<div class="head_d05 click">Flavor</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="flavors">
+    <div class="ind_d02">
+        <div class="ind_d05">Flavor</div>
+        <div class="clear_float"></div>
+    </div>
+    <button class="btn-ok" id="btnCreate">Flavor 생성</button>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Flavor 이름</th>
+            <th>VCPUs</th>
+            <th>RAM</th>
+            <th>Root 디스크</th>
+            <th>Ephemeral 디스크</th>
+            <th>Swap 디스크</th>
+            <th>RX/TX 요인</th>
+            <th>ID</th>
+            <th>공용</th>
+            <th>메타데이터</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for flavor in flavors%}
+            <tr data-id="{{ flavor.id }}">
+                <td class="name">{{ flavor.name }}</td>
+                <td>{{ flavor.vcpus }}</td>
+                <td>{{ flavor.ram }}MB</td>
+                <td>{{ flavor.disk }}GB</td>
+                <td>{% get_dict flavor "OS-FLV-EXT-DATA:ephemeral" %}GB</td>
+                <td>{{ flavor.swap|default:"0" }}MB</td>
+                <td>{{ flavor.rxtx_factor }}</td>
+                <td>{{ flavor.id }}</td>
+                <td>{% get_dict flavor "os-flavor-access:is_public" as public %}{% if public %}예{% else %}아니오{% endif %}</td>
+                <td>&nbsp;</td>
+                <td>
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 btnUpdate">Flavor 편집</div>
+                        <div class="button_group_d02 action">
+                            <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                        </div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="btnDelete actionGroup_a01"><div>Flavor 삭제</div></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in flavors|length|range:15 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        <tfoot>
+            <tr><td colspan="11" class="rs_td03 tl">Displaying {{ flavors|length }} item</td></tr>
+        </tfoot>
+        </tbody>
+    </table>
+</div>
+
+<script src="{% static 'js/admin/flavors/index.js' %}"></script>
+<script src="{% static 'js/table_button_util.js' %}"></script>
+
+{% endblock content %}

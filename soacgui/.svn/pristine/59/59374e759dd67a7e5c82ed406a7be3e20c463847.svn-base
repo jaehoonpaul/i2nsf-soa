@@ -1,0 +1,429 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% block sub_left_menu %}
+{% include "service/sub_left_menu.html" %}
+{% endblock sub_left_menu %}
+
+
+{% block headerTitle %}
+<div class="head_d02">서비스</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">서비스 조회</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03" id="service_name">-</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">서비스 체인 추가</div>
+{% endblock headerTitle %}
+
+{% block header %}
+<a href="#" id="serviceTab"><div class="head_d05">서비스 토폴로지</div></a>
+<a href="#" id="chainTab"><div class="head_d05 click">서비스 체이닝</div></a>
+<a href="#" id="telemeterTab"><div class="head_d05">서비스 모니터링</div></a>
+<img class="all_service_bt01" id="cancelBtn" src='{% static "img/common/btn/cancel_bt_01.png" %}' alt="#">
+<img class="all_service_bt01 pointer" id="createSFC" src='{% static "img/common/btn/service_chain_new_bt_01.png" %}' alt="#">
+<img class="all_service_bt01 pointer" id="showTopology" src='{% static "img/common/btn/service_chain_new_bt_01.png" %}' alt="#">
+{% endblock header %}
+
+{% block content %}
+
+<div class="right_pop" id="scrollbox" hidden style="float:right;">
+{% include "service/right_pop.html" %}
+</div>
+
+<link rel="stylesheet" href="{% static 'css/direct.app.css' %}">
+<style>
+    /*.modal-container{
+        width:560px;
+    }*/
+    .contents {
+        width:100%;
+    }
+</style>
+
+<div id='showTopologyModal' class='fade' role='dialog' style="height:0;">
+    <div class='modal_pop_d01 modal-container' style="width: 1000px;">
+        <div class='ind_d02 modal-header'>
+            <!--<button type='button' class='close' data-dismiss='modal'>&times;</button>-->
+            <div class='ind_d05 modal-title'>Service Chaining Object 생성</div>
+        </div>
+        <div class='modal-body'>
+            <div id="visTopology" ondragstart="return false" onselectstart="return false"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop_d03">
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div id="vis" ondragstart="return false" onselectstart="return false"></div>
+<!--<div id="node_info">
+    <table class="ind_tab01" id="nameTable">
+    </table>
+    <table class="ind_tab01" id="infoTable">
+    </table>
+</div>-->
+<!--<input type="date" id="start"> ~ <input type="date" id="end"> <input type="button" id="submitBtn">-->
+
+<div style="display: none;">
+    <div id="fc_tmpl" class="chaining_pop02_d05">
+        <div class="chaining_pop02_d03 pop_ip"></div>
+        <!--<div class="chaining_pop02_d04 pop_id"></div>-->
+        <div class="chaining_pop02_d07 btn_egress">SOURCE</div>
+        <div class="clear_float"></div>
+    </div>
+</div>
+
+<div style="display: none;">
+    <div id="sf_tmpl" class="chaining_pop02_d05">
+        <div class="chaining_pop02_d03 pop_ip"></div>
+        <!--<div class="chaining_pop02_d04 pop_id"></div>-->
+        <div class="chaining_pop02_d07 btn_egress">EGRESS</div>
+        <div class="chaining_pop02_d07 btn_ingress">INGRESS</div>
+        <div class="clear_float"></div>
+    </div>
+</div>
+
+<div id="sfg_desc_tmpl" style="display: none;">
+    <div class="chaining_pop01_d05 sfgname"></div>
+    <div class="chaining_pop01_d03">
+        <div class="chaining_pop01_d06">
+            이름
+        </div>
+        <input class="chaining_pop01_text01 sfgname_input" type="text" required>
+        <div class="clear_float"></div>
+    </div>
+    <div class="chaining_pop01_d03">
+        <div class="chaining_pop01_d06">
+            설명
+        </div>
+        <input class="chaining_pop01_text01 sfgdesc_input" type="text">
+        <div class="clear_float"></div>
+    </div>
+</div>
+
+<span style="display: none;">
+    <input id="remove_tmpl" class="btn btn-primary btn-xs btn_remove" type="button" value="REMOVE"/>
+</span>
+
+<div id="fc-popover-content" class="chaining_pop02_d01 hide">
+    <div class="chaining_pop02_d08 btn_remove"><i class="icon-trash"></i>삭제</div>
+    <div class="chaining_pop02_d02 pop_name">vDLP_Server</div>
+
+    <!--<div class="chaining_pop02_d05">-->
+        <!--<div class="chaining_pop02_d03">ID</div>-->
+        <!--<div class="chaining_pop02_d04 pop_id">205e5b52-ec32-4356-a8oc-a51141736835</div>-->
+        <!--<div class="clear_float"></div>-->
+    <!--</div>-->
+    <!--<div class="chaining_pop02_d05">-->
+        <!--<div class="chaining_pop02_d03">STATUS</div>-->
+        <!--<div class="chaining_pop02_d04">-->
+            <!--<div class="pop_status_icon green_icon"></div>-->
+            <!--<span class="pop_status">Active</span></div>-->
+        <!--<div class="clear_float"></div>-->
+    <!--</div>-->
+    <div class="chaining_pop02_d06"></div>
+    <!--<div class="chaining_pop02_d02">IP Addresses</div>-->
+    <div class="address_list">
+        <!--<div class="chaining_pop02_d05">-->
+        <!--<div class="chaining_pop02_d03 pop_ip">00000000-000000-000000-0000000</div>-->
+        <!--<div class="chaining_pop02_d07 btn_egress">EGRESS</div>-->
+        <!--<div class="chaining_pop02_d07 btn_ingress">INGRESS</div>-->
+            <!--<div class="clear_float"></div>-->
+    <!--</div>-->
+            <!--<div class="chaining_pop02_d05">-->
+        <!--<div class="chaining_pop02_d03 pop_ip">192.168.0.1</div>-->
+        <!--<div class="chaining_pop02_d07 btn_egress">EGRESS</div>-->
+                <!--<div class="chaining_pop02_d07 btn_ingress">INGRESS</div>-->
+                <!--<div class="clear_float"></div>-->
+    <!--</div>-->
+
+    </div>
+</div>
+
+<div id="sf-popover-content" class="hide">
+    <div class="chaining_pop02_d08 btn_remove"><i class="icon-trash"></i>삭제</div>
+    <div class="chaining_pop02_d02 pop_name">vDLP_Server</div>
+    <!--<div class="chaining_pop02_d05">-->
+        <!--<div class="chaining_pop02_d03">ID</div>-->
+        <!--<div class="chaining_pop02_d04 pop_id">205e5b52-ec32-4356-a8oc-a51141736835</div>-->
+        <!--<div class="clear_float"></div>-->
+    <!--</div>-->
+    <!--<div class="chaining_pop02_d05">-->
+        <!--<div class="chaining_pop02_d03">STATUS</div>-->
+        <!--<div class="chaining_pop02_d04">-->
+            <!--<div class="pop_status_icon green_icon"></div>-->
+            <!--<span class="pop_status">Active</span></div>-->
+        <!--<div class="clear_float"></div>-->
+    <!--</div>-->
+    <div class="chaining_pop02_d06"></div>
+    <!--<div class="chaining_pop02_d02">IP Addresses</div>-->
+    <div class="address_list">
+    </div>
+</div>
+
+<!-- Modal -->
+<div id='showFcModal' class='modal fade' role='dialog'>
+    <div class='modal_pop_d01 modal-container' style="width: 505px;">
+        <div class='ind_d02 modal-header'>
+            <!--<button type='button' class='close' data-dismiss='modal'>&times;</button>-->
+            <div class='ind_d05 modal-title'>Flow Classifier 정의</div>
+            <div class="clear_float"></div>
+        </div>
+        <div class='modal-body'>
+            <div class="chaining_pop01_d01">
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        이름
+                    </div>
+                    <input id="fc_name" class="chaining_pop01_text01" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        설명
+                    </div>
+                    <input id="fc_desc" class="chaining_pop01_text01" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        프로토콜
+                    </div>
+                    <input id="fc_protocol" class="chaining_pop01_text01" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        IP버전
+                    </div>
+                    <input id="fc_ip_version" class="chaining_pop01_text01" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        출발지 포트 범위
+                    </div>
+                    <input id="fc_src_port_min" class="chaining_pop01_text02" type="text" placeholder="Min">
+                    <input id="fc_src_port_max" class="chaining_pop01_text03" type="text" placeholder="Max">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        목적지 포트 범위
+                    </div>
+                    <input id="fc_dst_port_min" class="chaining_pop01_text02" type="text" placeholder="Min">
+                    <input id="fc_dst_port_max" class="chaining_pop01_text03" type="text" placeholder="Max">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        출발지 IP prefix 또는 서브넷
+                    </div>
+                    <div class="clear_float"></div>
+                    <input id="fc_src_ip_prefix" class="chaining_pop01_text04" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        목적지 IP prefix 또는 서브넷
+                    </div>
+                    <div class="clear_float"></div>
+                    <input id="fc_dst_ip_prefix" class="chaining_pop01_text04" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        출발지 가상 네트워크 포트 이름 또는 ID (neutron port)
+                    </div>
+                    <div class="clear_float"></div>
+                    <input id="fc_logical_src_port" class="chaining_pop01_text04" type="text" readonly>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        목적지 가상 네트워크 포트 이름 또는 ID (neutron port)
+                    </div>
+                    <div class="clear_float"></div>
+                    <input id="fc_logical_dst_port" class="chaining_pop01_text04" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02" style="color:red;">
+                    ※주의 - 출발지/목적지의 포트범위 또는 서브넷 정보(5-tuple) 중 하나는 반드시 다른 flow classifier와 구분되어야 합니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop_d03">
+                <!--<div class="chaining_pop01_d04">-->
+                <img id="fc_confirm" class="pop_plus_bt_img01" src='{% static "img/dashboard/common/ok_bt_01.png" %}' alt="#" data-dismiss='modal'>
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss='modal'>
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id='showSfModal' class='modal fade' role='dialog'>
+    <div class='modal_pop_d01 modal-container' style="width: 560px;">
+        <div class='ind_d02 modal-header'>
+            <!--<button type='button' class='close' data-dismiss='modal'>&times;</button>-->
+            <div class='ind_d05 modal-title'>Service Function Group 정의</div>
+        </div>
+        <div class='modal-body'>
+            <div class="chaining_pop01_d01">
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        이름
+                    </div>
+                    <input id="sf_name" class="chaining_pop01_text01" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d02">
+                        설명
+                    </div>
+                    <input id="sf_desc" class="chaining_pop01_text01" type="text">
+                    <div class="clear_float"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop02_d01"></div>
+            <div class="pop_d03">
+                <img id="sf_confirm" class="pop_plus_bt_img01" src='{% static "img/dashboard/common/ok_bt_01.png" %}' alt="#" data-dismiss='modal'>
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id='showSFCModal' class='modal fade' role='dialog'>
+    <div class='modal_pop_d01 modal-container' style="width: 505px;">
+        <div class='ind_d02 modal-header'>
+            <!--<button type='button' class='close' data-dismiss='modal'>&times;</button>-->
+            <div class='ind_d05 modal-title'>Service Function Chaining 생성</div>
+        </div>
+        <div class='modal-body'>
+            <div class="chaining_pop01_d01">
+                <div class="chaining_pop01_d05"><img class="chaining_br_img" src="/static/img/common/br_img_03.png" alt="#"> 서비스체이닝</div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d06">
+                        이름
+                    </div>
+                    <input id="sfc_name" class="chaining_pop01_text01" type="text" required>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop01_d03">
+                    <div class="chaining_pop01_d06">
+                        설명
+                    </div>
+                    <input id="sfc_desc" class="chaining_pop01_text01" type="text">
+                    <div class="clear_float"></div>
+                </div>
+                <div class="chaining_pop02_d06" style="margin:20px 0 20px 0;"></div>
+                <div id="sfg_desc_list">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop02_d01"></div>
+            <div class="pop_d03">
+                <img id="confirmSFC" class="pop_plus_bt_img01" src='{% static "img/dashboard/common/ok_bt_01.png" %}' alt="#" data-dismiss='modal'>
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<script src="{% static 'js/customdirect/js/partitions.js' %}"></script>-->
+<!--<script src="{% static 'js/customdirect/js/partitions_index.js' %}"></script>-->
+<link href="{% static 'css/d3-context-menu.css' %}" rel="stylesheet">
+<link href="{% static 'lib/d3/button/button.css' %}" rel="stylesheet">
+<!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
+<link rel="stylesheet" href="{% static 'css/chain.css' %}">
+
+<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>
+	<!--<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+<script src="{% static 'js/d3-context-menu.js' %}"></script>
+<script src="{% static 'lib/d3/button/button.js' %}"></script>
+
+<script src="{% static 'js/service/interact.min.js' %}"></script>
+<script src="{% static 'js/service/create_chaining.js' %}"></script>
+<script src="{% static 'js/service/chain.js' %}"></script>
+<script>
+var serviceDetailFromPost;
+    $(function(){
+        var urlStr = $(location).attr('pathname');
+        var match = new RegExp("/dashboard/service/([\\w-]+)/.+").exec(urlStr);
+        var service_id = match[1];
+        $("#serviceTab").attr("href", "/dashboard/service/" +service_id + "/detail");
+        $("#chainTab").attr("href", "/dashboard/service/" +service_id + "/chaining");
+        $("#telemeterTab").attr("href", "/dashboard/telemeter/" +service_id + "/detail");
+        $("#routingTab").attr("href", "/dashboard/service/" +service_id + "/routing");
+
+        /*$("#cancelBtn").on("click", function() {
+            location.replace("/dashboard/service/" +service_id + "/chaining");
+        });*/   //수정전
+        $("#cancelBtn").click(function() {
+            // U.alert({
+            //     title : "취소",
+            //     message : "작업중인 데이터를 전부 지우고 리스트 페이지로 이동하시겠습니까?",
+            //     result : function(result) {
+            //         if(result) {
+            //             deleteChainingCookie();
+            //             location.replace("/dashboard/service/" +service_id + "/chaining");
+            //         }
+            //     }
+            // });
+            U.confirm({
+                title:"취소",
+                message:"작업중인 데이터를 전부 지우고<br/><br/> 리스트 페이지로 이동하시겠습니까?",
+                func:function() {
+                    deleteChainingCookie();
+                    location.replace("/dashboard/service/" +service_id + "/chaining");
+                }
+            });
+        });//수정후
+
+        {% if service_detail %}
+            serviceDetailFromPost = {% autoescape off %}{{ service_detail }}{% endautoescape %};
+            $('#chainTab').removeAttr("href");
+            $("#chainTab").click(function(){postMove("/dashboard/service/" +service_id + "/chaining/", JSON.stringify(serviceDetailFromPost))});
+            $("#cancelBtn").unbind('click');
+            $("#cancelBtn").click(function(){
+                // U.alert({
+                //     title : "취소",
+                //     message : "작업중인 데이터를 전부 지우고 리스트 페이지로 이동하시겠습니까?",
+                //     result : function(result) {
+                //         if(result) {
+                //             deleteChainingCookie();
+                //             postMove("/dashboard/service/" +service_id + "/chaining/", JSON.stringify(serviceDetailFromPost));
+                //         }
+                //     }
+                // });
+                U.confirm({
+                    title:"취소",
+                    message:"작업중인 데이터를 전부 지우고 리스트 페이지로 이동하시겠습니까?",
+                    func:function() {
+                        deleteChainingCookie();
+                        postMove("/dashboard/service/" +service_id + "/chaining/", JSON.stringify(serviceDetailFromPost));
+                    }
+                });
+            });
+            getService(serviceDetailFromPost);
+            $("#chainTab").css("cursor", "pointer");
+        {% else %}
+            getServiceAjax();
+        {% endif %}
+    });
+</script>
+{% endblock content %}

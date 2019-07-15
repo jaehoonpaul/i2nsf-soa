@@ -1,0 +1,38 @@
+<!-- Device Registration 탭-->
+
+		<div class="rs_d01">
+			<div class="ind_d02">
+				<div class="ind_d05">Registration field</div>
+				<div class="clear_float"></div>
+			</div>
+			<div class="rs_d02">
+				<p>Device registration</p>
+				<br/>
+				<br/>
+
+				<p>Device Name</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="deviceRegUserName"/>
+				<div class="clear_float"></div>
+
+				<br/>
+				<p>Range of user IP</p>
+				<p>--Start IP address</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="deviceRegStartIp"/>
+				<div class="clear_float"></div>
+
+				<br/>
+				<p>--End IP address</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="deviceRegEndIp"/>
+				<div class="clear_float"></div>
+
+			</div>
+		</div>
+<script>
+	function getDeviceData(){
+		var deviceReg = { "deviceName" : $("#deviceRegUserName").val(), "startIP" : $("#deviceRegStartIp").val(), "endIP" : $("#deviceRegEndIp").val()}
+		return deviceReg;
+	}
+</script>

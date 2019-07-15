@@ -1,0 +1,44 @@
+{% load staticfiles %}
+
+{% for security in security_resources %}
+<div class="security_card_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">
+            <img class="security_card_img01" src="/static/img/common/title_{{ security.data }}_icon_01.png">
+            {{ security.security_name }}
+        </div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="security_card_d02" style="background: rgba(0, 0, 0, 0) url('{{}}') no-repeat scroll center center / cover ;"></div>
+    <table class="security_card_tab01" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <th class="security_card_td01"><img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">버전</th>
+                <td class="security_card_td02">{{ security. }}</td>
+            </tr>
+            <tr>
+                <th class="security_card_td01"><img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">제조사</th>
+                <td class="security_card_td02"><img src="/files/download/그림1.jpg" style="height:15px;"></td>
+            </tr>
+            <tr>
+                <th class="security_card_td01"><img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">유형</th>
+                <td class="security_card_td02">{% for security_type in security.data.security_types %}{% if forloop.counter0 > 0 %},{% endif %}
+                    {{ security_type.security_type }}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th class="security_card_td01"><img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">등록일</th>
+                <td class="security_card_td02">{{ security. }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="clear_float"></div>
+    <div class="security_card_d03">
+        <input class="securityId" type="hidden">
+        <img src="/static/img/common/btn/info_bt_01.png" class="infoBtn" alt="#">
+        <img src="/static/img/common/btn/edit_bt_01.png" class="editBtn" alt="#">
+        <img src="/static/img/common/btn/del_bt_01.png" class="delBtn" alt="#">
+    </div>
+</div>
+{% endfor %}

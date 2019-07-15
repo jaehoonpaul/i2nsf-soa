@@ -1,0 +1,127 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="p50">
+    <div class="tab-area" style="height: 440px;">
+        {% if network.id is None %}
+        <div class="rs_d04 tab-btn click">네트워크</div>
+        <div class="rs_d04 tab-btn with-subnet">서브넷</div>
+        <div class="rs_d04 tab-btn with-subnet">서브넷 세부 정보</div>
+        {% endif %}
+        <div class="clear_float"></div>
+
+        <div class="tab-body" style="width: 100%;">
+            <table class="pop-tab-01" style="width: 700px;">
+                {% if network.id %}
+                <tr id="areaNetworkId">
+                    <th class="pop_input_td01"><label for="inputNetworkId">ID</label></th>
+                    <td class="pop_input_td02"><input type="text" name="id" id="inputNetworkId" value="{{ network.id }}" disabled/></td>
+                </tr>
+                {% endif %}
+                <tr id="areaNetworkName">
+                    <th class="pop_input_td01"><label for="inputNetworkName">네트워크 이름</label></th>
+                    <td class="pop_input_td02"><input type="text" name="name" id="inputNetworkName" value="{{ network.name }}"/></td>
+                </tr>
+                <tr id="areaNetworkAdmin">
+                    <th class="pop_input_td01"><label for="inputNetworkAdmin">관리자 상태</label></th>
+                    <td class="pop_input_td02">
+                        <select name="admin" id="inputNetworkAdmin">
+                            <option value="1">UP</option>
+                            <option value="0">DOWN</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="areaNetworkShare">
+                    <th class="pop_input_td01"><label for="inputNetworkShare">공유</label></th>
+                    <td class="pop_input_td02"><input type="checkbox" name="share" id="inputNetworkShare"{% if network.shared %} checked{% endif %}/></td>
+                </tr>
+                {% if network.id %}
+                <tr id="areaNetworkExternalNetwork">
+                    <th class="pop_input_td01"><label for="inputNetworkExternalNetwork">외부 네트워크</label></th>
+                    <td class="pop_input_td02"><input type="checkbox" name="external_network" id="inputNetworkExternalNetwork"{% get_dict network "router:external" as router_external %}{% if router_external %} checked{% endif %}/>
+                    </td>
+                </tr>
+                {% else %}
+                <tr id="areaNetworkUseSubnet">
+                    <th class="pop_input_td01"><label for="inputNetworkUseSubnet">서브넷 생성</label></th>
+                    <td class="pop_input_td02"><input type="checkbox" name="useSubnet" id="inputNetworkUseSubnet" checked/>
+                    </td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+
+        {% if network.id is None %}
+        <div class="tab-body" style="width: 100%;">
+            <table class="pop-tab-01" style="width: 700px;">
+                <tr id="areaNetworkSubnetName">
+                    <th class="pop_input_td01"><label for="inputNetworkSubnetName">서브넷 이름</label></th>
+                    <td class="pop_input_td02"><input type="text" name="subnetName" id="inputNetworkSubnetName"/></td>
+                </tr>
+                <tr id="areaNetworkAddress">
+                    <th class="pop_input_td01"><label for="inputNetworkAddress">네트워크 주소</label></th>
+                    <td class="pop_input_td02"><input type="text" name="address" id="inputNetworkAddress"/></td>
+                </tr>
+                <tr id="areaNetworkIpv">
+                    <th class="pop_input_td01"><label for="inputNetworkIpv">IP 버전</label></th>
+                    <td class="pop_input_td02">
+                        <select name="ipv" id="inputNetworkIpv">
+                            <option value="4">IPv4</option>
+                            <option value="6">IPv6</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="areaNetworkGateway">
+                    <th class="pop_input_td01"><label for="inputNetworkGateway">게이트웨이 IP</label></th>
+                    <td class="pop_input_td02"><input type="text" name="gateway" id="inputNetworkGateway"/></td>
+                </tr>
+                <tr id="areaNetworkNoGateway">
+                    <th class="pop_input_td01"><label for="inputNetworkNoGateway">게이트웨이 비활성</label></th>
+                    <td class="pop_input_td02"><input type="checkbox" name="useGateway" id="inputNetworkNoGateway"/></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tab-body" style="width: 100%;">
+            <table class="pop-tab-01" style="width: 700px;">
+                <tr id="areaNetworkUseDhcp">
+                    <th class="pop_input_td01"><label for="inputNetworkUseDhcp">DHCP 사용</label></th>
+                    <td class="pop_input_td02"><input type="checkbox" name="useDhcp" id="inputNetworkUseDhcp" checked/>
+                    </td>
+                </tr>
+                <tr id="areaNetworkPool">
+                    <th class="pop_input_td01"><label for="inputNetworkPool">풀 할당</label></th>
+                    <td class="pop_input_td02">
+                        <textarea name="pool" id="inputNetworkPool"></textarea>
+                    </td>
+                </tr>
+                <tr id="areaNetworkDns">
+                    <th class="pop_input_td01"><label for="inputNetworkDns">DNS 네임 서버</label></th>
+                    <td class="pop_input_td02">
+                        <textarea name="dns" id="inputNetworkDns"></textarea>
+                    </td>
+                </tr>
+                <tr id="areaNetworkHost">
+                    <th class="pop_input_td01"><label for="inputNetworkHost">호스트 라우터</label></th>
+                    <td class="pop_input_td02">
+                        <textarea name="host" id="inputNetworkHost"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+    <div class="clear_float"></div>
+    <div class="pop_d03">
+        {% if network.id is None %}
+        <button id="tab-prev-btn" class="btn-normal">&lt; 이전</button>
+        <button id="tab-next-btn" class="btn-normal">다음 &gt;</button>
+        {% endif %}
+        <button id="createNetworkSubmit" class="btn-confirm" hidden >확인</button>
+        <button id="createNetworkCancel" class="btn-cancel" hidden data-dismiss="modal">취소</button>
+    </div>
+{% endblock modal_footer %}

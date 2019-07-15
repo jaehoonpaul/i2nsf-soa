@@ -1,0 +1,97 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+{% load commontags %}
+{% block modal_body %}
+<div class="p50">
+    <div class="tab-area">
+        {% if aggregate %}
+        <input type="hidden" name="id" id="inputId" value="{{ aggregate.id }}"/>
+        {% else %}
+        <div class="rs_d04 tab-btn click">호스트 집합 정보</div>
+        <div class="rs_d04 tab-btn">호스트 관리</div>
+        {% endif %}
+        <div class="clear_float"></div>
+
+        {% if not aggregate %}
+        <div class="tab-body" >
+            {% endif %}
+            {% if action != "host_manage" %}
+            <table class="pop-tab-01" style="width: 700px;">
+                <tr id="areaName">
+                    <th class="pop_input_td01"><label for="inputName">이름</label></th>
+                    <td class="pop_input_td02"><input type="text" name="name" id="inputName" value="{{ aggregate.name }}"/></td>
+                </tr>
+                <tr id="areaAdmin">
+                    <th class="pop_input_td01"><label for="inputAvailability">가용 구역</label></th>
+                    <td class="pop_input_td02"><input type="text" name="availability" id="inputAvailability" value="{{ aggregate.availability_zone }}"/></td>
+                </tr>
+            </table>
+            {% endif %}
+            {% if not aggregate %}
+        </div>
+        {% endif %}
+        {% if action == "host_manage" %}
+        <input type="hidden" name="exist_hosts" value="{% parse_json aggregate.hosts %}">
+        {% endif %}
+        {% if not aggregate or action == "host_manage" %}
+        <div class="tab-body">
+            <div style="padding: 10px 0;">해당 집합에 호스트를 추가하십시오. 호스트는 여러 개의 호스트 집합에 포함될 수 있습니다.</div>
+            <div>
+                <div style="float: left; width: 50%;">
+                    <table class="pop-tab-01" id="host_available" style="width: 300px;">
+                        <colgroup>
+                            <col/>
+                            <col style="width: 50px;"/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th colspan="2">사용 가능한 모든 호스트</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for service in services %}
+                        <tr data-id="{{ service.id }}" data-name="{{ service.host }}">
+                            <td>{{ service.host }}</td>
+                            <td><button class="btnAdd">+</button></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot{% if not service %} hidden{% endif %}>
+                        <tr>
+                            <td colspan="2">호스트를 찾을 수 없습니다</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div style="float: right; width: 50%;">
+                    <table class="pop-tab-01" id="host_allocated" style="width: 300px;">
+                        <colgroup>
+                            <col/>
+                            <col style="width: 50px;"/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th colspan="2">선택된 호스트</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="2">선택된 호스트가 없습니다.</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="submit_aggregate">
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" id="close_aggregate" data-dismiss="modal">
+</div>
+{% endblock modal_footer %}

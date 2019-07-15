@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% load staticfiles %}
+<div class="header_title_d01">역할</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="role">
+    <table class="ind_tab01 index" cellpadding="0" border="0" cellspacing="0">
+    </table>
+</div>
+<script src='{% static "js/identity/roles/info.js" %}'></script>
+{% endblock content %}

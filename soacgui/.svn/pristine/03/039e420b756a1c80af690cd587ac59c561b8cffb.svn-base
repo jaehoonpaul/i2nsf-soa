@@ -1,0 +1,295 @@
+# _*_coding:utf-8_*_
+import datetime
+import json
+import logging
+
+from sdsec.settings import config
+from sdsecgui.tools.custom_httpclient import CustomHTTPClient
+
+logger = logging.getLogger("myapp.myLogger")
+section = "SETTINGS"
+LOG_LEVEL = config.get(section, "LOG_LEVEL")
+
+
+class Trigger:
+    triggerid = ""   # (읽기전용) 아이디
+    description = ""  # 필수 트리거 이름
+    expression = ""  # (필수) 조건식
+
+    PLAIN = 0  # 일반?
+    DISCOVERED = 4  # 발견된?
+
+    NOT_CLASSIFIED = 0  # 미분류
+    INFORMATION = 1  # 정보
+    WARNING = 2  # 경고
+    AVERAGE = 3  # 가벼운 장애
+    HIGH = 4  # 중증 장애
+    DISASTER = 5  # 심각한 장애
+
+    def __init__(self):
+        pass
+
+
+class ZabbixRestAPI:
+
+    def __init__(self, auth):
+        self.ID = config.get(section, "ZABBIX_ID")
+        self.PASSWORD = config.get(section, "ZABBIX_PASS")
+        self.URL = config.get(section, "ZABBIX_URL")
+        self.request_no = 1
+        self.AUTH = auth
+
+    @staticmethod
+    def get_version():
+        """
+        버전 확인
+        :return:
+        """
+        body = {"jsonrpc": "2.0", "method": "apiinfo.version", "id": 1, "params": []}
+        response = CustomHTTPClient.post_method(config.get(section, "ZABBIX_URL") + "/zabbix/api_jsonrpc.php",
+                                                {"Content-Type": "application/json-rpc"}, body)
+        return response["result"]
+
+    @staticmethod
+    def get_auth(user, password):
+        """
+        로그인
+        :param user:
+        :param password:
+        :return:
+        """
+        body = {"jsonrpc": "2.0", "method": "user.login", "params": {"user": user, "password": password}, "id": 1}
+        response = CustomHTTPClient.post_method(config.get(section, "ZABBIX_URL") + "/zabbix/api_jsonrpc.php",
+                                                {"Content-Type": "application/json-rpc"}, body)
+        result = json.loads(response.content)
+        if result.get("result"):
+            return result.get("result")
+        else:
+            return result.get("error")
+
+    @staticmethod
+    def get_data(filters, output, kwargs):
+        data = {}
+        if filters:
+            data["filter"] = filters
+        if output:
+            data["output"] = output
+        if kwargs:
+            for key, value in kwargs.iteritems():
+                data[key] = value
+        return data
+
+    def request_to_zabbix(self, method, params, log=True):
+        # self.request_no += 1
+        body = {
+            "jsonrpc": "2.0",
+            "method": method,
+            "params": params,
+            "auth": self.AUTH,
+            "id": self.request_no
+        }
+        response = CustomHTTPClient.post_method(self.URL + "/zabbix/api_jsonrpc.php",
+                                                {"Content-Type": "application/json-rpc"}, body)
+        content = json.loads(response.content)
+
+        if LOG_LEVEL == "DEBUG" and log:
+            log_str = """
+            ============================= Request  ===============================
+            [CURL {}] {}
+            body: {}
+            ============================= Response ===============================
+            status: {}
+            contents: {}
+            =========================== end Response =============================""".format("POST", response.url, body, str(response.status_code), content)
+            logger.debug(log_str)
+        return content
+
+    def get_hostgroups(self, filters=None, output=None, **kwargs):
+        """
+        host group 목록 조회
+        :param filters:
+        :param output:
+        :param kwargs:
+        :return:
+        """
+        data = self.get_data(filters, output, kwargs)
+        return self.request_to_zabbix("hostgroup.get", data)
+
+    def create_host(self, data):
+        content = self.request_to_zabbix("host.create", data)
+        return content
+
+    def get_hosts(self, filters=None, output=None, **kwargs):
+        """
+        host 목록 조회
+        :param filters: filters로 검색조건 설정
+        :param output: output으로 가져올 컬럼 선택
+        :param kwargs: API Method별 파라미터 확인해서 적용
+        :return:
+        """
+        data = self.get_data(filters, output, kwargs)
+        return self.request_to_zabbix("host.get", data)
+
+    def delete_host(self, data):
+        content = self.request_to_zabbix("host.delete", data)
+        return content
+
+    def get_host_events(self, hostid=None, output=None, sortfield=None):
+        """
+        event 목록 조회
+        :param hostid: 호스트 아이디
+        :param output: output 지정
+        :param sortfield: 정렬할 컬럼 선택
+        :return:
+        """
+        data = {}
+        if hostid:
+            data["hostids"] = hostid
+        if output:
+            data["output"] = output
+            data["limit"] = 20
+        if sortfield:
+            data["sortfield"] = sortfield
+            data["sortorder"] = "DESC"
+            data["selectHosts"] = "extend"
+        return self.request_to_zabbix("event.get", data)
+
+    def get_host_interfaces(self, filters=None, output=None):
+        data = {
+            "output": output
+        }
+        if filters:
+            for key, value in filters.iteritems():
+                data[key] = value
+        content = self.request_to_zabbix("hostinterface.get", data)
+        return content
+
+    def get_item(self, filters=None, output=None, **kwargs):
+        """
+        아이템 목록 조회
+        :param filters:
+        :param output:
+        :param kwargs:
+        :return: [list]
+        """
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("item.get", data)
+        return content
+
+    def create_trigger(self, data):
+        """
+        트리거 생성
+        :param data: [{
+            "description": "Processor load is too high on {HOST.NAME}",  # 트리거 명
+            "expression": "{" + host["host"] + ":system.cpu.load[percpu,avg1].last()}>0.1",  # 조건식
+            "priority": Trigger.HIGH,
+            "url": "http://127.0.0.1:8080"
+        }]
+        :return:
+        """
+        content = self.request_to_zabbix("trigger.create", data)
+        return content
+
+    def update_trigger(self, data):
+        """
+        트리거 수정
+        :param data:[{
+            "triggerid": "15462",
+            "expression": "{" + host["host"] + ":system.cpu.load[percpu,avg1].last()}>0.006",
+            "url": "http://127.0.0.1:8080/trigger_log"
+        }]
+        :return:
+        """
+        content = self.request_to_zabbix("trigger.update", data)
+        return content
+
+    def get_triggers(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("trigger.get", data)
+        return content
+
+    def create_action(self, data):
+        content = self.request_to_zabbix("action.create", data)
+        return content
+
+    def get_actions(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("action.get", data)
+        return content
+
+    def update_action(self, data):
+        content = self.request_to_zabbix("action.update", data)
+        return content
+
+    def delete_action(self, data):
+        content = self.request_to_zabbix("action.delete", data)
+        return content
+
+    def get_user(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("user.get", data)
+        return content
+
+    def get_mediatype(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("mediatype.get", data)
+        return content
+
+    def get_group(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("usergroup.get", data)
+        return content
+
+    def get_history(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("history.get", data, log=False)
+        return content
+
+    def get_trend(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("trend.get", data, log=False)
+        return content
+
+    def get_chart_data(self, host_id, item_key, sortfield="clock", sortorder="DESC", limit=20):
+        """
+        history :
+            0 - numeric float;
+            1 - character;
+            2 - log;
+            3 - numeric unsigned;
+            4 - text.
+        :param host_id:
+        :param item_key:
+        :param sortfield:
+        :param sortorder:
+        :param limit:
+        :return:
+        """
+        host_item_result = self.get_item(output=["itemid", "value_type"], hostids=host_id, search={"key_": item_key})
+        if host_item_result.get("result") and len(host_item_result["result"]) == 1:
+            host_item = host_item_result["result"][0]
+            time_from = (datetime.datetime.now() - datetime.timedelta(days=1, hours=9) - datetime.datetime(1970, 1, 1)).total_seconds()
+            time_till = (datetime.datetime.now() - datetime.timedelta(hours=9) - datetime.datetime(1970, 1, 1)).total_seconds()
+            content = self.get_history(itemids=host_item.get("itemid"), history=host_item.get("value_type"),
+                                       sortfield=sortfield, sortorder=sortorder, time_from=time_from,
+                                       time_till=time_till)
+        else:
+            content = host_item_result
+        return content
+
+    def get_template(self, filters=None, output=None, **kwargs):
+        data = self.get_data(filters, output, kwargs)
+        content = self.request_to_zabbix("template.get", data)
+        return content
+
+    def create_item(self, data):
+        content = self.request_to_zabbix("item.create", data)
+        return content
+
+    def create_application(self, host_id, name):
+        content = self.request_to_zabbix("application.create", {"hostid": host_id, "name": name})
+        return content
+
+    def create_mediatype(self, data):
+        content = self.request_to_zabbix("mediatype.create", data)
+        return content

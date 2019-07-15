@@ -1,0 +1,220 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="p50">
+    <div class="pop01_d04">
+        <!--
+        <div class="pop01_d05">서비스 ID</div>
+        <input class="pop01_text01" name="service_id" value="">
+        <div class="clear_float"></div>
+        <div></div>
+        -->
+        <!-- 팝업 화면 내용 -->
+        <!-- overlay_title id, class 수정 금지/이벤트 추가 금지 -->
+        <div id="overlay_title" class="pop_title_d01">
+        <!-- 제목 추가는 여기에 -->
+            <div><span>이미지 </span>룰정보</div>
+        </div>
+
+        <!-- overlay_content id, class 수정 금지/이벤트 추가 금지 -->
+        <div id="overlay_content" class="pop_content_d01">
+        <!-- 내용 추가는 여기에 -->
+            <div>
+                <!-- 여기는 팝업창의 위쪽 부분입니다. -->
+                <div>
+                    <div style="float:left">
+                        ID<br/>
+                        <input type="text" id="policyRuleInfoInputIP" class="domain_select_d05" value="ID 들어갈 부분"/>
+                        <br/>
+                    </div>
+                    <div style="float:right">
+                        우선순위*<br/>
+                        <input type="text" id="policyRuleInfoOrder" class="domain_select_d05" value="우선순위 들어갈 부분"/>
+                        <br/>
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+
+                <div>
+                    <div style="float:left">
+                        출발지* <input type="button" id="policyRuleInfoStartDel" class="btnAdd" name="" value="-삭제하기"/> <input type="button" id="policyRuleInfoStartAdd" class="btnAdd" name="" value="+추가하기"/><br/>
+                        <table class="pop-tab-01" style="width: 300px;">
+                            <tbody>
+                                <tr>
+                                    <th><input type="checkbox" class="" name="policy_start_IP" value="startIP"/></th>
+                                    <td>IP</td>
+                                </tr>
+                                <tr>
+                                    <th><input type="checkbox" class="" name="policy_start_IP_contents" value="startIPContents"/></th>
+                                    <td><input type="text" id="policyRuleInfoStartContents" value="IP 내용"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="float:right">
+                        도착지* <input type="button" id="policyRuleDstDel" class="btnAdd" name="" value="-삭제하기"/>  <input type="button" id="policyRuleDstAdd" class="btnAdd" name="" value="+추가하기"/><br/>
+                        <table class="pop-tab-01" style="width: 300px;">
+                            <tbody>
+                                <tr>
+                                    <th><input type="checkbox" id="policyEndIP" class="" name="policy_end_IP" value="policyEndIP"/></th>
+                                    <td>IP</td>
+                                </tr>
+                                <tr>
+                                    <th><input type="checkbox" id="policyEndIPContentsCheck" class="" name="policy_end_IP_contents" value="policyEndIPContentsCheck"/></th>
+                                    <td><input type="text" id="policyEndIPContents" name="" value="IP 내용 들어갈 부분"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+
+                <div>
+                    <div style="float:left">
+                        서비스 * <input type="button" id="policyRuleInfoServiceDel" class="btnAdd" value="-삭제하기"/> <input type="button" id="policyRuleInfoServiceAdd" class="btnAdd" value="+추가하기"/> <br/>
+                        <table class="pop-tab-01" style="width: 300px;">
+                            <tbody>
+                                <tr>
+                                    <th><input type="checkbox" id="policyServiceIP" class=""/></th>
+                                    <td>서비스</td>
+                                </tr>
+                                <tr>
+                                    <th><input type="checkbox" id="policyServiceIPHead" class="" /></th>
+                                    <td><input type="text" id="policyServiceIPContents" value="모두"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="clear_float"></div>
+                </div>
+
+                <div>
+                    <div style="float:left; width:300px;">
+                        <div>
+                            스케줄* <br/>
+                            <select id="policyRuleSchedule" name="policy_rule_schedule">
+                                <option value="always" selected>항상</option>
+                                <option value="part">지정</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="float:right; width:300px;">
+                        <div>
+                            행위* <br/>
+                            <input type="radio" name="policy_rule_action" value="pass" checked> Pass
+                            <input type="radio" name="policy_rule_action" value="drop"> Drop
+                            <input type="radio" name="policy_rule_action" value="reject"> Reject
+                        </div>
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+
+                <div>
+                    <div style="float:left; width:300px">
+                        <div>
+                            로그* <br/>
+                            <input type="radio" name="make_log_rule" value="make" checked> 생성
+                            <input type="radio" name="make_log_rule" value="not"> 생성안함
+                        </div>
+                    </div>
+                    <div style="float:right; width:300px">
+                        <div>
+                            패킷* <br/>
+                            <input type="radio" name="make_packet_rule" value="pass" checked> 생성
+                            <input type="radio" name="make_packet_rule" value="drop"> 생성안함
+                        </div>
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+
+                <div>
+                    <div style="float:left; width:300px">
+                        <div>
+                            사용여부* <br/>
+                            <select name="policy_rule_using">
+                                <option value="used" selected>사용</option>
+                                <option value="unused">사용안함</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="float:right; width:300px">
+                        <div>
+                            대상 NAT* <br/>
+                            <select name="policy_rule_nat_object">
+                                <option value="none" selected>없음</option>
+                                <option value="appointed">지정</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+
+                <div>
+                    설명<br/><br/>
+                    <input type="text" placeholder="Allow From Internal" id="policyRuleExplanation" class="security_item_border" name="policy_rule_explanation">
+                </div>
+
+                <div style="text-align:right;">
+                    <input type="button" id="policyRuleSubmit" class="btnAdd" value="저장"/>
+                </div>
+                <div class="clear_float"></div>
+
+
+            <!-- 내용 추가는 여기에 -->
+
+            </div>
+            <div class="clear_float"></div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    $("#policyRuleSubmit").on("click", function(){
+        getRuleInfo();
+    });
+    function getRuleInfo(){
+        var ruleInfoID = $("#policyRuleInfoInputIP").val();
+        var ruleInfoOrder = $("#policyRuleInfoOrder").val();
+        var ruleInfoStart = $("#policyRuleInfoStartContents").val();
+        var ruleInfoDstIP = $("#policyEndIPContents").val();
+        var service = $("#policyServiceIPContents").val();
+        var schedule = $("#policyRuleSchedule option:selected").val();
+        var action = $("input:radio[name=policy_rule_action]:checked").val();
+        var log = $("input:radio[name=make_log_rule]:checked").val();
+        var packet = $("input:radio[name=make_packet_rule]:checked").val();
+        var using = $("select[name=policy_rule_using]").val();
+        var nat = $("select[name=policy_rule_nat_object]").val();
+        var ruleInfoExplanation = $("#policyRuleExplanation").val();
+
+        var ruleInfoData = {
+            "ruleInfoID" : ruleInfoID,
+            "ruleInfoOrder" : ruleInfoOrder,
+            "ruleInfoStart" : ruleInfoStart,
+            "ruleInfoDstIP" : ruleInfoDstIP,
+            "service" : service,
+            "schedule" : schedule,
+            "action" : action,
+            "log" : log,
+            "packet" : packet,
+            "using" : using,
+            "nat" : nat,
+            "ruleInfoExplanation" : ruleInfoExplanation
+        };
+        console.log(ruleInfoData);
+    }
+</script>
+
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="submit_sync">
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+</div>
+{% endblock modal_footer %}
+
+<!-- PopupUtil({}) -->
+

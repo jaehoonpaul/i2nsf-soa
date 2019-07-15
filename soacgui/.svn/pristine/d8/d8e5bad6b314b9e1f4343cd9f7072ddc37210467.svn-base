@@ -1,0 +1,109 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+
+<!-- Rule Create 탭-->
+    <table class="pop-tab-01" style="width: 700px;">
+        <colgroup></colgroup>
+        <tbody>
+        <tr>
+            <th class="pop_input_td01">정책 이름</th>
+            <td class="pop_input_td02"><input name="policy_name" value="{{ rule.policy_name }}"/></td>
+        </tr>
+        <tr>
+            <th class="pop_input_td01">출발지</th>
+            <td class="pop_input_td02">
+                <select name="source_target">
+                    <option value="">선택</option>
+                    {% for src in source_target %}
+                    <option value="{{ src.endpoint_key }}"{% if src.endpoint_key == rule.source_target %} selected{% endif %} data-metadata="{{ src.metadata }}">{{ src.name }} ({{ src.metadata_str }})</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th class="pop_input_td01">목적지</th>
+            <td class="pop_input_td02">
+                <select name="destination_target">
+                    <option value="">선택</option>
+                    {% for dest in destination_target %}
+                    <option value="{{ dest.endpoint_key }}"{% if dest.endpoint_key == rule.destination_target %} selected{% endif %} data-metadata="{{ dest.metadata }}">{{ dest.name }} ({{ dest.metadata_str }})</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th class="pop_input_td01">시간 범위 사용 여부</th>
+            <td class="pop_input_td02">
+                <input id="radioUseTime1" type="radio" name="use_time" value="true"{% if rule.start_time and rule.end_time %} checked{% endif %}/>
+                <label for="radioUseTime1">O</label>
+                <input id="radioUseTime2" type="radio" name="use_time" value="false"{% if not rule.start_time and not rule.end_time %} checked{% endif %}/>
+                <label for="radioUseTime2">X</label>
+            </td>
+        </tr>
+        <tr class="tr-used-time">
+            <th class="pop_input_td01">시작 시간</th>
+            <td class="pop_input_td02"><input type="time" name="start_time" value="{{ rule.start_time|default:"" }}"/></td>
+        </tr>
+        <tr class="tr-used-time">
+            <th class="pop_input_td01">종료 시간</th>
+            <td class="pop_input_td02"><input type="time" name="end_time" value="{{ rule.end_time|default:"" }}"/></td>
+        </tr>
+        <tr>
+            <th class="pop_input_td01">액션 종류</th>
+            <td class="pop_input_td02">
+                <select name="action_type">
+                    <option value="pass"{% if rule.action_data == 'pass' %} selected{% endif %}>Pass</option>
+                    <option value="drop"{% if rule.action_data == 'drop' %} selected{% endif %}>Drop</option>
+                    <option value="alert"{% if rule.action_data == 'alert' %} selected{% endif %}>alert</option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="clear_float"></div>
+<script>
+	$(document).ready(function() {
+	    $("input[name=use_time]").on("change", function() {
+	        if ($(this).val() == "true") {
+	            $(".tr-used-time").show();
+	        } else {
+	            $(".tr-used-time").hide();
+	        }
+	    });
+	    $("input[name=use_time]:checked").change();
+	    var url = "/dashboard/service/intent/rule/create";
+	    if (!isEmpty("{{ rule.rule_key }}")) {
+	        url = "/dashboard/service/intent/rule/{{ rule.rule_key }}/update";
+	    }
+        $("#submit").on("click", function() {
+            var data = {
+                policy_name: $("input[name=policy_name]").val(),
+                source_target: $("select[name=source_target]").val(),
+                destination_target: $("select[name=destination_target]").val(),
+                action_data: $("select[name=action_type]").val(),
+                description: ""
+            };
+            if ($("input[name=use_time]:checked").val() == "true") {
+                data.start_time = $("input[name=start_time]").val();
+                data.end_time = $("input[name=end_time]").val();
+            }
+            U.ajax({
+                url: url,
+                data: data,
+                success: function(result) {
+                    location.reload(true);
+                }
+            });
+        });
+	});
+</script>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="submit">
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+</div>
+{% endblock modal_footer %}

@@ -1,0 +1,255 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<!-- IP Registration 탭-->
+
+		<div class="rs_d01">
+			<input  id="getRegistration" value="{{ endpoint.endpoint_type }}"/>
+			<div class="rs_d02"  id="user_reg_val" hidden>
+				<div class="mypage_d01">User registration</div>
+				<div class="clear_float"></div>
+				<table class="mypage_tab01">
+					<colgroup></colgroup>
+					<tbody>
+						<tr>
+							<th class="mypage_td01">
+								<div>User Name</div>
+							</th>
+							<td class="mypage_td02">
+								<input id="ipRegUserNameInput" name="ipRegUserNameInput" class="rs_text04" value="{{ endpoint.name }}"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="mypage_td01">
+								<div>Range of user IP<br/>--Start IP address</div>
+							</th>
+							<td class="mypage_td02">
+								<input id="ipRegStartIpInput" name="ipRegStartIpInput" class="rs_text04" value="{{ endpoint.start_ip_address }}"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="mypage_td01">
+								<br/>--End IP address
+							</th>
+							<td class="mypage_td02">
+								<input id="ipRegEndIpInput" name="ipRegEndIpInput" class="rs_text04" value="{{ endpoint.end_ip_address }}"/>
+							</td>
+						</tr>
+					</tbody>
+
+				</table>
+				<div class="clear_float"></div>
+			</div>
+
+			<div class="rs_d02" id="user_device_val" hidden>
+				<div class="mypage_d01">Device registration</div>
+				<div class="clear_float"></div>
+				<table class="mypage_tab01">
+					<colgroup></colgroup>
+					<tbody>
+						<tr>
+							<th class="mypage_td01">
+								Device Name
+							</th>
+							<td class="mypage_td02">
+								<input id="deviceRegUserNameInput" name="deviceRegUserNameInput" class="rs_text04" value="{{ endpoint.name }}"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="mypage_td01">
+								Range of user IP<br/>
+								--Start IP address
+							</th>
+							<td class="mypage_td02">
+								<input id="deviceRegStartIpInput" name="deviceRegStartIpInput" class="rs_text04" value="{{ endpoint.start_ip_address }}"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="mypage_td01">
+								--End IP address
+							</th>
+							<td class="mypage_td02">
+								<input id="deviceRegEndIpInput" name="deviceRegEndIpInput" class="rs_text04" value="{{ endpoint.end_ip_address }}"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="rs_d02" id="user_url_val" hidden>
+				<div class="mypage_d01">URL registration</div>
+				<div class="clear_float"></div>
+				<table class="mypage_tab01">
+					<colgroup></colgroup>
+					<tbody>
+						<tr>
+							<th class="mypage_td01">
+								URL Name
+							</th>
+							<td class="mypage_td02">
+								<input id="urlRegNameInput" name="urlRegNameInput" class="rs_text04" value="{{ endpoint.name }}"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="mypage_td01">
+								URL
+							</th>
+							<td class="mypage_td02">
+								<input id="urlRegURLInput" name="urlRegURLInput" class="rs_text04" value="{{ endpoint.urls }}"/>
+								<p>[Use comma to separate multiple URLs]</p>
+								<p>[Example: URL1.com, URL2.com]</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="clear_float"></div>
+		</div>
+<script>
+
+	$(document).ready(function() {
+
+		// 유저 그룹 불러옴
+		function getIPRegDataInput() {
+			var endpointGroup = {
+				"endpoint-group" : {
+					"user-group" : [{
+						"name" : $("#ipRegUserNameInput").val(),
+						"range-ip-address" : [{
+							"start-ip-address" : $("#ipRegStartIpInput").val(),
+							"end-ip-address" : $("#ipRegEndIpInput").val()
+						}]
+					}
+				]}
+			};
+			return endpointGroup;
+		}
+
+		// 디바이스 정보 불러옴
+		function getDeviceData() {
+			var endpointGroup = {
+				"endpoint-group" : {
+					"device-group" : [{
+						"name" : $("#deviceRegUserNameInput").val(),
+						"range-ip-address" : [{
+							"start-ip-address" : $("#deviceRegStartIpInput").val(),
+							"end-ip-address" : $("#deviceRegEndIpInput").val()
+						}]
+					}]
+				}
+			};
+			return endpointGroup;
+		}
+
+		//URL 정보 불러옴
+		function getUrlData() {
+			var urlReg = {
+//				"thread-prevention" : {
+					"payload-content" : [{
+						"name" : $("#urlRegNameInput").val(),
+						"content" : $("#urlRegURLInput").val().split(",")
+					}]
+//				}
+			};
+			return urlReg;
+		}
+
+		// 세 정보 합쳐서 임시 버튼 지우면 삭제할 부분
+		function regData() {
+			var usergroup = getIPRegDataInput();
+			var devicegroup = getDeviceData();
+			var payloadcontent = getUrlData();
+			var intendData = {"user-group" : usergroup, "device-group" : devicegroup, "payload-content" : payloadcontent};
+			console.log(intendData);
+		}
+		$("#regModalSubmit").on("click", function() {
+			regData();
+		});
+		// 여기까지 임시 버튼 지우면 삭제 할 부분
+
+		// 처음 화면 로딩 후 테이블 정보 보이게 하는 부분
+		showRegBox();
+
+		$("#selectValUser").on("click", function () {
+			showRegBox();
+		});
+		$("#selectValDev").on("click", function () {
+			showRegBox();
+		});
+		$("#selectValUrl").on("click", function () {
+			showRegBox();
+		});
+
+
+		// 데이터 넣는 부분 여기에서 직접 넣을 수 있다면 아래 대로 가능 한가요?
+        $("#createRegAddBtnModal").on("click", function() {
+
+            // 여기는 data 종류가 나뉘니까 종류에 맞게 U.ajax 를 보냄
+            var selectV = $("#SelectRegValueId option:selected").val();
+			console.log(selectV);
+			var ruleCreateData ;
+			if(selectV == "user"){
+				ruleCreateData = {
+					"name": $("#ipRegUserNameInput").val(),
+					"metadata": JSON.stringify({
+						"start-ip-address" : $("#ipRegStartIpInput").val(),
+						"end-ip-address" : $("#ipRegEndIpInput").val()
+					}),
+					"endpoint_type": "user"
+				};
+			}else if(selectV == "device"){
+				ruleCreateData = {
+					"name": $("#deviceRegUserNameInput").val(),
+					"metadata": JSON.stringify({
+						"start-ip-address" : $("#deviceRegStartIpInput").val(),
+						"end-ip-address" : $("#deviceRegEndIpInput").val()
+					}),
+					"endpoint_type": "device"
+				};
+			}else if(selectV == "url"){
+				ruleCreateData = {
+					"name": $("#urlRegNameInput").val(),
+					"metadata": JSON.stringify($("#urlRegURLInput").val().split(",")),
+					"endpoint_type": "url"
+				};
+			}
+			console.log(ruleCreateData);
+			// 아래는 원본
+			U.ajax({
+				url: "/dashboard/service/intent/endpoint",
+				data: ruleCreateData,
+				success: function(result) {
+					console.log(result);
+				}
+			});
+        });
+	});
+
+	// 테이블 보이는 부분
+	function showRegBox() {
+		var selectV = $("#getRegistration").val();
+		if(selectV == "user"){
+			$("#user_reg_val").show();
+			$("#user_device_val").hide();
+			$("#user_url_val").hide();
+		}else if(selectV == "device"){
+			$("#user_reg_val").hide();
+			$("#user_device_val").show();
+			$("#user_url_val").hide();
+		}else if(selectV == "url"){
+			$("#user_reg_val").hide();
+			$("#user_device_val").hide();
+			$("#user_url_val").show();
+		}
+	}
+
+</script>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="createRegAddBtnModal">
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+</div>
+{% endblock modal_footer %}

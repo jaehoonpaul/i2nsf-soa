@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load commontags %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">하이퍼바이저</div>
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 click">하이퍼바이저</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="hypervisors">
+    <div class="tab-area">
+        <div class="rs_d04 tab-btn click">하이퍼바이저</div>
+        <div class="rs_d04 tab-btn">Compute 호스트</div>
+        <div class="clear_float"></div>
+
+        <div class="rs_d05 tab-body" style="display:block;">
+            <table class="common-tab-01">
+                <colgroup></colgroup>
+                <thead>
+                <tr>
+                    <th>호스트 이름</th>
+                    <th>유형</th>
+                    <th>VCPUs (사용중)</th>
+                    <th>VCPUs (전체)</th>
+                    <th>RAM (사용중)</th>
+                    <th>RAM (전체)</th>
+                    <th>로컬 저장소 (사용됨)</th>
+                    <th>로컬 저장소 (전체)</th>
+                    <th>인스턴스</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for hypervisor in hypervisors %}
+                <tr data-id="{{ hypervisor.id }}">
+                    <td>{{ hypervisor.hypervisor_hostname }}</td>
+                    <td>{{ hypervisor.hypervisor_type }}</td>
+                    <td>{{ hypervisor.vcpus_used }}</td>
+                    <td>{{ hypervisor.vcpus }}</td>
+                    <td>{{ hypervisor.memory_mb_used }}</td>
+                    <td>{{ hypervisor.memory_mb }}</td>
+                    <td>{{ hypervisor.local_gb_used }}</td>
+                    <td>{{ hypervisor.local_gb }}</td>
+                    <td>{{ hypervisor.running_vms }}</td>
+                </tr>
+                {% endfor %}
+                {% for value in hypervisors|length|range:5 %}
+                <tr>
+                    <td>&nbsp;</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td class="rs_td03 tl" colspan="6">Displaying {{ hypervisors|length }} item</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="rs_d05 tab-body" style="display:block;">
+            <table class="common-tab-01">
+                <colgroup></colgroup>
+                <thead>
+                <tr>
+                    <th>호스트 이름</th>
+                    <th>Zone</th>
+                    <th>Status</th>
+                    <th>state</th>
+                    <th>업데이트</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for service in services %}
+                <tr data-id="{{ service.id }}">
+                    <td>{{ service.host }}</td>
+                    <td>{{ service.zone }}</td>
+                    <td>{% if service.status == "enabled" %}활성화됨{% else %}비활성화됨{% endif %}</td>
+                    <td>{{ service.state }}</td>
+                    <td>{% parse_time_format service.updated_at %}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                {% for value in services|length|range:5 %}
+                <tr>
+                    <td>&nbsp;</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td class="rs_td03 tl" colspan="6">Displaying {{ services|length }} item</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<script src='{% static "js/admin/hypervisors/index.js" %}'></script>
+<!--{{ hypervisors }}-->
+{% endblock content %}

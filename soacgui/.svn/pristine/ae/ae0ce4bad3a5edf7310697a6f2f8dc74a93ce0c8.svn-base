@@ -1,0 +1,132 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="p50">
+    <div class="tab-area">
+        <div class="rs_d04 tab-btn click">프로젝트 정보 *</div>
+        <div class="rs_d04 tab-btn with-subnet">프로젝트 멤버</div>
+        <div class="rs_d04 tab-btn with-subnet">프로젝트 그룹</div>
+        <div class="rs_d04 tab-btn with-subnet">Quota *</div>
+        <div class="clear_float"></div>
+        <form id="edit_project_frm">
+            <!-- 프로젝트 정보 -->
+            <div class="tab-body" style="width: 100%;">
+                <table class="pop-tab-02" style="width: 700px;">
+                    <tr id="area_domain_id">
+                        <th class="pop_input_td01"><label for="domain_id">도메인 ID</label></th>
+                        <td class="pop_input_td02"><input type="text" name="domain_id" id="domain_id" value="{{ input_domain_id }}" disabled/></td>
+                    </tr>
+                    <tr id="area_domain_name">
+                        <th class="pop_input_td01"><label for="input_domain_name">도메인 이름</label></th>
+                        <td class="pop_input_td02"><input type="text" name="domain_name" id="input_domain_name" value="{{ input_domain_name }}" disabled/></td>
+                    </tr>
+                    <tr id="area_project_name">
+                        <th class="pop_input_td01"><label for="input_project_name">프로젝트 이름 *</label></th>
+                        <td class="pop_input_td02"><input type="text" name="name" id="input_project_name" value="{{ project_name }}"/></td>
+                    </tr>
+                    <tr id="area_project_description">
+                        <th class="pop_input_td01"><label for="project_description">프로젝트 설명</label></th>
+                        <td class="pop_input_td02"><textarea name="description" id="project_description">{{ description }}</textarea></td>
+                    </tr>
+                    <tr id="area_enabled">
+                        <th class="pop_input_td01"><label for="enabled">사용유무</label></th>
+                        <td class="pop_input_td02"><input type="checkbox" name="enabled" id="enabled" {% if project_id is None or enabled %}checked{% endif %}/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 프로젝트 멤버 -->
+            <!-- 프로젝트 그룹 -->
+            {% include 'common/assign_role.html' %}
+
+            <!-- Quota -->
+            <div class="tab-body" style="width: 100%;">
+                <table class="pop-tab-02" style="width: 700px;">
+                    <tr data-val="{{ nova_quota_set.metadata_items|default:0 }}">
+                        <th class="pop_input_td01"><label for="metadata_items">Metadata Items *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="metadata_items" id="metadata_items" value="{{ nova_quota_set.metadata_items|default:128 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ nova_quota_set.cores|default:0 }}">
+                        <th class="pop_input_td01"><label for="vcpus">VCPUs *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="vcpus" id="vcpus" value="{{ nova_quota_set.cores|default:20 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ nova_quota_set.instances|default:0 }}">
+                        <th class="pop_input_td01"><label for="instances">Instances *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="instances" id="instances" value="{{ nova_quota_set.instances|default:10 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ nova_quota_set.injected_files|default:0 }}">
+                        <th class="pop_input_td01"><label for="injected_files">Injected Files *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="injected_files" id="injected_files" value="{{ nova_quota_set.injected_files|default:5 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ nova_quota_set.injected_file_content_bytes|default:0 }}">
+                        <th class="pop_input_td01"><label for="injected_file_content">Injected File Content (Bytes) *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="injected_file_content" id="injected_file_content" value="{{ nova_quota_set.injected_file_content_bytes|default:10240 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ cinder_quotas.volumes|default:0 }}">
+                        <th class="pop_input_td01"><label for="volumes">Volumes *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="volumes" id="volumes" value="{{ cinder_quotas.volumes|default:10 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ cinder_quotas.snapshots|default:0 }}">
+                        <th class="pop_input_td01"><label for="volume_snapshots">Volume Snapshots *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="volume_snapshots" id="volume_snapshots" value="{{ cinder_quotas.snapshots|default:10 }}"/></td>
+                    </tr>
+                    {% if cinder_quotas.gigabytes or cinder_quotas.backup_gigabytes %}
+                    <tr data-val="{{ cinder_quotas.gigabytes|default:cinder_quotas.backup_gigabytes }}">
+                        <th class="pop_input_td01"><label for="total_size_of_volumes_and_snapshots">Total Size of Volumes and Snapshots (GIB) *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="total_size_of_volumes_and_snapshots" id="total_size_of_volumes_and_snapshots" value="{{ cinder_quotas.gigabytes|default:cinder_quotas.backup_gigabytes }}"/></td>
+                    </tr>
+                    {% else %}
+                    <tr data-val="0">
+                        <th class="pop_input_td01"><label for="total_size_of_volumes_and_snapshots">Total Size of Volumes and Snapshots (GIB) *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="total_size_of_volumes_and_snapshots" id="total_size_of_volumes_and_snapshots" value="1000"/></td>
+                    </tr>
+                    {% endif %}
+                    <tr data-val="{{ nova_quota_set.ram|default:0 }}">
+                        <th class="pop_input_td01"><label for="ram">RAM (MB) *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="ram" id="ram" value="{{ nova_quota_set.ram|default:51200 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ nova_quota_set.security_groups|default:0 }}">
+                        <th class="pop_input_td01"><label for="security_groups">Security Groups *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="security_groups" id="security_groups" value="{{ nova_quota_set.security_groups|default:10 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ nova_quota_set.security_group_rules|default:0 }}">
+                        <th class="pop_input_td01"><label for="security_group_rules">Security Group Rules *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="security_group_rules" id="security_group_rules" value="{{ nova_quota_set.security_group_rules|default:100 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ neutron_quotas.floatingip|default:0 }}">
+                        <th class="pop_input_td01"><label for="floating_ips">Floating IPs *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="floating_ips" id="floating_ips" value="{{ neutron_quotas.floatingip|default:50 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ neutron_quotas.network|default:0 }}">
+                        <th class="pop_input_td01"><label for="networks">Networks *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="networks" id="networks" value="{{ neutron_quotas.network|default:10 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ neutron_quotas.port|default:0 }}">
+                        <th class="pop_input_td01"><label for="ports">Ports *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="ports" id="ports" value="{{ neutron_quotas.port|default:50 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ neutron_quotas.router|default:0 }}">
+                        <th class="pop_input_td01"><label for="routers">Routers *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="routers" id="routers" value="{{ neutron_quotas.router|default:10 }}"/></td>
+                    </tr>
+                    <tr data-val="{{ neutron_quotas.subnet|default:0 }}">
+                        <th class="pop_input_td01"><label for="subnets">Subnets *</label></th>
+                        <td class="pop_input_td02"><input type="number" name="subnets" id="subnets" value="{{ neutron_quotas.subnet|default:10 }}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <div class="pop_plus_bt_img01" id="submit_project" style="display:inline-block;">
+        <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+    </div>
+    <div class="pop_cancel_bt_img01" id="submit_project_cancel" style="display:inline-block;">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+{% endblock modal_footer %}

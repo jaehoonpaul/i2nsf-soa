@@ -1,0 +1,178 @@
+{% load staticfiles %}
+{% load zabbixtags %}
+
+<!-- 상태 -->
+<div class="chart rs_d05 tab-body" style="display:none;">
+<table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0">
+    <colgroup></colgroup>
+    <thead>
+        <tr>
+            <th class="rs_td01">발생일시</th>
+            <th class="rs_td01">복구일시</th>
+            <th class="rs_td01">상태</th>
+            <!--<th class="rs_td01">정보</th>-->
+            <th class="rs_td01">호스트</th>
+            <th class="rs_td01">장애, 심각도</th>
+            <th class="rs_td01">기간</th>
+            <th class="rs_td01">인지</th>
+            <!--<th class="rs_td01">액션</th>-->
+        </tr>
+    </thead>
+    <tbody>
+        {% if events != None %}
+            {% for event in events %}
+                {% if event.r_eventid == '0' %}
+                <tr>
+                    <td class="{% cycle 'rs_td02' 'rs_td03' as tdClass %}">{% second_to_string event.clock %}</td>
+                    <td class="{{tdClass}}">{% if event.value == '0' %}{% calc_recovery_time event.clock event.ns %}{% endif %}</td>
+                    <td class="{{tdClass}}">{% if event.value == '1' %}problem{% elif event.value == '0' %}OK{% endif %}</td>
+                    <!--<td class="{{tdClass}}"></td>-->
+                    <td class="{{tdClass}}">{{ event.hosts.0.host }}</td>
+                    <td class="{{tdClass}}">
+                        {% if event.object == '0' %}
+                            {% get_trigger_info event.objectid %}
+                        {% endif %}
+                    </td>
+                    <td class="{{tdClass}}">{% nanosecond_to_string event.ns %}</td>
+                    <td class="{{tdClass}}">{{ event.acknowledged }}</td>
+                    <!--<td class="{{tdClass}}"></td>-->
+                </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% if events == None %}
+            <tr>
+                <td class="rs_td03" colspan="9">상태 데이터가 존재하지 않습니다.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+<div class="clear_float"></div>
+</div>
+<!-- ping -->
+<div class="chart rs_d05 tab-body">
+    <div style="float:right;">
+        <img style="margin:7px 20px 0 0;" class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+    </div>
+    <div class="clear_float"></div>
+    <div class="ping largeChart" data-meter_name="agent.ping">
+        <div style="height:100px;"></div>
+        {% include "common/progress.html" %}
+    </div>
+    <div class="clear_float"></div>
+</div>
+
+<!-- memory -->
+<div class="chart rs_d05 tab-body" style="display:none;">
+    <div style="float:right;">
+        <img style="margin:7px 20px 0 0;" class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+    </div>
+    <div class="clear_float"></div>
+    <div class="memory simpleChart" data-meter_name="vm.memory.size[available]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="memory simpleChart" data-meter_name="vm.memory.size[total]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="memory simpleChart" data-meter_name="system.swap.size[,free]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="memory simpleChart" data-meter_name="system.swap.size[,pfree]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="memory simpleChart" data-meter_name="system.swap.size[,total]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="clear_float"></div>
+</div>
+
+<!-- cpu -->
+<div class="chart rs_d05 tab-body" style="height:100%; display:none;" >
+    <div style="float:right;">
+        <img style="margin:7px 20px 0 0;" class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+    </div>
+    <div class="clear_float"></div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.load[percpu,avg1]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.load[percpu,avg5]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.load[percpu,avg15]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,idle]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,interrupt]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,iowait]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,nice]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,softirq]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,steal]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,system]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.util[,user]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.switches">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="cpu simpleChart" data-meter_name="system.cpu.intr">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="clear_float"></div>
+</div>
+
+<!-- disk -->
+<div class="chart rs_d05 tab-body" style="height:100%; display:none;">
+    <div style="float:right;">
+        <img style="margin:7px 20px 0 0;" class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+    </div>
+    <div class="clear_float"></div>
+    <div class="disk simpleChart" data-meter_name="vfs.fs.inode[/,pfree]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="disk simpleChart" data-meter_name="vfs.fs.size[/,free]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="disk simpleChart" data-meter_name="vfs.fs.size[/,pfree]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="disk simpleChart" data-meter_name="vfs.fs.size[/,total]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="disk simpleChart" data-meter_name="vfs.fs.size[/,used]">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="clear_float"></div>
+</div>
+
+<!-- network -->
+<div class="chart rs_d05 tab-body networkChart" style="height:100%; display:none;" >
+    <div style="float:right;">
+        <img style="margin:7px 20px 0 0;" class="all_check_bt01 refresh_monitoring" src='{% static "img/dashboard/service/telemeter/refresh_bt_01.png" %}' alt="#">
+    </div>
+    <div class="clear_float"></div>
+    <div id="networkChartArea">
+        {% include "common/progress.html" %}
+    </div>
+    <div class="clear_float"></div>
+</div>
+<!-- 상세 차트 -->
+<link href='{% static "lib/datepicker/css/datepicker.css" %}' rel="stylesheet" type="text/css" />
+<script src='{% static "lib/datepicker/js/bootstrap-datepicker.js" %}'></script>
+<script src='{% static "lib/chartjs/Chart.bundle.min.js" %}'></script>
+<script src='{% static "lib/chartjs/drawchart.js" %}'></script>
+<script src="{% static 'js/monitoring/chart.js' %}"></script>
+<script src="{% static 'js/monitoring/detail_chart.js' %}"></script>

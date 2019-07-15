@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block header %}
+{% load staticfiles %}
+<a href="#"><div class="head_d05 click">전체 모니터링</div></a>
+<a href="/dashboard/monitoring/action"><div class="head_d05">액션</div></a>
+<a href="/dashboard/monitoring/history"><div class="head_d05">알림 이력</div></a>
+
+<button id="synchronize_server" class="btn-ok" style="margin-top: 4px;" {% if synchronize_flag %}disabled{% endif %}>Floating Server 동기화</button>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+
+<div class="rs_d01" style="min-height:200px;">
+    <div class="ind_d02">
+        <div class="ind_d05">Openstack Server 상태</div>
+    </div>
+    <div class="clear_float"></div>
+    {% for host in hosts %}
+        <div class="host-item" data-host="{{ host }}" data-host_id="{{ host.hostid }}">
+            <div class="{% if host.ping == '1' %}status-circle-ok{% elif host.ping == '0' %}status-circle-error{% endif %}" style="cursor:pointer;"></div>
+            <div class="clear_float"></div>
+            <div class="monitoring-host-img">
+                <img src='{% static "img/dashboard/monitoring/monitoring_host.png" %}' alt="#" /><br>
+            </div>
+            <div class="monitoring-text">
+                <p>{{ host.name }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-text">
+            <span>등록된 Openstack Server가 존재하지 않습니다.</span>
+        </div>
+    {% endfor %}
+    <div class="clear_float"></div>
+</div>
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">가상서버 상태</div>
+    </div>
+    <div class="clear_float"></div>
+    {% for host in vm_list %}
+        <div class="vm-item" data-host="{{ host }}" data-host_id="{{ host.hostid }}">
+            <div class="ping-status {% if host.ping == '1' %}status-circle-ok{% elif host.ping == '0' %}status-circle-error{% endif %}" style="cursor:pointer;"></div>
+            <div class="clear_float"></div>
+            <div class="monitoring-vm-img">
+                <img src='{% static "img/dashboard/monitoring/monitoring_vm.png" %}' alt="#" /><br>
+            </div>
+            <div class="monitoring-text">
+                <p>{{ host.name }}</p>
+                <div>{{ host.floatingip_info.floating_ip_address }}</div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-text">
+            <span>Floating된 가상서버가 존재하지 않습니다.</span>
+        </div>
+    {% endfor %}
+    <div class="clear_float"></div>
+</div>
+<script src="{% static 'js/monitoring/index.js' %}"></script>
+{% endblock content %}

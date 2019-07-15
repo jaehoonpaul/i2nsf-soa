@@ -1,0 +1,81 @@
+{% load staticfiles %}
+
+<!--<div id="alarmList"></div>-->
+<button type="button" id="createAlarm" class="btn btn-primary" style="float:right; margin:15px 25px;">알람 등록</button>
+<table class="common-tab-01 mt15 tl" cellpadding="0" border="0" cellspacing="0">
+	<colgroup>
+		<col width="15%" />
+		<col width="30%" />
+		<col width="10%" />
+		<col width="19%" />
+		<col width="14%" />
+		<col width="12%" />
+	</colgroup>
+	<thead>
+		<tr>
+			<th class="rs_td01">이름</th>
+			<th class="rs_td01">대상</th>
+			<th class="rs_td01">임계값</th>
+			<th class="rs_td01">설명</th>
+			<th class="rs_td01">생성일</th>
+			<th class="rs_td01">액션</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for alarm in alarmList%}
+		<tr data-id="{{alarm.alarm_id}}">
+			<td><a class="list_a01" id="detailAlarmView" href="#" onclick='showAlarmDetail("{{alarm.alarm_id}}")'>{{alarm.name}}</a></td>
+			<td class="name">
+				{% if request.session.user_name == 'admin' %}
+					{% if 'image' in alarm.threshold_rule.meter_name %}
+						<a class="list_a01" href="/dashboard/admin/images/{{alarm.threshold_rule.query.0.value}}/detail">
+					{% elif 'network' in alarm.threshold_rule.meter_name %}
+						<a class="list_a01" href="/dashboard/admin/networks/{{alarm.threshold_rule.query.0.value}}/detail">
+					{% else %}
+						<a class="list_a01" href="/dashboard/admin/instances/{{alarm.threshold_rule.query.0.value}}/detail">
+					{% endif %}
+							{{alarm.threshold_rule.query.0.value}}
+						</a>
+				{% else %}
+					{{alarm.threshold_rule.query.0.value}}
+				{% endif %}
+				{{alarm.threshold_rule.meter_name}}
+				{% if alarm.threshold_rule.statistic == 'avg' %} 평균값
+				{% elif alarm.threshold_rule.statistic == 'min' %} 최소값
+				{% elif alarm.threshold_rule.statistic == 'max' %} 최대값
+				{% endif %}
+			</td>
+			<td >
+			{{alarm.threshold_rule.threshold}}
+				{% if alarm.threshold_rule.comparison_operator == 'gt' %} 초과
+				{% elif alarm.threshold_rule.comparison_operator == 'ge' %} 이상
+				{% elif alarm.threshold_rule.comparison_operator == 'lt' %} 미만
+				{% elif alarm.threshold_rule.comparison_operator == 'le' %} 이하
+				{% elif alarm.threshold_rule.comparison_operator == 'eq' %} 같다
+				{% elif alarm.threshold_rule.comparison_operator == 'ne' %} 같지않다
+				{% endif %}
+			</td>
+			<td >{{alarm.description}}</td>
+			<td class="date_type">{{alarm.timestamp}}</td>
+			<td >
+				<div class="button_group_d01 update">알람 수정</div>
+				<div class="button_group_d02 action">
+					<img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+				</div>
+				<div class="clear_float"></div>
+				<div class="actionGroup actionGroup01" hidden>
+					<a href="#" class="delete actionGroup_a01"><div>알람 삭제</div></a>
+				</div>
+				<div class="clear_float"></div>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<script src="{% static 'js/telemeter/alarms/index.js' %}"></script>
+<script src="{% static 'js/telemeter/alarms/create.js' %}"></script>
+<style>
+#modalCreate .modal_pop_d01 { width: 630px; }
+#modalCreate table { width: auto; }
+#modalCreate .mypage_td02 { text-align: left; }
+</style>

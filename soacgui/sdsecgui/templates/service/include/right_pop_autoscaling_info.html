@@ -1,0 +1,68 @@
+{% extends 'service/right_pop.html' %}
+{% load commontags %}
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_autoscaling.png" alt="#">
+<div class="right_d01 type">{{ _('오토스케일링 그룹') }}</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02">{{ _('이름') }}</div>
+<div class="right_d03 name">{{ data.name }}</div>
+{% comment %}
+<div class="right_d04">ID</div>
+<div class="right_d03 id">{{ data_id }}</div>
+<div class="right_d04">{{ _('상태') }}</div>
+<div class="right_d03 status">{{ data.status }}</div>
+{% endcomment %}
+<div class="right_d04">Cooldown</div>
+<div class="right_d03 cooldown">{{ data.cooldown }}</div>
+<div class="right_d04">{{ _('최초 가상머신 개수') }}</div>
+<div class="right_d03 ">{{ data.desired_capacity }} 개</div>
+<div class="right_d04">{{ _('가상머신 개수') }}</div>
+<div class="right_d03 ">{{ data.min_size }} ~ {{ data.max_size }} 개</div>
+
+<div class="div-right-line"></div>
+<div class="right_d02 ">{{ _('스케일링 정책') }}</div>
+    {% for scaling_policy in data.scaling_policy_list %}
+    <div class="right-group">
+        <div class="right-inline-text">
+            <div class="right-key-text">{{ _('정책 이름') }} {{ forloop.counter }}</div>
+            <div class="right-value-text">{{ scaling_policy.name }}</div>
+        </div>
+        <div class="right-inline-text">
+            <div class="right-key-text">{{ _('스케일링 단위') }}</div>
+            <div class="right-value-text">{{ scaling_policy.scaling_adjustment }}</div>
+        </div>
+        <div class="right-inline-text">
+            <div class="right-key-text">{{ _('적용 조건') }}</div>
+            <div class="right-value-text">{{ scaling_policy.meter_name }} {{ scaling_policy.statistic }} &{{ scaling_policy.comparison_operator }}; {{ scaling_policy.threshold }}</div>
+        </div>
+        <div class="right-inline-text">
+            <div class="right-key-text">{{ _('유형') }}</div>
+            <div class="right-value-text">{{ scaling_policy.adjustment_type }}</div>
+        </div>
+        <div class="right-inline-text">
+            <div class="right-key-text">{{ _('측정 기간') }}</div>
+            <div class="right-value-text">{{ scaling_policy.period }}{{ _(' 초') }}</div>
+        </div>
+        <div class="right-inline-text">
+            <div class="right-key-text">{{ _('측정 횟수') }}</div>
+            <div class="right-value-text">{{ scaling_policy.evaluation_periods }}{{ _(' 회') }}</div>
+        </div>
+        <div class="right-inline-text">
+            <div class="right-key-text">Cooldown</div>
+            <div class="right-value-text">{{ scaling_policy.cooldown }}{{ _(' 초') }}</div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock resourceInfo %}
+{% comment %}
+<div class="right_d02 ">vm_resource</div>
+<div class="right_d03 ">flavor: {{ data.vm_resource.flavor }}</div>
+<div class="right_d03 ">image: {{ data.vm_resource.image }}</div>
+{% for vnic in data.vm_resource.vnic_list %}
+<div class="right_d04 ">vnic_name: {{ vnic.name }}</div>
+<div class="right_d03 ">tenant_net: {{ vnic.tenant_net }}</div>
+<div class="right_d03 ">public_ip: {{ vnic.public_ip }}</div>
+{% endfor %}
+{% endcomment %}

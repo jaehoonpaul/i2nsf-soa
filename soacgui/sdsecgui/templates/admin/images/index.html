@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load commontags %}
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">이미지</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 click">이미지</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="images">
+    <div class="ind_d02">
+        <div class="ind_d05">이미지</div>
+        <div class="clear_float"></div>
+    </div>
+    <button id="createModal" class="btn-ok">이미지 생성</button>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th>프로젝트</th>
+            <th>이름</th>
+            <th>유형</th>
+            <th>상태</th>
+            <th>가시성</th>
+            <th>보호됨</th>
+            <th>디스크포멧</th>
+            <th>크기</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for image in imageList %}
+            <tr data-id="{{image.id}}">
+                <td> {{ image.project_name }}</td>
+                <td class="name"><a class="list_a01" href="/dashboard/admin/images/{{image.id}}">{{ image.name }}</a></td>
+                <td>이미지</td>
+                <td>{{ image.status }}</td>
+                <td>{{ image.visibility }}</td>
+                <td>{{ image.protected }}</td>
+                <td>{{ image.disk_format }}</td>
+                <td>{{ image.size }}</td>
+                <td>
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 btnUpdate">이미지 편집</div>
+                        <div class="button_group_d02 action">
+                            <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                        </div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="btnDelete actionGroup_a01"><div>이미지 삭제</div></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in imageList|length|range:15 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        <tfoot>
+            <tr><td colspan="9" class="rs_td03 tl">Displaying {{ imageList|length }} item</td></tr>
+        </tfoot>
+        </tbody>
+    </table>
+    <!--<p class="post{{ forloop.counter }}">{{ post.text|linebreaksbr }}</p>-->
+    <!--<p>{{ imageList }}</p>-->
+</div>
+<script src="/static/js/admin/images/index.js"></script>
+{% endblock content %}

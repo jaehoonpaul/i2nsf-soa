@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block header %}
+{% load staticfiles %}
+<a href="/dashboard/monitoring"><div class="head_d05">전체 모니터링</div></a>
+<a href="/dashboard/monitoring/action"><div class="head_d05">액션</div></a>
+<a href="#"><div class="head_d05 click">알림 이력</div></a>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+
+<div class="rs_d01" style="min-height:200px;">
+    <div class="ind_d02">
+        <div class="ind_d05">알림 이력</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="common-tab-01" cellpadding="0" border="0" cellspacing="0">
+        <colgroup>
+            <col style="width: 20%;">
+            <col style="width: 40%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <!--<th>알람 번호</th>-->
+                <th>트리거명</th>
+                <th>트리거내용</th>
+                <th>트리거 URL</th>
+                <th>발생 일시</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if alarms != None %}
+                {% for item in alarms %}
+                    <tr>
+                        <!--<td>{{ item.alarm_key }}</td>-->
+                        <td>{{ item.trigger_name }}</td>
+                        <td class="td-pd-all">{% autoescape off %}{{ item.trigger_message }}{% endautoescape %}</td>
+                        <td>{{ item.trigger_url }}</td>
+                        <td>{{ item.ins_date }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            {% if alarms == None %}
+                <tr>
+                    <td colspan="9">상태 데이터가 존재하지 않습니다.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<script src="{% static 'js/monitoring/history/index.js' %}"></script>
+{% endblock content %}

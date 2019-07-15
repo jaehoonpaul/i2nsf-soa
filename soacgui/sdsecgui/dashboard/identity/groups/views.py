@@ -1,0 +1,114 @@
+# _*_ coding:utf-8 _*_
+import json
+import os
+import time
+from ConfigParser import ConfigParser
+from datetime import datetime
+
+import sys
+
+import logging
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+
+from sdsecgui.tools.openstack_restapi import KeystoneRestAPI
+from sdsecgui.tools.keystone_exception import Unauthorized
+
+logger = logging.getLogger("myapp.myLogger")
+
+
+def get_group_list(request):
+    if request.is_ajax() and request.method == 'POST':
+        pass
+    else:
+        auth_url = request.session.get("auth_url")
+        token = request.session.get('passToken')
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.get_group_list()
+        if result.get("success"):
+            groups = result.get("success").get("groups")
+
+            return render(request, 'identity/groups/index.html', {"groups": groups})
+        else:
+            return render(request, 'identity/groups/index.html', {"error": result.get("error")})
+
+
+def get_group_by_id(request, group_id):
+    if request.is_ajax() and request.method == 'POST':
+        pass
+    else:
+        token = request.session.get('passToken')
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/identity/groups/" + group_id + "/detail")
+        auth_url = request.session.get("auth_url")
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.get_group(group_id)
+        if result.get("success"):
+            group = result.get("success")
+            return render(request, 'identity/groups/info.html', group)
+        else:
+            return render(request, 'identity/groups/info.html', {"error": result.get("error")})
+
+
+def create_group(request):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get('auth_url')
+        group = json.loads(request.POST.get("group"))
+        data = {"group": {
+            "description": group.get("description"),
+            "domain_id": group.get("domain_id"),
+            "name": group.get("name"),
+        }}
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.create_group(data)
+        return JsonResponse(result)
+
+
+def update_group(request, group_id):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get('auth_url')
+        group = json.loads(request.POST.get("group"))
+        data = {"group": {
+            "description": group.get("description"),
+            "domain_id": group.get("domain_id"),
+            "name": group.get("name"),
+        }}
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.update_group(group_id, data)
+        return JsonResponse(result)
+
+
+def delete_group(request, group_id):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get('auth_url')
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.delete_group(group_id)
+        return JsonResponse(result)
+
+
+def group_modal(request):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    domain_id = request.session.get("domain_id")
+    domain_name = request.session.get("domain_name")
+    modal_title = request.GET.get("modal_title")
+    group_id = request.GET.get("group_id")
+    data = {
+        "modal_title": modal_title,
+        "input_domain_id": domain_id,
+        "input_domain_name": domain_name,
+    }
+    if group_id:
+        data["group_id"] = group_id
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.get_group(group_id)
+        if result.get("success"):
+            group = result["success"].get("group")
+            data["group_name"] = group.get("name")
+            data["description"] = group.get("description")
+            data["enabled"] = group.get("enabled")
+    return render(request, 'identity/groups/modal.html', data)
+

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03 header_title_d01">이미지</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03 header_title_d01">{{ image.name }}</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 click">{{ image.name }}</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="images_info">
+    <div class="ind_d02">
+        <div class="ind_d05">{{ image.name }}</div>
+        <div class="clear_float"></div>
+    </div>
+
+    <table class="rs_tab02">
+        <tr><th class="mypage_td01">이름</th>       <td class="mypage_td02">{{ image.name }}</td></tr>
+        <tr><th class="mypage_td01">ID</th>         <td class="mypage_td02">{{ image.id }}</td></tr>
+        <tr><th class="mypage_td01">소유자</th>     <td class="mypage_td02">{{ image.owner }}</td></tr>
+        <tr><th class="mypage_td01">상태</th>       <td class="mypage_td02">{{ image.status }}</td></tr>
+        <tr><th class="mypage_td01">공용</th>       <td class="mypage_td02">{{ image.visibility }}</td></tr>
+        <tr><th class="mypage_td01">보호됨</th>     <td class="mypage_td02">{{ image.protected }}</td></tr>
+        <tr><th class="mypage_td01">Checksum</th>   <td class="mypage_td02">{{ image.checksum }}</td></tr>
+        <tr><th class="mypage_td01">생성 시점</th>  <td class="mypage_td02">{{ image.created_at }}</td></tr>
+        <tr><th class="mypage_td01">갱신 시점</th>  <td class="mypage_td02">{{ image.updated_at }}</td></tr>
+        <!--<tr><th class="mypage_td01">최소 디스크</th><td class="mypage_td02">{{ image.min_disk }}</td></tr>-->
+        <!--<tr><th class="mypage_td01">최소 RAM</th>   <td class="mypage_td02">{{ image.min_ram }}</td></tr>-->
+        <tr><th class="mypage_td01">크기</th>          <td class="mypage_td02">{{ image.size }}</td></tr>
+        <tr><th class="mypage_td01">컨테이너 포멧</th> <td class="mypage_td02">{{ image.container_format }}</td></tr>
+        <tr><th class="mypage_td01">디스크 포멧</th>   <td class="mypage_td02">{{ image.disk_format }}</td></tr>
+        <tr><th class="mypage_td01">아키텍처</th>      <td class="mypage_td02">{{ image.architecture }}</td></tr>
+
+
+        <!--<tr><th class="mypage_td01">file</th>       <td class="mypage_td02">{{ image. }}</td></tr>-->
+        <!--<tr><th class="mypage_td01">커널 ID</th>    <td class="mypage_td02">{{ image.kernel_id }}</td></tr>-->
+        <!--<tr><th class="mypage_td01">램디스크 ID</th><td class="mypage_td02">{{ image.ramdisk_id }}</td></tr>-->
+        <!--<tr><th class="mypage_td01">schema</th>     <td class="mypage_td02">{{ image. }}</td></tr>-->
+        <!--<tr><th class="mypage_td01">태그</th>       <td class="mypage_td02">{{ image.tags }}</td></tr>-->
+        <!--<tr><th class="mypage_td01">가상 크기</th>  <td class="mypage_td02">{{ image.virtual_size }}</td></tr>-->
+    </table>
+    <!--<p class="post{{ forloop.counter }}">{{ post.text|linebreaksbr }}</p>-->
+    <!--<p>{{ imageList }}</p>-->
+    <div class="clear_float"></div>
+</div>
+{% endblock content %}

@@ -1,0 +1,70 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+
+{% block modal_body %}
+<form action="" method="post" role="form" data-toggle="validator">
+    <table class="common-tab-02 tl">
+        <tbody>
+        <tr>
+            <th colspan="2">Openstack 접속 정보</th>
+        </tr>
+        <tr>
+            <th>도메인 명</th>
+            <td>
+                <input type="text" name="domain_name" placeholder="예) soa-mitaka1" required value="{{ domain.domain_name }}">
+            </td>
+        </tr>
+        <tr>
+            <th>인증 URL</th>
+            <td>
+                <input type="text" name="domain_auth_url" placeholder="예) http://192.168.0.2:35357/v3" required value="{{ domain.auth_url }}">
+            </td>
+        </tr>
+        <tr>
+            <th>도메인 설명</th>
+            <td>
+                <input type="text" name="domain_description" required value="{{ domain.description }}">
+            </td>
+        </tr>
+        <tr>
+            <th colspan="2">DB 접속 정보</th>
+        </tr>
+        <tr>
+            <th>DB URL</th>
+            <td>
+                <input type="text" name="db_ip" placeholder="예) 192.168.0.2" required value="{{ domain.db_ip|default:'' }}">
+            </td>
+        </tr>
+        <tr>
+            <th>DB URL</th>
+            <td>
+                <input type="number" name="db_port" placeholder="예) 3306" required value="{{ domain.db_port|default:'' }}">
+            </td>
+        </tr>
+        <tr>
+            <th>DB 관리자 계정</th>
+            <td>
+                <input type="text" name="db_user" required value="{{ domain.db_user|default:'' }}">
+            </td>
+        </tr>
+        <tr>
+            <th>DB 비밀번호</th>
+            <td>
+                <input type="text" name="db_password" required value="{{ domain.db_password|default:'' }}">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <div class="pop_plus_bt_img01" id="edit_domain_submit" style="display:inline-block;">
+        <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+    </div>
+    <div class="pop_cancel_bt_img01" id="cancel" style="display:inline-block;">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+{% endblock modal_footer %}

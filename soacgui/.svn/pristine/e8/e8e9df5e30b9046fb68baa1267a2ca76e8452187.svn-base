@@ -1,0 +1,56 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<!-- IP Registration 탭-->
+
+<table class="pop-tab-01" style="width: 700px;">
+	<colgroup></colgroup>
+	<tbody>
+		<tr>
+			<th class="pop_input_td01">Endpoint 종류</th>
+			<td class="pop_input_td02">
+				<select name="endpoint_type">
+					<option value="user"> User Registration</option>
+					<option value="device"> Device Registration</option>
+					<option value="url"> URL Registration</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th class="pop_input_td01">
+				<div>정책명</div>
+			</th>
+			<td class="pop_input_td02">
+				<input name="name" class="rs_text04" placeholder="정책명"/>
+			</td>
+		</tr>
+		<tr class="endpoint-ip">
+			<th class="pop_input_td01">IP 주소 범위 - 시작</th>
+			<td class="pop_input_td02 endpoint-ip">
+				<input name="start-ip-address" class="rs_text04" placeholder="시작 IP"/>
+			</td>
+		</tr>
+		<tr class="endpoint-ip">
+			<th class="pop_input_td01">IP 주소 범위 - 끝</th>
+			<td class="pop_input_td02">
+				<input name="end-ip-address" class="rs_text04" placeholder="끝 IP"/>
+			</td>
+		</tr>
+		<tr class="endpoint-url" hidden>
+			<th class="pop_input_td01">URL</th>
+			<td class="pop_input_td02">
+				<input name="content" class="rs_text04" placeholder="ex) URL1.com, URL2.com"/>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script src='{% static "js/service/intent/endpoint/create_modal.js" %}'></script>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="submit">
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+</div>
+{% endblock modal_footer %}

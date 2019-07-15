@@ -1,0 +1,23 @@
+{% extends 'service/right_pop.html' %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_volume.png" alt="#">
+<div class="right_d01 type">볼륨</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d04">크기(GB)</div>
+<div class="right_d03 size">{{ volume.size }}</div>
+<div class="right_d04">생성 일시</div>
+<div class="right_d03 createdAt">{{ volume.createdAt }}</div>
+<div class="right_d04">마운트 정보</div>
+<div class="right_d03 attachments">
+    {% for attachment in volume.attachments %}
+    serverName 의 attachements[i].device 에 연결됨
+    {% endfor %}
+</div>
+<div class="right_d04">metadata</div>
+<div class="right_d03 disabled">{{ volume.metadata.readonly }}</div>
+<div class="right_d04">연결모드</div>
+<div class="right_d03 attached_mode">{{ volume.metadata.attached_mode }}</div>
+{% endblock resourceInfo %}

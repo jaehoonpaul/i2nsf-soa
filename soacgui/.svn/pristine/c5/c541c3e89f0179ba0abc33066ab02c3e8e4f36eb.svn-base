@@ -1,0 +1,195 @@
+# _*_coding:utf-8_*_
+import json
+
+import logging
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
+from sdsecgui.dashboard.views import common_login
+from sdsecgui.tools.openstack_restapi import KeystoneRestAPI
+from sdsecgui.db.db_connector import SOAControlDBConnector
+from sdsecgui.tools.keystone_exception import Unauthorized
+from sdsecgui.db.query import *
+from sdsecgui.db.soa_db_connector import SOAManagerDBConnector
+from sdsecgui.db.soa_query import *
+
+logger = logging.getLogger("myapp.myLogger")
+
+
+def get_user_list(request):
+    if request.is_ajax() and request.method == 'POST':
+        pass
+    else:
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        domain_id = request.session.get("domain_id")
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/identity/users")
+        keystone = KeystoneRestAPI(auth_url, token)
+        data = None
+        if domain_id:
+            data = {"domain_id": domain_id}
+        result = keystone.get_user_list(data)
+        if result.get("success"):
+            result = result.get("success")
+        return render(request, 'identity/users/index.html', result)
+
+
+def get_user_by_id(request, user_id):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    if request.is_ajax() and request.method == 'POST':
+        pass
+    else:
+        if not token:
+            return redirect("/dashboard/domains/?next=/dashboard/identity/users/" + user_id + "/detail")
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.get_user(user_id)
+        if result.get("success"):
+            user = result.get("success")
+            return render(request, 'identity/users/info.html', user)
+        else:
+            return render(request, 'identity/users/info.html', result)
+
+
+def create_user(request):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get('auth_url')
+        keystone = KeystoneRestAPI(auth_url, token)
+        user = json.loads(request.POST.get("user"))
+        data = {
+            "user": {
+                k: v
+                for k, v in user.items()
+                if v is not None and k not in ["role_id", "domain_name"]
+            }
+        }
+        result = keystone.create_user(data)
+        if result.get("success") and user.get("default_project_id"):
+            created_user = result["success"].get("user")
+            a_result = keystone.assign_role_to_user_on_projects(user.get("default_project_id"), created_user.get("id"), user.get("role_id"))
+            if a_result.get("error"):
+                result["error"] = a_result["error"]
+        return JsonResponse(result)
+
+
+def update_user(request, user_id):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get('auth_url')
+        keystone = KeystoneRestAPI(auth_url, token)
+        user = json.loads(request.POST.get("user"))
+        data = {
+            "user": {
+                k: v
+                for k, v in user.items()
+                if v is not None
+            }
+        }
+        result = keystone.update_user(user_id, data)
+        return JsonResponse(result)
+
+
+def delete_user(request, user_id):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        auth_url = request.session.get('auth_url')
+        keystone = KeystoneRestAPI(auth_url, token)
+        result = keystone.delete_user(user_id)
+        return JsonResponse(result)
+
+
+def get_project_list_for_user(request):
+    if request.is_ajax() and request.method == 'POST':
+        token = request.session.get('passToken')
+        user_id = request.session.get("user_id")
+        auth_url = request.session.get("auth_url")
+        try:
+            keystone = KeystoneRestAPI(auth_url, token)
+        except Unauthorized as e:
+            return JsonResponse({"error": {"title": e.message, "message": e.details, "code": 401}})
+        result = keystone.get_project_list_for_user(user_id)
+
+
+def user_modal(request):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    domain_id = request.session.get("domain_id")
+    domain_name = request.session.get("domain_name")
+    modal_title = request.GET.get("modal_title")
+    user_id = request.GET.get("user_id")
+    pass_flag = request.GET.get("pass_flag")
+    data = {
+        "modal_title": modal_title,
+        "input_domain_id": domain_id,
+        "input_domain_name": domain_name,
+    }
+    keystone = KeystoneRestAPI(auth_url, token)
+    # 생성/수정 시
+    p_result = keystone.get_project_list({"domain_id": domain_id})
+    if p_result.get("success"):
+        data["projects"] = p_result["success"].get("projects")
+
+    r_result = keystone.get_role_list()
+    if r_result.get("success"):
+        data["roles"] = r_result["success"].get("roles")
+
+    if user_id:  # 수정 시
+        data["user_id"] = user_id
+        result = keystone.get_user(user_id)
+        if result.get("success"):
+            user = result["success"].get("user")
+            data.update(user)
+            # data["user_name"] = user.get("name")
+            # data["description"] = user.get("description")
+            # data["enabled"] = user.get("enabled")
+
+    if pass_flag:  # 비밀번호 변경 시
+        data["pass_flag"] = pass_flag
+
+    return render(request, 'identity/users/modal.html', data)
+
+
+@csrf_exempt
+def create_user_for_soa(request):
+    if request.method == 'POST':
+        # try:
+            # body_str = request.body.decode('utf-8')
+            # r_body = json.loads(body_str)
+        # except ValueError as e:
+        # result = {"error": {"title": e.message, "message": "json malformed error"}}
+        # else:
+        auth_url = request.GET.get("auth_url")
+        user_name = request.GET.get("user_name")
+        password = request.GET.get("pass")
+        project_name = request.GET.get("project_name")
+        soac_conn = SOAControlDBConnector.getInstance()
+        domain = soac_conn.select_one(SELECT_SOAC_DOMAINS, auth_url)
+        domain_name = domain.get("domain_name")
+        result = common_login(request, auth_url, user_name, password, domain_name, project_name)
+
+        if result.get("success"):
+            token = request.session.get("passToken")
+            project = json.loads(request.GET.get("project"))
+            data = {"project": {
+                "description": project.get("description"),
+                "domain_id": request.session.get("domain_id"),
+                "name": project.get("name"),
+                "enabled": True,
+                "is_domain": False,
+            }}
+            keystone = KeystoneRestAPI(auth_url, token)
+            result = keystone.create_project(data)
+            if result.get("success"):  # 프로젝트 생성 성공
+                soam_conn = SOAManagerDBConnector.getInstance()
+                domain = soam_conn.select_one(SELECT_SOAM_DOMAIN, auth_url)
+                params = (domain.get("domain_id"), result["success"]["project"].get("id"), project.get("name"), project.get("description"))
+                soam_conn.insert(INSERT_SOAM_PROJECT, params)
+
+                params = (auth_url, result["success"]["project"].get("id"), project.get("name"))
+                soac_conn.insert(INSERT_SOAC_PROJECT, params)
+
+        return JsonResponse(result)
+

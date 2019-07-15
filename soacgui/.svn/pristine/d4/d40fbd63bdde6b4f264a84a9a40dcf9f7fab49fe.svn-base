@@ -1,0 +1,50 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+
+{% block modal_body %}
+    <div class="chart-detail-body">
+        <div class="group-control">
+            <input type="hidden" name="detailResourceID" value="">
+            <input type="hidden" name="detailMeterName" value="">
+            <div style="float:right; margin-right: 20px;">
+                <label for="chartDate">기간:&nbsp;&nbsp;</label>
+                <select id="chartDate" onchange="">
+                    <option value="0">최근 하루</option>
+                    <option value="1">최근 일주일</option>
+                    <option value="2">이번달 오늘까지</option>
+                    <option value="3">최근 15일</option>
+                    <option value="4">최근 30일</option>
+                    <option value="5">최근 1년</option>
+                    <option value="6">기간 설정</option>
+                </select>
+            </div>
+            <div class="" id="datePicker">
+                &nbsp;&nbsp;
+                &nbsp;&nbsp; 시작일: &nbsp;&nbsp;<input class="datepicker datepicker_text" data-date-format="yyyy-mm-dd" id="start_date" name="start" type="text">
+                &nbsp;&nbsp; 종료일: &nbsp;&nbsp;<input class="datepicker datepicker_text" data-date-format="yyyy-mm-dd" id="end_date" name="end" type="text">
+                <input type="button" class="btn btn-primary dateBtn" id="dateBtn" value="검색">
+            </div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="group-control threshold-control" hidden>
+            <label for="suggestedMin">View Min:</label>
+            <input type="number" name="suggestedMin" id="suggestedMin" step="any">
+            <label for="suggestedMax">View Max:</label>
+            <input type="number" name="suggestedMax" id="suggestedMax" step="any">
+            <button class="btn btn-primary" id="suggestedAccept">적용</button>
+            <label for="anno-threshold">Threshold:</label>
+            <input type="number" name="anno-threshold" id="anno-threshold" step="any">
+        </div>
+    </div>
+    <div class="" id="chartDraw">
+        <div id="detailChart"></div>
+    </div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="pop_d03">
+    <img class="pop_ok_bt_img01" data-dismiss="modal" id="thresholdSubmit" src="/static/img/btn_ok.png" alt="#" hidden>
+    <img class="pop_ok_bt_img01" data-dismiss="modal" src="/static/img/btn_cancel.png" alt="#">
+</div>
+<script>
+</script>
+{% endblock modal_footer %}

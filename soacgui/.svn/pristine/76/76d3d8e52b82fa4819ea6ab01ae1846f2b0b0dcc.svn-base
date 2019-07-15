@@ -1,0 +1,146 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+
+{% block modal_body %}
+<div class="p50">
+    <div class="tab-area">
+        <div class="rs_d04 tab-btn click">알람 정보</div>
+        <div class="rs_d04 tab-btn">알람 목록</div>
+        <div class="clear_float"></div>
+		<div class="tab-body" style="width: 100%;">
+			<table class="common-tab-02 tl" id="detailAlarm">
+				<tr>
+					<th>ID</th>
+					<td id="alarmId">{{alarm.alarm_id}}</td>
+				</tr>
+				<tr>
+					<th>이름</th>
+					<td>{{alarm.name}}</td>
+				</tr>
+				<tr>
+					<th>프로젝트 ID</th>
+					<td>{{alarm.project_id}}</td>
+				</tr>
+				<tr>
+					<th>사용자 ID</th>
+					<td>{{alarm.user_id}}</td>
+				</tr>
+				<tr>
+					<th>알람 URL</th>
+					<td>
+						{% for alarm_action in alarm.alarm_actions %}
+							{% if forloop.counter0 != 0 %}
+								<br/>
+							{% endif %}
+							{{ alarm_action }}
+						{% endfor %}
+					</td>
+				</tr>
+				<tr>
+					<th>정상 URL</th>
+					<td>
+						{% for ok_action in alarm.ok_actions %}
+							{% if forloop.counter0 != 0 %}
+								<br/>
+							{% endif %}
+							{{ ok_action }}
+						{% endfor %}
+					</td>
+				</tr>
+				<tr>
+					<th>설명</th>
+					<td>{{alarm.description}}</td>
+				</tr>
+				<!--<tr>
+					<th>time_constraints</th>
+					<td>{{alarm.time_constraints}}</td>
+				</tr>-->
+				<tr>
+					<th>관찰 대상</th>
+					<td>
+						{{alarm.threshold_rule.resource_name|default:alarm.threshold_rule.query.0.value}}
+						{{alarm.threshold_rule.meter_name}}
+						{% if alarm.threshold_rule.statistic == 'avg' %} 평균값
+						{% elif alarm.threshold_rule.statistic == 'min' %} 최소값
+						{% elif alarm.threshold_rule.statistic == 'max' %} 최대값
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>임계값</th>
+					<td>{{alarm.threshold_rule.threshold}}
+						{% if alarm.threshold_rule.comparison_operator == 'gt' %} 초과
+						{% elif alarm.threshold_rule.comparison_operator == 'ge' %} 이상
+						{% elif alarm.threshold_rule.comparison_operator == 'lt' %} 미만
+						{% elif alarm.threshold_rule.comparison_operator == 'le' %} 이하
+						{% elif alarm.threshold_rule.comparison_operator == 'eq' %} 같다
+						{% elif alarm.threshold_rule.comparison_operator == 'ne' %} 같지않다
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>관찰 간격</th>
+					<td>{{alarm.threshold_rule.evaluation_periods}}  {{alarm.threshold_rule.period}}분마다</td>
+				</tr>
+				<tr>
+					<th>상태</th>
+					<td>{{alarm.state}}</td>
+				</tr>
+				<tr>
+					<th>상태 타임스탬프</th>
+					<td class="date_type">{{alarm.state_timestamp}}</td>
+				</tr>
+				<tr>
+					<th>반복 발생</th>
+					<td>{{alarm.enabled}}</td>
+				</tr>
+				<tr>
+					<th>유형</th>
+					<td>{{alarm.type}}</td>
+				</tr>
+				<tr>
+					<th>생성일</th>
+					<td class="date_type">{{alarm.timestamp}}</td>
+				</tr>
+			</table>
+		</div>
+		<div id="alarm_history" class="tab-body">
+			<table class="common-tab-01 info" id="historyAlarm" cellpadding="0" border="0" cellspacing="0">
+				<thead>
+				<tr>
+					<th class='ind_th01'>타입</th>
+					<th class='ind_th01'>상태</th>
+					<th class='ind_th01'>기록시간</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for history in histories %}
+				<tr>
+					<td class='ind_td01'>{{ history.type }}</td>
+					<td class='ind_td01'>
+						{% if '{"state": ' in history.detail %}
+							{% if 'ok' in history.detail %}정상
+							{% elif 'alarm' in history.detail %}알람 발생
+							{% else %}수집된 데이터 없음
+							{% endif %}
+						{% else %}
+							-
+						{% endif %}
+					</td>
+					<td class='ind_td01'>{{ history.timestamp }}</td>
+				</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="pop_d03">
+	<button type="button" id="updateAlarm" class="btn btn-primary" style="display:inline-block;  margin:10px 10px 10px 0px; width:97px;">수정</button>
+	<button type="button" onclick="deleteAlarm()" class="btn btn-primary" style="display:inline-block; margin:10px 10px 10px 0px; width:97px;">삭제</button>
+	<button type="button" id="listAlarm" class="btn btn-primary" style="display:inline-block; margin:10px 10px 10px 0px; width:97px;" data-dismiss="modal">닫기</button>
+</div>
+<script src="{% static 'js/telemeter/alarms/info.js' %}"></script>
+{% endblock modal_footer %}

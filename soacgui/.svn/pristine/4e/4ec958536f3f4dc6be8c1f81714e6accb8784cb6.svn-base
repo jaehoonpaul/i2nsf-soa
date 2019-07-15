@@ -1,0 +1,91 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+
+{% block modal_body %}
+{% if alarm.alarm_id %}
+<input type="hidden" id="alarm_id" value="{{ alarm.alarm_id }}">
+{% endif %}
+<table class="common-tab-04">
+	<tr>
+		<th>이름</th>
+		<td><input type="text" id="alarm_name" class="checkField width95" value="{{ alarm.name }}"></td>
+	</tr>
+	<tr>
+		<th>설명</th>
+		<td><input type="text" id="description" class="selectValue width95" value="{{ alarm.description }}"></td>
+	</tr>
+	<!--<tr>
+        <th>insufficient_data_actions</th>
+        <td><input type="text" id="insufficient_data_actions" class="selectValue width95"></td>
+    </tr>-->
+	<tr>
+		<th>정상 URL</th>
+		<td><input type="text" id="ok_actions" class="selectValue width95" placeholder="http://{dashboard_server}/dashboard/telemeter/alarms/accept" value="{% for ok_action in alarm.ok_actions %}{% if forloop.counter0 > 0 %},{% endif %}{{ ok_action }}{% endfor %}"></td>
+	</tr>
+	<tr>
+		<th>알람 URL</th>
+		<td><input type="text" id="alarm_actions" class="selectValue width95" placeholder="http://{dashboard_server}/dashboard/telemeter/alarms/accept" value="{% for alarm_action in alarm.alarm_actions %}{% if forloop.counter0 > 0 %},{% endif %}{{ alarm_action }}{% endfor %}"></td>
+	</tr>
+	<tr>
+		<th>관찰 대상</th>
+		<td>
+			<select id="meter_name" class="width70" data-selected="{{ alarm.threshold_rule.meter_name }}"{% if alarm.alarm_id %} disabled{% endif %}>
+			</select>
+			<select id="statistic" class="width25" data-selected="{{ alarm.threshold_rule.statistic }}">
+				<option value="avg">평균값</option>
+				<option value="min">최소값</option>
+				<option value="max">최대값</option>
+			</select>
+			<br/>
+			<br/>
+			<select id="resource_id" class="width47" data-selected="{{ alarm.threshold_rule.query.0.value }}"{% if alarm.alarm_id %} disabled{% endif %}></select>
+			<select id="network_interface_id" class="width47" data-selected="{{ alarm.threshold_rule.resource_name }}" hidden{% if alarm.alarm_id %} disabled{% endif %}></select>
+		</td>
+	</tr>
+	<tr>
+		<th>관찰 간격</th>
+		<td>
+			<input type="text" id="evaluation_periods" class="checkField width70" value="{{ alarm.threshold_rule.evaluation_periods }}">
+			<select id="period" class="width25" data-selected="{{ alarm.threshold_rule.period }}">
+				<option value="60">1분마다</option>
+				<option value="300">5분마다</option>
+				<option value="600">10분마다</option>
+				<option value="1800">30분마다</option>
+				<option value="3600">1시간마다</option>
+			</select>
+		</td>
+	</tr>
+	<!--<tr>-->
+	<!--<th>time_constraints</th>-->
+	<!--<td><input type="text" id="time_constraints" class="selectValue"></td>-->
+	<!--</tr>-->
+	<tr>
+		<th>임계값</th>
+		<td>
+			<input type="text" id="threshold" class="checkField" value="{{ alarm.threshold_rule.threshold }}">
+			<select id="comparison_operator" class="width25" data-selected="{{ alarm.threshold_rule.comparison_operator }}">
+				<option value="gt">초과</option>
+				<option value="ge">이상</option>
+				<option value="le">이하</option>
+				<option value="lt">미만</option>
+				<option value="eq">같다</option>
+				<option value="ne">같지않다</option>
+			</select>
+			<button class="btn btn-primary" id="selectThreshold">그래프</button>
+		</td>
+	</tr>
+</table>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="pop_d03">
+	{% if alarm.alarm_id %}
+	<img class="pop_plus_bt_img01" src="/static/img/plus_bt_01.png" alt="#" onclick="updateAlarm()">
+	{% else %}
+	<img class="pop_plus_bt_img01" src="/static/img/plus_bt_01.png" alt="#" onclick="createAlarm()">
+	{% endif %}
+	<img class="pop_cancel_bt_img01" src="/static/img/cancel_bt_01.png" alt="#" data-dismiss="modal">
+</div>
+<script>
+	initCreateAlarm();
+</script>
+{% endblock modal_footer %}

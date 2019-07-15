@@ -1,0 +1,306 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ETRI Security-On-Air 제어시스템</title>
+{% load commontags %}
+{% load staticfiles %}
+<style>
+</style>
+    {% block style %} {% endblock %}
+<link href='{% static "lib/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css" />
+<!--<link href='{% static "lib/bootstrap/3.2.0/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css" />-->
+<link href='{% static "css/style.css" %}' rel="stylesheet" type="text/css" />
+<link href='{% static "lib/lobibox/dist/css/lobibox.min.css" %}' rel="stylesheet" type="text/css" />
+<link href='{% static "css/jinsik_temp.css" %}' rel="stylesheet" type="text/css" />
+<link href='{% static "css/popup.css" %}' rel="stylesheet" type="text/css" />
+<script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+<script src='{% static "lib/bootstrap/3.3.7/js/bootstrap.min.js" %}'></script>
+<script type="text/javascript" src="{% static 'lib/lobibox/dist/js/notifications.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootbox.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/tinymce/jquery.tinymce.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+<!--<script type="text/javascript" src="{% static 'js/ajax_csrf.js' %}"></script>-->
+<script src='{% static "js/data_table.js" %}'></script>
+<script src='{% static "js/action_group.js" %}'></script>
+<script src='{% static "js/modal_util.js" %}'></script>
+<script src='{% static "js/tab_util.js" %}'></script>
+<script src='{% static "js/tools.js" %}'></script>
+<script src='{% static "lib/jquery/uiutil/jquery-ui.min.js" %}'></script>
+
+</head>
+<body>
+    <!--왼쪽메뉴-->
+    {% include "left_menu.html" %}
+    <!--왼쪽메뉴끝-->
+    <!--header-->
+    <div class="contents_d02"></div>
+    <div class="contents_d01">
+        <div class="header" id="toolbar" style="position: sticky; top: 0px;">
+            <div class="head_d01">
+                <img class="head_img01" src='{% static "img/common/head_logo_01.png" %}' alt="#">
+                {% block headerTitle %}
+                {% endblock %}
+
+                <!-- 드롭다운 -->
+                <section class="main dropdwon_sel01">
+                    <div class="wrapper-demo">
+                        <div id="dd" class="wrapper-dropdown-3" tabindex="1">
+                            <!--<img class="head_img03" src='{% static "img/common/head_user_01.png" %}' alt="#">-->
+                            <img src='{% static "img/common/head_user_01.png" %}' alt="#">
+                            <!--<img src="/resources/image/common/head_user_01.png" alt="#">-->
+                            <ul class="dropdown">
+                                <li>
+                                    <a href="#" onclick="U.lobiboxMessage('준비중입니다.', 'info', '정보');" id="userView">내정보</a>
+                                </li>
+                                <li><a href="#" id="logoutBtn">로그아웃</a><button id="revoke_token" hidden>revoke token</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                <!-- 드롭다운 끝 -->
+                <div class="head_sel01">
+                    {{ request.session.domain_name }} > {{ request.session.project_name }}
+                    <img style="float:right; margin:12px 10px 0 0;" src="/static/img/common/arrow01.png" alt="#">
+                </div>
+                <div id="switch_domain" class="domain_list_d01" hidden>
+                    <div class="domain_list_d02">
+                        <div class="domain_list_d03">도메인 :</div>
+                        {% for available_domain in request.session.available_domains %}
+                        <div class="domain_list_d0{% if request.session.auth_url == available_domain.auth_url %}4{% else %}6{% endif %}">
+                            {% if request.session.auth_url == available_domain.auth_url %}
+                            <img class="domain_list_img01" src="/static/img/common/domain_list_check_01.png" alt="#">
+                            {% endif %}
+                            <div class="domain_list_d05{%if request.session.auth_url == available_domain.auth_url %} click{% endif %}"
+                                 data-domain_key="{{ available_domain.domain_key }}" data-auth_url="{{ available_domain.auth_url }}" data-description="{{ available_domain.description }}" data-domain_name="{{ available_domain.domain_name }}">{{ available_domain.domain_name }}
+                            </div>
+                            <div class="clear_float"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="project_list_d07">
+                        <div class="project_list_d03">프로젝트 :</div>
+                        {% for available_project in request.session.available_projects %}
+                        <div class="project_list_d0{% if request.session.project_id == available_project.id %}4{% else %}6{% endif %}">
+                            {% if request.session.project_id == available_project.id %}
+                            <img class="project_list_img01" src="/static/img/common/domain_list_check_01.png" alt="#">
+                            {% endif %}
+                            <div class="project_list_d05{%if request.session.project_id == available_project.id %} click{% endif %}" id="{{ available_project.id }}">{{ available_project.name }}</div>
+                            <div class="clear_float"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="head_sel02">
+                    {{ _("영어") }}
+                    <img style="float:right; margin:12px 10px 0 0;" src="/static/img/common/arrow01.png" alt="#">
+                </div>
+                <div id="switch_language" class="language-list-01" hidden>
+                    <div class="language-list-02">
+                        <div class="language-list-03">{{ _("언어") }} :</div>
+                        <div class="language-list-0{% if request.session.auth_url == available_domain.auth_url %}4{% else %}6{% endif %}">
+                            {# if request.session.auth_url == available_domain.auth_url #}
+                            <img class="language-list-img01" src="/static/img/common/domain_list_check_01.png" alt="#">
+                            {# endif #}
+                            <div class="language-list-05
+                                {#if request.session.auth_url == available_domain.auth_url #}click{# endif #}"
+                                data-language_code="en">{{ _("영어") }}
+                            </div>
+                            <div class="clear_float"></div>
+                        </div>
+                        <div class="language-list-0{% if request.session.auth_url == available_domain.auth_url %}4{% else %}6{% endif %}">
+                            {# if request.session.auth_url == available_domain.auth_url #}
+                            <img class="language-list-img01" src="/static/img/common/domain_list_check_01.png" alt="#">
+                            {# endif #}
+                            <div class="language-list-05
+                                {#if request.session.auth_url == available_domain.auth_url #}click{# endif #}"
+                                data-language_code="ko">{{ _("한국어") }}
+                            </div>
+                            <div class="clear_float"></div>
+                        </div>
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="head_d04">
+                {% block header %}
+                {% endblock %}
+                <div class="clear_float"></div>
+            </div>
+        </div>
+        <!--header 끝-->
+        <div class="contents">
+
+            {% block sub_left_menu %}
+            {% endblock %}
+            {% block content%}
+            {% endblock %}
+            <div id="snackbar">Some text some message..</div>
+        </div>
+    </div>
+
+    <div id='loginModal' class='modal fade' role='dialog' data-backdrop="static">
+        <div class='modal-dialog'>
+            <div class='modal-content new_login_d01' style="position:initial;">
+                <div class="new_login_d04">
+                    <div class="new_login_d05">도메인</div><div class="new_login_d07" id="domain_name">{{ request.session.domain_name }}</div>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="new_login_d06">
+                    <div class="new_login_d05">설명</div><div class="new_login_d07" id="domain_description">{{ request.session.description }}</div>
+                    <div class="clear_float"></div>
+                </div>
+                <input type="hidden" id="login_domain_key" name="domain_key" value="{{ request.session.domain_key }}"/>
+                <input type="hidden" id="login_auth_url" name="auth_url" value="{{ request.session.auth_url }}"/>
+                <input type="hidden" id="login_domain_name" name= "domain_name" value="{{ request.session.domain_name }}"/>
+                <input type="hidden" id="login_project_name" name= "project_name" value="{{ request.session.project_name }}"/>
+                <div class="new_login_d06">
+                    <div class="new_login_d05">아이디</div>
+                    <input id="login_user_name" class="new_login_text02" name="user_name" placeholder="아이디 입력" type="text" value="{{request.session.user_name}}" required/>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="new_login_d06">
+                    <div class="new_login_d05">비밀번호</div>
+                    <input id="login_password" class="new_login_text02" name="pass" placeholder="비밀번호 입력" type="password" required/>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="new_login_d08">
+                    <img class="new_login_img01" id="btn_login" onclick="loginSubmit()" src='{% static "img/dashboard/common/login_bt_01.png" %}' alt="#"/>
+                    <img class="new_login_img02" id="selectDomain" src='{% static "img/dashboard/common/domain_select_bt_01.png" %}' alt="#"/>
+                    <div class="clear_float"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id='commonModal' class='modal fade' role='dialog' data-backdrop="static" style="text-align:center;"></div>
+    <div id='modal' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center;">
+        <div class="modal_pop_d01 modal-container" style="width: 800px;">
+            <div class="ind_d02 modal-header">
+                <div class="ind_d05 modal-title"></div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="modal-body" style="text-align: left;"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+    <div id='modalService' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center;">
+        <div class="modal_pop_d01 modal-container" style="width: 800px;">
+            <div class="ind_d02 modal-header">
+                <div class="ind_d05 modal-title"></div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="modal-body02" style="text-align: left;"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+    <div id='confirm_modal' class='modal fade' role='dialog' data-backdrop="static">
+        <div class="modal_pop_d01 modal-container" style="width: 800px;">
+            <div class="ind_d02 modal-header">
+                <div class="ind_d05 modal-title"></div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <div class="clear_float"></div>
+                <div class="pop_d03">
+                    <img class="pop_plus_bt_img01" src='{% static "img/dashboard/common/ok_bt_01.png" %}' alt="#" id="confirm">
+                    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" id="confirmCancel" data-dismiss="modal">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='modalDelete' class='modal fade' role='dialog' data-backdrop="static">
+        <div class="modal_pop_d01 modal-container" style="width: 620px;">
+            <div class="ind_d02 modal-header">
+                <div class="ind_d05">삭제</div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="modal-body">
+                삭제하시겠습니까
+            </div>
+            <div class="modal-footer">
+                <div class="clear_float"></div>
+                <div class="pop_d03">
+                    <button class="btn-pop-ok" id="deleteSubmit">삭제</button>
+                    <button class="btn-pop-cancel" data-dismiss="modal">취소</button>
+                    <!--<img class="pop_plus_bt_img01" src='{% static "img/common/btn/del_bt_01.png" %}' alt="#" id="deleteSubmit">-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id='topModal' class='modal fade' role='dialog' data-backdrop="static" style="text-align:center;"></div>
+    {% block modal %}
+    {% endblock %}
+
+    <div id="main_progress" class="loading_bg" style="display:none;width:100%;height:100%;">
+        <!--<div class="loading-container">-->
+        <!--<div class="loading"></div>-->
+        <!--<div id="loading-text">loading</div>-->
+        <!--</div>-->
+        <div class="loading-background">
+        </div>
+        <div class="loading-container">
+            {% include "common/progress.html" %}
+            <span id="loading-text">loading</span>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="{% static 'js/login.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/base.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/modal_util.js' %}"></script>
+<style>
+    input.login_text01{
+        font-size:11px;
+        height:40px;
+        font-family: "Noto Sans KR";
+    }
+    input.login_text02{
+        font-size:11px;
+        height:40px;
+        font-family: "Noto Sans KR";
+    }
+</style>
+<script>
+    {% if message %}
+        {% if title %}
+            U.lobibox("{{message}}", "error", "{{title}}");
+        {% else %}
+            U.lobibox("{{message}}", "error");
+        {% endif %}
+    {% endif %}
+    {% if error %}
+        {% if error.code == 401 %}
+            $('#loginModal').modal('show');
+        {% endif %}
+        {% if error.title %}
+            U.lobibox("{{error.message}}", "error", "{{error.title}}");
+        {% else %}
+            U.lobibox("{{error.message}}", "error");
+        {% endif %}
+    {% endif %}
+// var loading_text = $("#loading-text");
+// var tempColorCnt = 0;
+// function loadingTextLoop() {
+//     setTimeout(function() {
+//         if (loading_text.text().length > 10) loading_text.text("loading");
+//         else loading_text.text(loading_text.text() + ".");
+//         // var a = tempColorList[loading_text.text().length-7];
+//         // loading_text.css("color", "rgb("+a+", "+a+", "+a+")");
+//         loadingTextLoop();
+//     }, 600);
+// }
+// function loadingColorLoop() {
+//     setTimeout(function() {
+//         var sin = (Math.sin((++tempColorCnt%200/100) * Math.PI));
+//         var a = Math.abs(sin)*200 + 33;
+//         loading_text.css("color", "rgb("+a+", "+a+", "+a+")");
+//         loadingColorLoop();
+//     }, 25);
+// }
+// setTimeout(loadingTextLoop, 500);
+// loadingColorLoop();
+</script>
+</html>

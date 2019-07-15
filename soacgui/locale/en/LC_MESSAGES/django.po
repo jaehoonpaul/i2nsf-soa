@@ -1,0 +1,1228 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-05 22:16+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: jinsik kang <kangjinsik@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: sdsec/settings.py:256
+msgid "한국어"
+msgstr "Korean"
+
+#: sdsec/settings.py:256
+msgid "영어"
+msgstr "English"
+
+#: sdsecgui/dashboard/security/views.py:26
+msgid "Capability 직접입력"
+msgstr "Customizing Capability"
+
+#: sdsecgui/dashboard/security/views.py:95
+msgid "보안서비스로 등록되었습니다."
+msgstr "Registered Security Device"
+
+#: sdsecgui/dashboard/security/views.py:95
+#: sdsecgui/dashboard/security/views.py:197
+msgid "성공"
+msgstr "Success"
+
+#: sdsecgui/dashboard/security/views.py:102
+msgid "등록"
+msgstr "Create"
+
+#: sdsecgui/dashboard/security/views.py:148
+#: sdsecgui/templates/service/intent/rule/info.html:17
+msgid "수정"
+msgstr "Edit"
+
+#: sdsecgui/dashboard/security/views.py:197
+msgid "보안서비스를 삭제했습니다."
+msgstr "Deleteed Security Device"
+
+#: sdsecgui/dashboard/security/views.py:228
+#: sdsecgui/dashboard/security/views.py:290
+msgid "은 존재하지 않습니다."
+msgstr " is not exists"
+
+#: sdsecgui/dashboard/security/views.py:235
+msgid "조회"
+msgstr "View"
+
+#: sdsecgui/dashboard/security/views.py:294
+msgid "해당 서버에는 보안정보가 없습니다."
+msgstr "The server does not have security information."
+
+#: sdsecgui/dashboard/security/views.py:296
+msgid "해당 서비스에는 보안정보가 없습니다."
+msgstr "The service does not have security information."
+
+#: sdsecgui/dashboard/security/views.py:298
+msgid "해당 서버가 없습니다."
+msgstr "The server is not exists"
+
+#: sdsecgui/dashboard/security/views.py:303
+msgid "잘못된 아이디"
+msgstr "ID is Wrong"
+
+#: sdsecgui/dashboard/security/views.py:321
+msgid "성공적으로 전송하였습니다."
+msgstr "Send Success"
+
+#: sdsecgui/dashboard/security/views.py:321
+msgid "전송"
+msgstr "Send"
+
+#: sdsecgui/dashboard/service/intent/views.py:305
+#: sdsecgui/templates/service/intent/endpoint/index.html:30
+msgid "Endpoint 생성"
+msgstr "Create Endpoint"
+
+#: sdsecgui/dashboard/service/intent/views.py:328
+msgid "Endpoint 수정"
+msgstr "Edit Endpoint"
+
+#: sdsecgui/templates/admin/left_menu.html:3
+#: sdsecgui/templates/left_menu.html:55
+msgid "개요"
+msgstr "Sammary"
+
+#: sdsecgui/templates/admin/left_menu.html:6
+#: sdsecgui/templates/left_menu.html:56
+msgid "하이퍼바이저"
+msgstr "Hypervisor"
+
+#: sdsecgui/templates/admin/left_menu.html:9
+#: sdsecgui/templates/left_menu.html:57
+msgid "호스트 집합"
+msgstr "Host Aggregate"
+
+#: sdsecgui/templates/admin/left_menu.html:12
+#: sdsecgui/templates/left_menu.html:58
+msgid "가상서버"
+msgstr "Virtual Machine"
+
+#: sdsecgui/templates/admin/left_menu.html:15
+#: sdsecgui/templates/left_menu.html:59
+#: sdsecgui/templates/security/sub_left_menu.html:17
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:27
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:5
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:28
+#: sdsecgui/templates/service/sub_left_menu.html:21
+msgid "볼륨"
+msgstr "Volume"
+
+#: sdsecgui/templates/admin/left_menu.html:21
+#: sdsecgui/templates/left_menu.html:61
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:25
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:26
+#: sdsecgui/templates/service/include/right_pop_server_info.html:54
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:26
+msgid "이미지"
+msgstr "Image"
+
+#: sdsecgui/templates/admin/left_menu.html:24
+#: sdsecgui/templates/left_menu.html:62
+#: sdsecgui/templates/security/sub_left_menu.html:11
+#: sdsecgui/templates/service/include/right_pop_as_network.html:5
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:6
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:52
+#: sdsecgui/templates/service/include/right_pop_network.html:5
+#: sdsecgui/templates/service/include/right_pop_network_info.html:6
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:53
+#: sdsecgui/templates/service/sub_left_menu.html:15
+msgid "네트워크"
+msgstr "Network"
+
+#: sdsecgui/templates/admin/left_menu.html:27
+#: sdsecgui/templates/left_menu.html:63
+#: sdsecgui/templates/service/include/right_pop_router.html:5
+#: sdsecgui/templates/service/include/right_pop_router_info.html:5
+#: sdsecgui/templates/service/sub_left_menu.html:12
+msgid "라우터"
+msgstr "Router"
+
+#: sdsecgui/templates/admin/left_menu.html:30
+msgid "기본"
+msgstr "Default"
+
+#: sdsecgui/templates/admin/left_menu.html:33
+#: sdsecgui/templates/left_menu.html:65
+msgid "시스템 정보"
+msgstr "System Info"
+
+#: sdsecgui/templates/admin/left_menu.html:36
+msgid "알람"
+msgstr "Alarm"
+
+#: sdsecgui/templates/base.html:12
+msgid "제어시스템"
+msgstr "Controller Dashboard"
+
+#: sdsecgui/templates/base.html:60
+msgid "준비중입니다"
+msgstr "Coming soon"
+
+#: sdsecgui/templates/base.html:60
+msgid "정보"
+msgstr "info"
+
+#: sdsecgui/templates/base.html:60
+msgid "내정보"
+msgstr "myinfo"
+
+#: sdsecgui/templates/base.html:62
+msgid "로그아웃"
+msgstr "logout"
+
+#: sdsecgui/templates/base.html:74 sdsecgui/templates/base.html:146
+msgid "도메인"
+msgstr "domain"
+
+#: sdsecgui/templates/base.html:88 sdsecgui/templates/identity/left_menu.html:3
+#: sdsecgui/templates/left_menu.html:45
+#: sdsecgui/templates/monitoring/left_menu.html:3
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:16
+#: sdsecgui/templates/service/index.html:96
+msgid "프로젝트"
+msgstr "project"
+
+#: sdsecgui/templates/base.html:107
+msgid "언어"
+msgstr "language"
+
+#: sdsecgui/templates/base.html:150
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:16
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:17
+#: sdsecgui/templates/service/index.html:98
+#: sdsecgui/templates/service/info.html:312
+#: sdsecgui/templates/service/intent/new_service.html:189
+msgid "설명"
+msgstr "Description"
+
+#: sdsecgui/templates/base.html:158
+msgid "아이디"
+msgstr "ID"
+
+#: sdsecgui/templates/base.html:159
+msgid "아이디 입력"
+msgstr "insert ID"
+
+#: sdsecgui/templates/base.html:163
+msgid "비밀번호"
+msgstr "Password"
+
+#: sdsecgui/templates/base.html:164
+msgid "비밀번호 입력"
+msgstr "insert Password"
+
+#: sdsecgui/templates/base.html:216 sdsecgui/templates/base.html:225
+#: sdsecgui/templates/service/intent/rule/info.html:16
+msgid "삭제"
+msgstr "Delete"
+
+#: sdsecgui/templates/base.html:220
+msgid "삭제하시겠습니까"
+msgstr "Are you sure you want to delete"
+
+#: sdsecgui/templates/base.html:226 sdsecgui/templates/security/info.html:38
+#: sdsecgui/templates/security/info.html:192
+#: sdsecgui/templates/service/info.html:36
+#: sdsecgui/templates/service/info.html:212
+#: sdsecgui/templates/service/intent/new_service.html:176
+msgid "취소"
+msgstr "Cancel"
+
+#: sdsecgui/templates/identity/left_menu.html:6
+#: sdsecgui/templates/left_menu.html:46
+#: sdsecgui/templates/monitoring/left_menu.html:6
+#: sdsecgui/templates/service/index.html:97
+msgid "사용자"
+msgstr "User"
+
+#: sdsecgui/templates/identity/left_menu.html:12
+#: sdsecgui/templates/left_menu.html:48
+#: sdsecgui/templates/monitoring/left_menu.html:12
+msgid "역할"
+msgstr "Role"
+
+#: sdsecgui/templates/left_menu.html:8 sdsecgui/templates/service/index.html:8
+#: sdsecgui/templates/service/info.html:9
+#: sdsecgui/templates/service/intent/endpoint/index.html:9
+#: sdsecgui/templates/service/intent/new_service.html:11
+#: sdsecgui/templates/service/intent/rule/index.html:11
+msgid "서비스"
+msgstr "Service"
+
+#: sdsecgui/templates/left_menu.html:14 sdsecgui/templates/service/info.html:39
+msgid "서비스 전체 조회"
+msgstr "All Service"
+
+#: sdsecgui/templates/left_menu.html:17
+msgid "서비스 생성"
+msgstr "Create Service"
+
+#: sdsecgui/templates/left_menu.html:18
+#: sdsecgui/templates/service/intent/endpoint/index.html:11
+#: sdsecgui/templates/service/intent/endpoint/index.html:16
+#: sdsecgui/templates/service/intent/new_service.html:13
+#: sdsecgui/templates/service/intent/new_service.html:18
+#: sdsecgui/templates/service/intent/rule/index.html:13
+#: sdsecgui/templates/service/intent/rule/index.html:18
+msgid "Intent 기반 서비스 생성"
+msgstr "Create Intent Based Service"
+
+#: sdsecgui/templates/left_menu.html:19
+#: sdsecgui/templates/service/index.html:10
+#: sdsecgui/templates/service/info.html:11
+msgid "서비스 조회"
+msgstr "Services"
+
+#: sdsecgui/templates/left_menu.html:22
+#: sdsecgui/templates/security/index.html:7
+#: sdsecgui/templates/security/info.html:9
+#: sdsecgui/templates/security/info.html:11
+#: sdsecgui/templates/security/info.html:36
+msgid "보안장비"
+msgstr "Security Device"
+
+#: sdsecgui/templates/left_menu.html:26
+#: sdsecgui/templates/security/info.html:39
+msgid "보안장비 등록"
+msgstr "Security Device Registration"
+
+#: sdsecgui/templates/left_menu.html:27
+#: sdsecgui/templates/security/index.html:9
+msgid "보안장비 조회"
+msgstr "Security Devices"
+
+#: sdsecgui/templates/left_menu.html:30
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:110
+msgid "모니터링"
+msgstr "Monitoring"
+
+#: sdsecgui/templates/left_menu.html:34
+msgid "모니터링 조회"
+msgstr "Monitoring"
+
+#: sdsecgui/templates/left_menu.html:35
+msgid "알람 설정"
+msgstr "Settings Alarm"
+
+#: sdsecgui/templates/left_menu.html:36
+msgid "알람 이력"
+msgstr "Alarm History"
+
+#: sdsecgui/templates/left_menu.html:41
+msgid "사용자 관리"
+msgstr "User Management"
+
+#: sdsecgui/templates/left_menu.html:47
+#: sdsecgui/templates/monitoring/left_menu.html:9
+msgid "그룹"
+msgstr "Group"
+
+#: sdsecgui/templates/left_menu.html:51
+msgid "클라우드 관리"
+msgstr "Cloud Management"
+
+#: sdsecgui/templates/left_menu.html:60
+msgid "flavor"
+msgstr "Flavor"
+
+#: sdsecgui/templates/left_menu.html:64
+msgid "기본 할당량"
+msgstr "Default Quota"
+
+#: sdsecgui/templates/security/index.html:12
+msgid "보안장비 목록"
+msgstr "Security Device List"
+
+#: sdsecgui/templates/security/index.html:47
+msgid "기능설명"
+msgstr "Capability Description"
+
+#: sdsecgui/templates/security/index.html:54
+msgid "이미지 이름"
+msgstr "Image Name"
+
+#: sdsecgui/templates/security/index.html:63
+msgid "내용 보기"
+msgstr "Show Detail"
+
+#: sdsecgui/templates/security/index.html:63
+#: sdsecgui/templates/service/intent/endpoint/index.html:57
+msgid "재전송"
+msgstr "Resend"
+
+#: sdsecgui/templates/security/index.html:68
+#: sdsecgui/templates/security/info.html:189
+#: sdsecgui/templates/service/info.html:209
+#: sdsecgui/templates/service/intent/new_service.html:173
+msgid "내용"
+msgstr "Contents"
+
+#: sdsecgui/templates/security/info.html:43
+msgid "보안장비 저장"
+msgstr "Save Security Device"
+
+#: sdsecgui/templates/security/info.html:159
+#: sdsecgui/templates/service/info.html:171
+#: sdsecgui/templates/service/intent/new_service.html:139
+msgid "서비스 삭제"
+msgstr "Delete Service"
+
+#: sdsecgui/templates/security/info.html:162
+#: sdsecgui/templates/service/info.html:174
+#: sdsecgui/templates/service/intent/new_service.html:142
+msgid "서비스 일시정지"
+msgstr "Pause Service"
+
+#: sdsecgui/templates/security/info.html:186
+#: sdsecgui/templates/service/info.html:206
+#: sdsecgui/templates/service/intent/new_service.html:170
+msgid "타이틀"
+msgstr "Title"
+
+#: sdsecgui/templates/security/info.html:199
+msgid "제품명"
+msgstr "Product Name"
+
+#: sdsecgui/templates/security/info.html:204
+msgid "제품 기능"
+msgstr "Product Capability"
+
+#: sdsecgui/templates/security/info.html:209
+msgid "소프트웨어 버전"
+msgstr "Software Version"
+
+#: sdsecgui/templates/security/info.html:214
+#: sdsecgui/templates/security/security_list.html:20
+msgid "제조사"
+msgstr "Manufacturer"
+
+#: sdsecgui/templates/security/info.html:219
+msgid "제품 로고"
+msgstr "Product Logo"
+
+#: sdsecgui/templates/security/info.html:224
+msgid "제조사 로고"
+msgstr "Manufacturer Logo"
+
+#: sdsecgui/templates/security/info.html:231
+msgid "제품"
+msgstr "Product"
+
+#: sdsecgui/templates/security/info.html:235
+msgid "직접입력"
+msgstr "Customizing"
+
+#: sdsecgui/templates/security/security_list.html:16
+#: sdsecgui/templates/service/include/right_pop_as_network.html:40
+msgid "버전"
+msgstr "Version"
+
+#: sdsecgui/templates/security/security_list.html:24
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:48
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:41
+msgid "유형"
+msgstr "Classification"
+
+#: sdsecgui/templates/security/security_list.html:31
+msgid "등록일"
+msgstr "Create at"
+
+#: sdsecgui/templates/security/sub_left_menu.html:3
+#: sdsecgui/templates/service/sub_left_menu.html:3
+msgid "보<br>안<br>장<br>비"
+msgstr "<br>Sec<br>Dev"
+
+#: sdsecgui/templates/security/sub_left_menu.html:4
+#: sdsecgui/templates/service/sub_left_menu.html:4
+msgid "가<br>상<br>자<br>원"
+msgstr "<br>Vir<br>Dev"
+
+#: sdsecgui/templates/security/sub_left_menu.html:14
+#: sdsecgui/templates/service/include/right_pop_as_server_info.html:5
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:5
+#: sdsecgui/templates/service/include/right_pop_server_info.html:5
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:5
+#: sdsecgui/templates/service/sub_left_menu.html:18
+msgid "가상머신"
+msgstr "Virtual Machine"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:11
+#: sdsecgui/templates/service/include/right_pop_as_network.html:12
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:10
+#: sdsecgui/templates/service/include/right_pop_as_server_info.html:9
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:11
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:12
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:52
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:11
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:12
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:11
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:12
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:9
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:9
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:33
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:11
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:12
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:89
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:116
+#: sdsecgui/templates/service/include/right_pop_network.html:11
+#: sdsecgui/templates/service/include/right_pop_network.html:12
+#: sdsecgui/templates/service/include/right_pop_network_info.html:10
+#: sdsecgui/templates/service/include/right_pop_router.html:11
+#: sdsecgui/templates/service/include/right_pop_router.html:12
+#: sdsecgui/templates/service/include/right_pop_router_info.html:9
+#: sdsecgui/templates/service/include/right_pop_server_info.html:9
+#: sdsecgui/templates/service/include/right_pop_server_info.html:56
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:11
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:13
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:53
+#: sdsecgui/templates/service/index.html:95
+#: sdsecgui/templates/service/info.html:307
+#: sdsecgui/templates/service/info.html:352
+#: sdsecgui/templates/service/intent/endpoint/index.html:41
+#: sdsecgui/templates/service/intent/endpoint/info.html:23
+#: sdsecgui/templates/service/intent/endpoint/info.html:45
+#: sdsecgui/templates/service/intent/endpoint/info.html:70
+#: sdsecgui/templates/service/intent/new_service.html:184
+#: sdsecgui/templates/service/intent/new_service.html:229
+#: sdsecgui/templates/service/intent/rule/index.html:40
+#: sdsecgui/templates/service/intent/rule/info.html:23
+#: sdsecgui/templates/service/intent/rule/info.html:50
+#: sdsecgui/templates/service/intent/rule/info.html:75
+msgid "이름"
+msgstr "Name"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:16
+#: sdsecgui/templates/service/include/right_pop_network.html:16
+msgid "네트워크 주소"
+msgstr "Network address"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:17
+#: sdsecgui/templates/service/include/right_pop_network.html:17
+msgid "CIDR (예, 192.168.0.0/24)"
+msgstr "CIDR (ex, 192.168.0.0/24)"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:21
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:78
+#: sdsecgui/templates/service/include/right_pop_network.html:21
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:74
+msgid "세부정보"
+msgstr "Detail"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:27
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:18
+#: sdsecgui/templates/service/include/right_pop_network.html:27
+#: sdsecgui/templates/service/include/right_pop_network_info.html:18
+#: sdsecgui/templates/service/include/right_pop_router.html:16
+#: sdsecgui/templates/service/include/right_pop_router_info.html:17
+msgid "관리자 상태"
+msgstr "Admin Status"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:35
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:20
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:25
+#: sdsecgui/templates/service/include/right_pop_network.html:35
+#: sdsecgui/templates/service/include/right_pop_network_info.html:20
+msgid "공유"
+msgstr "Public"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:48
+#: sdsecgui/templates/service/include/right_pop_as_network.html:49
+msgid "게이트웨이 IP"
+msgstr "Gateway IP"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:53
+#: sdsecgui/templates/service/include/right_pop_network.html:53
+msgid "DHCP 사용"
+msgstr "Use DHCP"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:58
+#: sdsecgui/templates/service/include/right_pop_network.html:58
+msgid "IP 풀 할당"
+msgstr "Allocate IP pool"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:60
+#: sdsecgui/templates/service/include/right_pop_network.html:60
+msgid "풀에 할당된 IP 주소"
+msgstr "Allocated IP Address in pool"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:60
+msgid ""
+"한 줄에 하나씩 시작 주소, 끝 주소를 입력합니다.&#x0a;(예, 192.168.1.100, "
+"192.168.1.120)"
+msgstr "Enter start address, end address, one per line.&#x0a;"
+"(ex, 192.168.1.100, 192.168.1.120)"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:65
+#: sdsecgui/templates/service/include/right_pop_network.html:65
+msgid "DNS 서버"
+msgstr "DNS server"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:67
+#: sdsecgui/templates/service/include/right_pop_network.html:67
+msgid "이 서브넷에 대한 DNS 서버의 IP주소"
+msgstr "IP address of DNS server for this subnet"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:67
+#: sdsecgui/templates/service/include/right_pop_network.html:67
+msgid "한 줄에 하나씩 입력합니다"
+msgstr "Enter them one per line"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:72
+#: sdsecgui/templates/service/include/right_pop_network.html:72
+msgid "호스트 라우트"
+msgstr "Host Route"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:74
+#: sdsecgui/templates/service/include/right_pop_network.html:74
+msgid "추가 라우트 설정"
+msgstr "Additional route settings"
+
+#: sdsecgui/templates/service/include/right_pop_as_network.html:74
+msgid ""
+"한 줄에 하나씩 destination_cidr과 nexthop을 입력합니다.&#x0a;(예, "
+"192.168.200.0/24,10.56.1.254)"
+msgstr "Input destination_cidr and nexthop in a row."
+
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:14
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:16
+#: sdsecgui/templates/service/include/right_pop_network_info.html:14
+#: sdsecgui/templates/service/include/right_pop_router_info.html:13
+#: sdsecgui/templates/service/include/right_pop_server_info.html:13
+#: sdsecgui/templates/service/index.html:99
+msgid "상태"
+msgstr "Status"
+
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:19
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:21
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:23
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:26
+#: sdsecgui/templates/service/include/right_pop_network_info.html:19
+#: sdsecgui/templates/service/include/right_pop_network_info.html:21
+#: sdsecgui/templates/service/include/right_pop_network_info.html:24
+#: sdsecgui/templates/service/include/right_pop_router_info.html:18
+msgid "예"
+msgstr "True"
+
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:19
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:21
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:23
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:26
+#: sdsecgui/templates/service/include/right_pop_network_info.html:19
+#: sdsecgui/templates/service/include/right_pop_network_info.html:21
+#: sdsecgui/templates/service/include/right_pop_network_info.html:24
+#: sdsecgui/templates/service/include/right_pop_router_info.html:18
+msgid "아니오"
+msgstr "False"
+
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:22
+#: sdsecgui/templates/service/include/right_pop_network_info.html:22
+#: sdsecgui/templates/service/include/right_pop_router.html:25
+msgid "외부 네트워크"
+msgstr "External Network"
+
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:26
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:121
+#: sdsecgui/templates/service/include/right_pop_network_info.html:27
+msgid "타입"
+msgstr "Type"
+
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:28
+#: sdsecgui/templates/service/include/right_pop_network_info.html:29
+msgid "구분 ID"
+msgstr "Delimited ID"
+
+#: sdsecgui/templates/service/include/right_pop_as_network_info.html:30
+#: sdsecgui/templates/service/include/right_pop_network_info.html:31
+msgid "물리적인 네트워크"
+msgstr "Physical Network"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:16
+#: sdsecgui/templates/service/include/right_pop_server_info.html:15
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:17
+msgid "가용 구역"
+msgstr "Available Zone"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:23
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:24
+msgid "부팅 소스"
+msgstr "Boot Source"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:26
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:27
+msgid "이미지 스냅샷"
+msgstr "Image Snapshot"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:28
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:29
+msgid "볼륨 스냅샷"
+msgstr "Volume Snapshot"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:34
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:41
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:86
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:33
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:35
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:42
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:81
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:88
+msgid "목록에서 선택하세요"
+msgstr "Please select from the list"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:38
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:39
+msgid "가상머신 사양"
+msgstr "Flavor"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:45
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:46
+msgid "네트워크 인터페이스"
+msgstr "Network Interface"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:57
+msgid "포트명"
+msgstr "Port Name"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:69
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:65
+msgid "공용 IP 허용"
+msgstr "Public IP"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:83
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:85
+msgid "키 페어"
+msgstr "Key pair"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:90
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:91
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:92
+msgid "사용자 스크립트"
+msgstr "User script"
+
+#: sdsecgui/templates/service/include/right_pop_as_virtual_machine.html:90
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:92
+msgid "16KB 이내"
+msgstr "within 16KB"
+
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:16
+msgid "볼륨 유형"
+msgstr "Volume category"
+
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:23
+msgid "볼륨 종류"
+msgstr "Volume type"
+
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:27
+msgid "스냅샷"
+msgstr "Snapshot"
+
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:27
+msgid "미개발"
+msgstr "Undeveloped"
+
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:37
+msgid "볼륨 크기"
+msgstr "Volume size"
+
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:42
+msgid "볼륨 마운트 위치"
+msgstr "Volume mount position"
+
+#: sdsecgui/templates/service/include/right_pop_as_volume.html:43
+msgid "가상 머신을 연결하세요"
+msgstr "Connect to Virtual Machine"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:5
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:5
+msgid "오토스케일링 그룹"
+msgstr "Autoscaling group"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:21
+msgid "최초 VM 개수"
+msgstr "Number of the first VM"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:26
+msgid "VM 개수"
+msgstr "Number of VM"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:35
+msgid "Scaling In/Out 정책 설정"
+msgstr "Scaling In/Out Policy setting"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:43
+msgid "정책이름"
+msgstr "Policy name"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:57
+msgid "scaling<br/>조정 단위"
+msgstr "scaling<br/>modification unit"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:93
+msgid "임계값"
+msgstr "Threshold value"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:98
+msgid "통계 방법"
+msgstr "Statical method"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:109
+msgid "측정 간격"
+msgstr "Measurment interval"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:119
+msgid "연산자"
+msgstr "Operator"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:121
+msgid "이상"
+msgstr "More than"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:122
+msgid "초과"
+msgstr "Over"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:123
+msgid "같음"
+msgstr "The same"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:124
+msgid "같지않음"
+msgstr "Not the same"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:125
+msgid "미만"
+msgstr "Under"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:126
+msgid "이하"
+msgstr "Less than"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:131
+msgid "정책 삭제"
+msgstr "Delete Policy"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling.html:138
+msgid "scaling in/out 정책 추가"
+msgstr "scaling in/out policy addition"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:19
+msgid "최초 가상머신 개수"
+msgstr "Number of the first Virtual Machine"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:21
+msgid "가상머신 개수"
+msgstr "Number of Virtual Machine"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:25
+msgid "스케일링 정책"
+msgstr "Scaling policy"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:29
+#: sdsecgui/templates/service/intent/rule/create_modal.html:11
+msgid "정책 이름"
+msgstr "Policy name"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:33
+msgid "스케일링 단위"
+msgstr "Scaling unit"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:37
+msgid "적용 조건"
+msgstr "Condition of application"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:45
+msgid "측정 기간"
+msgstr "Measurment period"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:46
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:54
+msgid " 초"
+msgstr "Second"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:49
+msgid "측정 횟수"
+msgstr "Number of measurement"
+
+#: sdsecgui/templates/service/include/right_pop_autoscaling_info.html:50
+msgid " 회"
+msgstr "Times"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:5
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:5
+msgid "로드밸런서"
+msgstr "Loadbalancer"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:11
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:36
+msgid "알고리즘"
+msgstr "Algorithm"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:19
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:45
+msgid "프로토콜"
+msgstr "Protocol"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:29
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:35
+msgid "프로토콜 포트"
+msgstr "Protocol port"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:34
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:104
+msgid "서브넷"
+msgstr "Subnet"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:36
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:99
+msgid "부하분산 가중치"
+msgstr "Weight of load distribution"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:48
+msgid "가상 네트워크"
+msgstr "Virtual Network"
+
+#: sdsecgui/templates/service/include/right_pop_lb_info.html:50
+msgid "고정 IP"
+msgstr "Fixed IP"
+
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:21
+msgid "가상 네트워크 이름"
+msgstr "Virtual Network Name"
+
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:26
+msgid "외부 네트워크 IP 할당 여부"
+msgstr "External Network IP allocation status"
+
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:55
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:94
+msgid "포트"
+msgstr "Port"
+
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:60
+msgid "초당 최대 연결 세션수"
+msgstr "The maximun number of session per second"
+
+#: sdsecgui/templates/service/include/right_pop_loadbalancer.html:131
+msgid "점검 주기"
+msgstr "Check period"
+
+#: sdsecgui/templates/service/include/right_pop_network.html:40
+msgid "IP 버전"
+msgstr "IP version"
+
+#: sdsecgui/templates/service/include/right_pop_network.html:48
+#: sdsecgui/templates/service/include/right_pop_network.html:49
+msgid "게이트웨이"
+msgstr "Gateway"
+
+#: sdsecgui/templates/service/include/right_pop_network.html:60
+msgid "한 줄에 하나씩 시작 주소, 끝 주소를 입력합니다"
+msgstr "Input the begin address and the end address in a row"
+
+#: sdsecgui/templates/service/include/right_pop_network.html:60
+msgid "(예, 192.168.1.100, 192.168.1.120)"
+msgstr "(e.g., 192.168.1.100, 192.168.1.120)"
+
+#: sdsecgui/templates/service/include/right_pop_network.html:74
+msgid "한 줄에 하나씩 destination_cidr과 nexthop을 입력합니다"
+msgstr "Input the destination_cidr and nexthop in a row"
+
+#: sdsecgui/templates/service/include/right_pop_network.html:74
+msgid "(예, 192.168.200.0/24,10.56.1.254)"
+msgstr "(e.g., 192.168.200.0/24,10.56.1.254)"
+
+#: sdsecgui/templates/service/include/right_pop_network_info.html:16
+#: sdsecgui/templates/service/include/right_pop_router_info.html:15
+msgid "프로젝트 ID"
+msgstr "project ID"
+
+#: sdsecgui/templates/service/include/right_pop_router.html:26
+msgid "외부 네트워크를 연결하세요"
+msgstr "Connect to external network"
+
+#: sdsecgui/templates/service/include/right_pop_router.html:30
+msgid "인터페이스 추가"
+msgstr "Interface addition"
+
+#: sdsecgui/templates/service/include/right_pop_router_info.html:19
+msgid "외부 게이트웨이"
+msgstr "External gateway"
+
+#: sdsecgui/templates/service/include/right_pop_router_info.html:21
+msgid "외부 고정 IP"
+msgstr "External fixed IP"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:17
+msgid "생성 일시"
+msgstr "Date of creation"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:19
+msgid "갱신 일시"
+msgstr "Date of renewal"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:21
+msgid "생성된 이후 시간"
+msgstr "Time since creation"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:23
+msgid "호스트"
+msgstr "Host"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:26
+msgid "Flavor 이름"
+msgstr "Flavor name"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:34
+msgid "디스크"
+msgstr "Disk"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:38
+#: sdsecgui/templates/service/include/right_pop_server_info.html:58
+msgid "없음"
+msgstr "None"
+
+#: sdsecgui/templates/service/include/right_pop_server_info.html:52
+msgid "키 이름"
+msgstr "Key name"
+
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:57
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:60
+msgid "주소"
+msgstr "ADDRESS"
+
+#: sdsecgui/templates/service/include/right_pop_virtual_machine.html:78
+msgid "시큐리티 그룹"
+msgstr "Security group"
+
+#: sdsecgui/templates/service/index.html:29
+#: sdsecgui/templates/service/index.html:77
+msgid "서비스 목록"
+msgstr "Service List"
+
+#: sdsecgui/templates/service/index.html:100
+msgid "체이닝 수"
+msgstr "Chaining Num"
+
+#: sdsecgui/templates/service/index.html:101
+msgid "생성일"
+msgstr "Create at"
+
+#: sdsecgui/templates/service/index.html:102
+msgid "수정일"
+msgstr "Update at"
+
+#: sdsecgui/templates/service/index.html:103
+#: sdsecgui/templates/service/intent/endpoint/index.html:44
+#: sdsecgui/templates/service/intent/rule/index.html:43
+#: sdsecgui/templates/service/intent/rule/index.html:44
+msgid "액션"
+msgstr "Actions"
+
+#: sdsecgui/templates/service/info.html:32
+msgid "서비스 토폴로지"
+msgstr "Service Topology"
+
+#: sdsecgui/templates/service/info.html:33
+msgid "서비스 체이닝"
+msgstr "Service Chaining"
+
+#: sdsecgui/templates/service/info.html:34
+msgid "서비스 모니터링"
+msgstr "Service Monitoring"
+
+#: sdsecgui/templates/service/info.html:42
+msgid "서비스 저장"
+msgstr "Save Service"
+
+#: sdsecgui/templates/service/info.html:44
+msgid "서비스 수정"
+msgstr "Edit Service"
+
+#: sdsecgui/templates/service/info.html:318
+#: sdsecgui/templates/service/intent/new_service.html:195
+msgid "가상머신 생성 정책 정의"
+msgstr "Virtual Machine"
+
+#: sdsecgui/templates/service/info.html:328
+msgid "SOAM 연동"
+msgstr "Sync"
+
+#: sdsecgui/templates/service/info.html:357
+#: sdsecgui/templates/service/intent/endpoint/info.html:14
+#: sdsecgui/templates/service/intent/new_service.html:234
+#: sdsecgui/templates/service/intent/rule/info.html:14
+msgid "정책"
+msgstr "Policy"
+
+#: sdsecgui/templates/service/info.html:365
+#: sdsecgui/templates/service/intent/new_service.html:242
+msgid "적용 대상 가상머신"
+msgstr "Target Virtual Machine"
+
+#: sdsecgui/templates/service/info.html:383
+#: sdsecgui/templates/service/intent/new_service.html:251
+msgid "가상머신 이름"
+msgstr "Virtual Machine Name"
+
+#: sdsecgui/templates/service/intent/endpoint/create_modal.html:11
+msgid "Endpoint 종류"
+msgstr "Endpoint Type"
+
+#: sdsecgui/templates/service/intent/endpoint/create_modal.html:21
+#: sdsecgui/templates/service/intent/endpoint/create_modal.html:24
+msgid "정책명"
+msgstr "Policy name"
+
+#: sdsecgui/templates/service/intent/endpoint/create_modal.html:28
+msgid "IP 주소 범위 - 시작"
+msgstr "Range of IP address - Begin"
+
+#: sdsecgui/templates/service/intent/endpoint/create_modal.html:30
+msgid "시작 IP"
+msgstr "Start IP"
+
+#: sdsecgui/templates/service/intent/endpoint/create_modal.html:34
+msgid "IP 주소 범위 - 끝"
+msgstr "Range of IP addrss - End"
+
+#: sdsecgui/templates/service/intent/endpoint/create_modal.html:36
+msgid "끝 IP"
+msgstr "End IP"
+
+#: sdsecgui/templates/service/intent/endpoint/index.html:26
+msgid "Endpoint 목록"
+msgstr "Endpoint List"
+
+#: sdsecgui/templates/service/intent/endpoint/index.html:42
+#: sdsecgui/templates/service/intent/endpoint/info.html:26
+#: sdsecgui/templates/service/intent/endpoint/info.html:49
+msgid "메타데이터"
+msgstr "Metadata"
+
+#: sdsecgui/templates/service/intent/endpoint/index.html:43
+#: sdsecgui/templates/service/intent/endpoint/info.html:29
+#: sdsecgui/templates/service/intent/endpoint/info.html:53
+#: sdsecgui/templates/service/intent/endpoint/info.html:74
+#: sdsecgui/templates/service/intent/rule/info.html:54
+#: sdsecgui/templates/service/intent/rule/info.html:79
+msgid "종류"
+msgstr "Type"
+
+#: sdsecgui/templates/service/intent/endpoint/index.html:63
+msgid "endpoint 수정"
+msgstr "Edit Endpoint"
+
+#: sdsecgui/templates/service/intent/endpoint/index.html:64
+msgid "endpoint 삭제"
+msgstr "Delete Endpoint"
+
+#: sdsecgui/templates/service/intent/endpoint/info.html:6
+msgid "설정값"
+msgstr "Setting value"
+
+#: sdsecgui/templates/service/intent/endpoint/info.html:38
+#: sdsecgui/templates/service/intent/rule/create_modal.html:15
+#: sdsecgui/templates/service/intent/rule/info.html:26
+#: sdsecgui/templates/service/intent/rule/info.html:43
+msgid "출발지"
+msgstr "Source"
+
+#: sdsecgui/templates/service/intent/endpoint/info.html:63
+#: sdsecgui/templates/service/intent/rule/create_modal.html:26
+#: sdsecgui/templates/service/intent/rule/info.html:27
+#: sdsecgui/templates/service/intent/rule/info.html:68
+msgid "목적지"
+msgstr "Destination"
+
+#: sdsecgui/templates/service/intent/endpoint/info.html:78
+msgid "범위"
+msgstr "Range"
+
+#: sdsecgui/templates/service/intent/rule/create_modal.html:18
+#: sdsecgui/templates/service/intent/rule/create_modal.html:29
+msgid "선택"
+msgstr "Choice"
+
+#: sdsecgui/templates/service/intent/rule/create_modal.html:37
+msgid "시간 범위 사용 여부"
+msgstr "Time range usage status"
+
+#: sdsecgui/templates/service/intent/rule/create_modal.html:40
+msgid "사용"
+msgstr "Enable"
+
+#: sdsecgui/templates/service/intent/rule/create_modal.html:42
+msgid "사용안함"
+msgstr "Disable"
+
+#: sdsecgui/templates/service/intent/rule/create_modal.html:46
+#: sdsecgui/templates/service/intent/rule/index.html:41
+#: sdsecgui/templates/service/intent/rule/info.html:30
+msgid "시작 시간"
+msgstr "Start Time"
+
+#: sdsecgui/templates/service/intent/rule/create_modal.html:50
+#: sdsecgui/templates/service/intent/rule/info.html:31
+msgid "종료 시간"
+msgstr "End Time"
+
+#: sdsecgui/templates/service/intent/rule/create_modal.html:54
+#: sdsecgui/templates/service/intent/rule/info.html:34
+msgid "액션 종류"
+msgstr "Action Type"
+
+#: sdsecgui/templates/service/intent/rule/index.html:25
+msgid "Rule 목록"
+msgstr "Rule List"
+
+#: sdsecgui/templates/service/intent/rule/index.html:28
+msgid "Rule 생성"
+msgstr "Create Rule"
+
+#: sdsecgui/templates/service/intent/rule/index.html:42
+msgid "끝 시간"
+msgstr "End Time"
+
+#: sdsecgui/templates/service/intent/rule/index.html:58
+msgid "intent 기반 서비스 생성"
+msgstr "Create Intent Based Service"
+
+#: sdsecgui/templates/service/intent/rule/index.html:64
+msgid "Rule 수정"
+msgstr "Edit Rule"
+
+#: sdsecgui/templates/service/intent/rule/index.html:65
+msgid "Rule 삭제"
+msgstr "Delete Rule"
+
+#: sdsecgui/templates/service/intent/rule/info.html:58
+#: sdsecgui/templates/service/intent/rule/info.html:83
+msgid "IP 범위"
+msgstr "IP Range"
+
+#: sdsecgui/templates/service/sub_left_menu.html:23
+msgid "오토스케일링"
+msgstr "Autoscaling"
+
+#: sdsecgui/tools/security_controller_restapi.py:88
+msgid "연결실패"
+msgstr "Connect Refuse"
+
+#: sdsecgui/tools/security_controller_restapi.py:89
+msgid "Security Controller와 연결을 실패했습니다."
+msgstr "Security Controller Connect Refuse."

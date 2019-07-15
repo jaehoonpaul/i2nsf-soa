@@ -1,0 +1,341 @@
+# _*_coding:utf-8_*_
+import json
+
+
+import logging
+
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+
+from sdsecgui.tools.openstack_restapi import HeatRestAPI, NeutronRestAPI
+from sdsecgui.db.db_connector import SOAControlDBConnector
+from sdsecgui.tools.security_controller_restapi import SecurityControllerRestAPI
+from sdsecgui.db.soac_query import *
+
+logger = logging.getLogger("myapp.myLogger")
+
+
+def new_service(request):
+    if request.method == "GET":
+        return render(request, "service/intent/new_service.html", {})
+    elif request.is_ajax() and request.method == 'POST':
+        logger.info("newIntentServicePOST")
+        token = request.session.get("passToken")
+        auth_url = request.session.get("auth_url")
+        domain_name = request.session.get("domain_name")
+        rule_key = request.POST.get("rule_key")
+
+        neutron = NeutronRestAPI(auth_url, token)
+        result = neutron.get_network_list()
+        if result.get("success"):
+            public_network = filter(lambda network: network["router:external"], result["success"]["networks"])
+
+            conn = SOAControlDBConnector.getInstance()
+            # rule
+            params = (domain_name, rule_key)
+            rule = conn.select_one(SELECT_FW_RULE, params)
+            # source target
+            params = (domain_name, rule.get("source_target"))
+            src = conn.select_one(SELECT_ENDPOINT, params)
+            # destination target
+            params = (domain_name, rule.get("destination_target"))
+            dest = conn.select_one(SELECT_ENDPOINT, params)
+
+            json_param = {
+                "ietf-i2nsf-cfi-policy:policy": {
+                    "policy-name": rule.get("policy_name"),
+                    "rule": [{
+                        "rule-name": "rule_name",
+                        "condition": {
+                            "firewall-condition": {"source-target": {"src-target": src.get("name")}},
+                            "custom-condition": {"destination-target": {"dest-target": dest.get("name")}}
+                        },
+                        "action": {"primary-action": rule.get("action_data")}
+                    }]
+                }
+            }
+
+            if rule.get("start_time") and rule.get("end_time"):
+                json_param["ietf-i2nsf-cfi-policy:policy"]["rule"][0]["event"] = {
+                    "time-information": {
+                        "begin-time": rule.get("start_time"),
+                        "end-time": rule.get("end_time")
+                     }
+                }
+
+            sec_ctrl = SecurityControllerRestAPI()
+            result = sec_ctrl.get_service_template_by_rule(
+                json_param)  # {"nsf_names": ["time_based_firewall", "url_filtering"]}
+            nsf_names = result.get("nsf_names")
+            service_template = conn.select_service_template_by_nsf_names(nsf_names)
+            # params = (template_key, domain_name)
+            # security_types = conn.select_one(SELECT_SECURITY_RESOURCE_GROUP_BY_TEMPLATE_KEY, params)
+            link_json = json.loads(service_template.get("link_json").replace("\\", ""))
+            links = link_json.get("links", [])
+            as_links = link_json.get("asLinks", [])
+            resources = link_json.get("resources", [])
+            security_types = link_json.get("security_types", [])
+
+            json_data = {
+                'success': {
+                    "service_detail": json.loads(service_template.get("topology_json"))
+                },
+                "asLinks": as_links,
+                "public_network": public_network,
+                "service_template": service_template,
+                "security_types": security_types,
+                "links": links
+            }
+
+            return JsonResponse(json_data)
+        else:
+            return JsonResponse(result)
+
+
+def get_rule_list(request):
+    token = request.session.get('passToken')
+    if not token:
+        response = redirect("/dashboard")
+    else:
+        domain_name = request.session.get("domain_name")
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name)
+        rules = conn.select(SELECT_FW_RULE_LIST, params)
+        response = render(request, "service/intent/rule/index.html", {"rules": rules})
+    return response
+
+
+def get_rule(request, rule_key):
+    domain_name = request.session.get("domain_name")
+    conn = SOAControlDBConnector.getInstance()
+
+    params = (domain_name, rule_key)
+    rule = conn.select_one(SELECT_FW_RULE, params)
+
+    params = (domain_name, rule.get("source_target"))
+    src = conn.select_one(SELECT_ENDPOINT, params)
+    if src:
+        metadata = json.loads(src.get("metadata"))
+        policy = metadata["ietf-i2nsf-cfi-policy:policy"]
+        range_ip_address = policy["endpoint-group"][src["endpoint_type"] + "-group"][0]["range-ip-address"][0]
+        src["metadata_str"] = range_ip_address.get("start-ip-address") + " ~ "
+        src["metadata_str"] += range_ip_address.get("end-ip-address")
+
+    params = (domain_name, rule.get("destination_target"))
+    dest = conn.select_one(SELECT_ENDPOINT, params)
+    if dest:
+        metadata = json.loads(dest.get("metadata"))
+        policy = metadata["ietf-i2nsf-cfi-policy:policy"]
+        if dest.get("endpoint_type") == "url":
+            dest["metadata_str"] = policy["threat-prevention"]["payload-content"][0]["content"][0]
+        else:
+            range_ip_address = policy["endpoint-group"][dest["endpoint_type"] + "-group"][0]["range-ip-address"][0]
+            dest["metadata_str"] = range_ip_address.get("start-ip-address") + " ~ "
+            dest["metadata_str"] += range_ip_address.get("end-ip-address")
+
+    rule["source_target"] = src
+    rule["destination_target"] = dest
+
+    return render(request, "service/intent/rule/info.html", {"rule": rule})
+
+
+def create_rule(request):
+    domain_name = request.session.get("domain_name")
+    user_name = request.session.get("user_name")
+    if request.method == "GET":
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name)
+        endpoints = conn.select(SELECT_ENDPOINT_LIST, params)
+
+        src_list = []
+        dest_list = []
+        for endpoint in endpoints:
+            metadata = json.loads(endpoint.get("metadata"))
+            policy = metadata["ietf-i2nsf-cfi-policy:policy"]
+            if endpoint.get("endpoint_type") == "url":
+                endpoint["metadata_str"] = policy["threat-prevention"]["payload-content"][0]["content"][0]
+            else:
+                range_ip_address = policy["endpoint-group"][endpoint["endpoint_type"] + "-group"][0]["range-ip-address"][0]
+                endpoint["metadata_str"] = range_ip_address.get("start-ip-address") + " ~ "
+                endpoint["metadata_str"] += range_ip_address.get("end-ip-address")
+
+            if endpoint.get("endpoint_type") == "user":
+                src_list.append(endpoint)
+            else:
+                dest_list.append(endpoint)
+        resp_data = {
+            "modal_title": request.GET.get("modal_title"),
+            "source_target": src_list,
+            "destination_target": dest_list,
+            "rule": {"start_time": "09:00", "end_time": "18:00"}
+        }
+        return render(request, 'service/intent/rule/create_modal.html', resp_data)
+    elif request.method == "POST":
+        conn = SOAControlDBConnector.getInstance()
+        params = (
+            domain_name,
+            request.POST.get("policy_name"),
+            request.POST.get("source_target"),
+            request.POST.get("destination_target"),
+            request.POST.get("start_time", None),
+            request.POST.get("end_time", None),
+            request.POST.get("action_data"),
+            request.POST.get("description"),
+            user_name,
+            user_name
+        )
+        result = conn.insert(INSERT_FW_RULE, params)
+        return JsonResponse({"result": result})
+
+
+def update_rule(request, rule_key):
+    domain_name = request.session.get("domain_name")
+    user_name = request.session.get("user_name")
+    if request.method == "GET":
+        conn = SOAControlDBConnector.getInstance()
+
+        params = (domain_name, rule_key)
+        rule = conn.select_one(SELECT_FW_RULE, params)
+
+        params = (domain_name)
+        endpoints = conn.select(SELECT_ENDPOINT_LIST, params)
+
+        src_list = []
+        dest_list = []
+        for endpoint in endpoints:
+            metadata = json.loads(endpoint.get("metadata"))
+            policy = metadata["ietf-i2nsf-cfi-policy:policy"]
+            if endpoint.get("endpoint_type") == "url":
+                endpoint["metadata_str"] = policy["threat-prevention"]["payload-content"][0]["content"][0]
+            else:
+                range_ip_address = policy["endpoint-group"][endpoint["endpoint_type"] + "-group"][0]["range-ip-address"][0]
+                endpoint["metadata_str"] = range_ip_address.get("start-ip-address") + " ~ "
+                endpoint["metadata_str"] += range_ip_address.get("end-ip-address")
+
+            if endpoint.get("endpoint_type") == "user":
+                src_list.append(endpoint)
+            else:
+                dest_list.append(endpoint)
+
+        resp_data = {
+            "modal_title": request.GET.get("modal_title"),
+            "rule": rule,
+            "source_target": src_list,
+            "destination_target": dest_list
+        }
+        return render(request, 'service/intent/rule/create_modal.html', resp_data)
+    elif request.method == "POST":
+        conn = SOAControlDBConnector.getInstance()
+        params = (
+            request.POST.get("policy_name"),
+            request.POST.get("source_target"),
+            request.POST.get("destination_target"),
+            request.POST.get("start_time"),
+            request.POST.get("end_time"),
+            request.POST.get("action_data"),
+            request.POST.get("description"),
+            user_name,
+            domain_name,
+            rule_key
+        )
+        rule = conn.update(UPDATE_FW_RULE, params)
+        return JsonResponse({"success": True})
+
+
+def delete_rule(request, rule_key):
+    domain_name = request.session.get("domain_name")
+    if request.method == "POST":
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name, rule_key)
+        rule = conn.update(DELETE_FW_RULE, params)
+        return JsonResponse({"success": True})
+
+
+def get_endpoint_list(request):
+    token = request.session.get('passToken')
+    if not token:
+        response = redirect("/dashboard")
+    else:
+        domain_name = request.session.get("domain_name")
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name)
+        endpoints = conn.select(SELECT_ENDPOINT_LIST, params)
+        response = render(request, "service/intent/endpoint/index.html", {"endpoints": endpoints})
+    return response
+
+
+# endpoint 수정 삭제 되게
+def update_endpoint(request, endpoint_key):
+    domain_name = request.session.get("domain_name")
+    conn = SOAControlDBConnector.getInstance()
+    params = (
+        domain_name,
+        endpoint_key
+    )
+    endpoint = conn.select_one(SELECT_ENDPOINT, params)
+    metadata = json.loads(endpoint.get("metadata"))
+    policy = metadata["ietf-i2nsf-cfi-policy:policy"]
+    if endpoint.get("endpoint_type") == "url":
+        endpoint["content"] = policy["threat-prevention"]["payload-content"][0]["content"][0]
+    else:
+        range_ip_address = policy["endpoint-group"][endpoint["endpoint_type"] + "-group"][0]["range-ip-address"][0]
+        endpoint["start_ip_address"] = range_ip_address.get("start-ip-address")
+        endpoint["end_ip_address"] = range_ip_address.get("end-ip-address")
+
+    return render(request, 'service/intent/endpoint/create_modal.html', {"modal_title": u"Endpoint 수정", "endpoint": endpoint})
+
+
+def delete_endpoint(request, endpoint_key):
+    domain_name = request.session.get("domain_name")
+    if request.method == "POST":
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name, endpoint_key)
+        endpoint = conn.update(DELETE_ENDPOINT, params)
+        return JsonResponse({"success": True})
+
+
+def endpoints(request):
+    if request.method == "GET":
+        domain_name = request.session.get("domain_name")
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name)
+        endpoints = conn.select(SELECT_ENDPOINT_LIST, params)
+        for endpoint in endpoints:
+            metadata = json.loads(endpoint.get("metadata"))
+            policy = metadata["ietf-i2nsf-cfi-policy:policy"]
+            if endpoint.get("endpoint_type") == "url":
+                endpoint["metadata_str"] = policy["threat-prevention"]["payload-content"][0]["content"][0]
+            else:
+                range_ip_address = policy["endpoint-group"][endpoint["endpoint_type"] + "-group"][0]["range-ip-address"][0]
+                endpoint["metadata_str"] = range_ip_address.get("start-ip-address") + " ~ "
+                endpoint["metadata_str"] += range_ip_address.get("end-ip-address")
+        return render(request, "service/intent/endpoint/index.html", {"endpoints": endpoints})
+
+
+def create_endpoint(request):
+    user_name = request.session.get("user_name")
+    domain_name = request.session.get("domain_name")
+    if request.is_ajax() and request.method == "POST":
+        scr_api = SecurityControllerRestAPI()
+        insert_result = scr_api.insert_endpoint(request.POST.get("metadata"))
+        if "Success" in insert_result:
+            conn = SOAControlDBConnector.getInstance()
+            params = (
+                domain_name,
+                request.POST.get("name"),
+                request.POST.get("metadata"),
+                request.POST.get("endpoint_type"),
+                user_name,
+                user_name
+            )
+            result = conn.insert(INSERT_ENDPOINT, params)
+        return JsonResponse({"result": insert_result})
+    else:
+        return render(request, 'service/intent/endpoint/create_modal.html', {"modal_title": u"Endpoint 수정"})
+
+
+def resend_endpoint(request):
+    if request.is_ajax() and request.method == "POST":
+        scr_api = SecurityControllerRestAPI()
+        result = scr_api.insert_endpoint(request.POST.get("metadata"))
+        return JsonResponse(result)

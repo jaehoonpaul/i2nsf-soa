@@ -1,0 +1,578 @@
+# _*_coding:utf-8_*_
+import ast
+import json
+import logging
+import re
+
+import requests
+
+from sdsec.settings import config, LOG_LEVEL
+from sdsecgui.tools.openstack_restapi import CustomHTTPClient, KeystoneRestAPI
+
+logger = logging.getLogger("myapp.myLogger")
+
+
+class ControlEngine:
+
+    def __init__(self, header=None, token=None, project_id=None, project_name=None, user_id=None, user_name=None,
+                 roles=None, content_type="application/json", auth_url=None):
+        self.CTRL_URL = config.get("SETTINGS", "ctrl_url")
+        if header:
+            if not header.get("Content-Type"):
+                header["Content-Type"] = content_type
+            self.HEADER = header
+        else:
+            self.HEADER = {
+                "X-Auth-Token": token,
+                "X-Tenant-Id": project_id,
+                "X-Tenant-Name": project_name,
+                "X-User-Id": user_id,
+                "X-User-Name": user_name,
+                "Content-Type": content_type
+            }
+            if roles:
+                self.HEADER["X-Roles"] = roles
+            if auth_url:
+                self.HEADER["X-Host-Uri"] = auth_url
+
+    def get_header(self):
+        return self.HEADER
+
+    def update_header(self, header):
+        self.HEADER = header
+
+    def create_service(self, template):
+        """
+        서비스 생성
+        :param template:
+        :return:
+        """
+        return self.update_service(template)
+
+    def get_all_service_list(self):
+        url = self.CTRL_URL + "/service_admin"
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_service_list(self):
+        return self.get_service()
+
+    def get_service(self, service_id=None):
+        """
+        Service 상세정보 출력, service_id 가 None 이면 리스트 출력
+        :param service_id:
+        :return:
+            serviceObject:
+                service_id(String): 서비스 ID
+                service_detail(JSON): 생성된 Serivce 자원 리스트
+                sfc_cnt(Integer): SFC 생성 개수
+                service_description(String): Service 설명
+                created_at(String): Service 생성 시각
+                tenant_name(String): Tenant Name
+                user_name(String): User Name
+                code(Integer): Response Code
+            service_detail:
+                status(String): 상태
+                vm_list(object list):[{vm_object}]
+                network_list(object list):[{network_object}]
+                volume_list(object list):[{volume_object}]
+                vrouter_list(object list):[{vrouter_object}]
+                error_msg_list:[]
+        """
+        url = self.CTRL_URL + "/service"
+        if service_id:
+            url += "/" + service_id
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def update_service(self, template, service_id=None):
+        """
+        서비스 수정, service_id 가 None 이면 생성
+        :param template:
+        :param service_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service"
+        if service_id:
+            url += "/" + service_id
+            response = CustomHTTPClient.patch_method(url, headers=self.HEADER, body=template)
+        else:
+            response = CustomHTTPClient.post_method(url, headers=self.HEADER, body=template)
+
+        return self.confirm_status(response)
+
+    def delete_service(self, service_id):
+        """
+        서비스 삭제
+        :param service_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id
+        response = CustomHTTPClient.delete_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def suspend_service(self, service_id):
+        """
+        서비스 중지
+        :param service_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/suspend"
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def resume_service(self, service_id):
+        """
+        서비스 재실행
+        :param service_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/resume"
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_resource(self, resource_type, resource_id):
+        """
+        리소스 상세정보 출력
+        :param resource_type:
+        :param resource_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/resource/" + resource_type + "/" + resource_id
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+
+        return self.confirm_status(response)
+
+    def create_map(self, service_id, map_data):
+        """
+        Map 생성
+        :param service_id:
+        :param map_data:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/map"
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER, body=map_data)
+
+        return self.confirm_status(response)
+
+    def get_map(self, service_id):
+        """
+        Map 상세정보 출력
+        :param service_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/map"
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        contents = self.confirm_status(response)
+        if contents.get("success"):
+            map_link_list = contents["success"].get("map_link_list")
+            if type(map_link_list) == str or type(map_link_list) == unicode:
+                contents["success"]["map_link_list"] = json.loads(map_link_list.replace("\\", ""))
+        return contents
+
+    def update_map(self, service_id, map_data):
+        """
+        Map 수정
+        :param service_id:
+        :param map_data:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/map"
+        response = CustomHTTPClient.patch_method(url, headers=self.HEADER, body=map_data)
+
+        return self.confirm_status(response)
+
+    def get_template(self, service_id):
+        """
+        template 상세정보 출력
+        :param service_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/template"
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        contents = self.confirm_status(response)
+
+        if contents.get("success"):
+            user_template = contents["success"].get("user_template")
+            if type(user_template) == str or type(user_template) == unicode:
+                contents["success"]["user_template"] = ast.literal_eval(user_template.replace("\\", ""))
+
+        return contents
+
+    def get_service_detail_and_link_list(self, service_id):
+        """
+        서비스 상세정보와 Map 출력
+        :param service_id:
+        :return:
+        """
+        service_detail = self.get_service(service_id)
+        map_data = self.get_map(service_id)
+        return service_detail, map_data
+
+    def create_sfc(self, service_id, sfc_template):
+        """
+        SFC 생성
+        :param service_id:
+        :param sfc_template:
+        :return:
+            id(String): SFC ID
+            chain_id(String): CHAIN ID
+            sfc_status(String ): SFC 상태
+            message(String): 전달 메시지
+            code(Integer): Response Code
+
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/sfc"
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER, body=sfc_template)
+        return self.confirm_status(response)
+
+    def get_sfc_list(self, service_id):
+        """
+        SFC 리스트 출력
+        :param service_id:
+        :return:
+            list(object): SFC List
+            code(Integer): Response Code
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/sfc"
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_sfc_detail(self, service_id, sfc_id):
+        """
+        SFC 상세정보 출력
+        :param service_id:
+        :param sfc_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/sfc/" + sfc_id
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def delete_sfc(self, service_id, sfc_id):
+        """
+        SFC 삭제
+        :param service_id:
+        :param sfc_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/sfc/" + sfc_id
+        response = CustomHTTPClient.delete_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def pause_sfc(self, service_id, sfc_id):
+        """
+        SFC 중지
+        :param service_id:
+        :param sfc_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/sfc/" + sfc_id + "/pause"
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def resume_sfc(self, service_id, sfc_name):
+        """
+        SFC 재실행
+        :param service_id:
+        :param sfc_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/service/" + service_id + "/sfc/" + sfc_name + "/resume"
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_vnc_console(self, vm_id):
+        url = self.CTRL_URL + "/nova/servers/" + vm_id + "/vnc"
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_service_vm(self, service_id):
+        """
+        서비스에 있는 가상서버 리스트 출력
+        :param service_id:
+        :return:
+        """
+        result = self.get_service(service_id)
+        response = result
+        if result.get("success"):
+            # logger.info("############service##############\n{}".format(result))
+            response = {"success": {"stack_id": result["success"]["stack_id"], "service_detail": result["success"]["service_detail"], "vm_list": result["success"]["service_detail"].get("vm_list")}}
+
+        return response
+
+    def get_port_list(self, resource_type, resource_id):
+        """
+        해당 자원의 포트 출력
+        :param resource_type:
+        :param resource_id:
+        :return:
+        """
+        url = self.CTRL_URL + "/neutron/port/" + resource_type + "/" + resource_id
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_route_dst_rule_list(self):
+        """
+        목적지 기반 전체 라우터 조회
+        :return: {"message": "Success", "code": 200, "result": ["qrouter-fb4feaff-93b1-4564-8698-2ca8a67db277", "qrouter-7dbafe64-7d18-4e82-b361-814036d26f43", "qrouter-8beb2526-16f6-423b-a198-04e7d50bd3f1", "qrouter-902ecd6e-03c9-4111-ba10-ce3f7500509d"]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/dst_rule"
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_route_dst_rule(self, route_id, netnodeip):
+        """
+        목적지 기반 라우터 상세 조회
+        :param route_id: qrouter-fb4feaff-93b1-4564-8698-2ca8a67db277
+        :return: {"message": "Success", "code": 200, "result": [{"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "0.0.0.0", "Genmask": "0.0.0.0", "Flags": "UG", "Ref": "0", "Gateway": "10.10.200.1"}, {"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "10.10.200.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}, {"Use": "0", "Iface": "qr-90ce90aa-cb", "Metric": "0", "Destination": "192.168.124.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/dst_rule/" + netnodeip + "/" + route_id
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def create_route_dst_rule_path(self, route_id, netnodeip, data):
+        """
+        목적지 기반 라우터 경로 등록
+        :param data: {"dest":"172.16.1.0/24", "via":"192.168.124.1","dev":"qr-90ce90aa-cb"}
+        :param route_id: qrouter-fb4feaff-93b1-4564-8698-2ca8a67db277
+        :return: {"message": "Success", "code": 200, "result": [{"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "0.0.0.0", "Genmask": "0.0.0.0", "Flags": "UG", "Ref": "0", "Gateway": "10.10.200.1"}, {"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "10.10.200.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}, {"Use": "0", "Iface": "qr-90ce90aa-cb", "Metric": "0", "Destination": "172.16.1.0", "Genmask": "255.255.255.0", "Flags": "UG", "Ref": "0", "Gateway": "192.168.124.1"}, {"Use": "0", "Iface": "qr-90ce90aa-cb", "Metric": "0", "Destination": "192.168.124.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/dst_rule/" + netnodeip + "/" + route_id
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER, body=data)
+        return self.confirm_status(response)
+
+    def delete_route_dst_rule_path(self, route_id, netnodeip, data):
+        """
+        목적지 기반 라우터 경로 삭제
+        :param data: {"dest":"172.16.1.0/24", "via":"192.168.124.1","dev":"qr-90ce90aa-cb"}
+        :param route_id: qrouter-fb4feaff-93b1-4564-8698-2ca8a67db277
+        :return: {"message": "Success", "code": 200, "result": [{"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "0.0.0.0", "Genmask": "0.0.0.0", "Flags": "UG", "Ref": "0", "Gateway": "10.10.200.1"}, {"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "10.10.200.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}, {"Use": "0", "Iface": "qr-90ce90aa-cb", "Metric": "0", "Destination": "192.168.124.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/dst_rule/" + netnodeip + "/" + route_id
+        response = CustomHTTPClient.put_method(url, headers=self.HEADER, body=data)
+        return self.confirm_status(response)
+
+    def get_route_pbr_tables(self):
+        """
+        송신지 기반 전체 라우터 조회
+        :return: {"message": "Success", "code": 200, "result": {"qrouter-7dbafe64-7d18-4e82-b361-814036d26f43": [{"PBR_TABLE": "local", "order": "0", "target": "from all lookup"}, {"PBR_TABLE": "main", "order": "32766", "target": "from all lookup"}, {"PBR_TABLE": "default", "order": "32767", "target": "from all lookup"}], "qrouter-8beb2526-16f6-423b-a198-04e7d50bd3f1": [{"PBR_TABLE": "local", "order": "0", "target": "from all lookup"}, {"PBR_TABLE": "main", "order": "32766", "target": "from all lookup"}, {"PBR_TABLE": "default", "order": "32767", "target": "from all lookup"}], "qrouter-fb4feaff-93b1-4564-8698-2ca8a67db277": [{"PBR_TABLE": "local", "order": "0", "target": "from all lookup"}, {"PBR_TABLE": "main", "order": "32766", "target": "from all lookup"}, {"PBR_TABLE": "default", "order": "32767", "target": "from all lookup"}], "qrouter-902ecd6e-03c9-4111-ba10-ce3f7500509d": [{"PBR_TABLE": "local", "order": "0", "target": "from all lookup"}, {"PBR_TABLE": "main", "order": "32766", "target": "from all lookup"}, {"PBR_TABLE": "default", "order": "32767", "target": "from all lookup"}]}}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule"
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        return self.confirm_status(response)
+
+    def get_route_devices(self, route_id, netnodeip):
+        """
+        Router device 정보확인
+        :return: {"message": "Success", "code": 200, "result": [{"lo": ["Link encap:Local Loopback  ", "inet addr:127.0.0.1  Mask:255.0.0.0", "inet6 addr: ::1/128 Scope:Host", "UP LOOPBACK RUNNING  MTU:65536  Metric:1", "RX packets:0 errors:0 dropped:0 overruns:0 frame:0", "TX packets:0 errors:0 dropped:0 overruns:0 carrier:0", "collisions:0 txqueuelen:0 ", "RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)"]}, {"qg-9be0d60a-75": ["Link encap:Ethernet  HWaddr fa:16:3e:a9:37:95  ", "inet addr:10.10.200.48  Bcast:10.10.200.255  Mask:255.255.255.0", "inet6 addr: fe80::f816:3eff:fea9:3795/64 Scope:Link", "UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1", "RX packets:576391 errors:0 dropped:0 overruns:0 frame:0", "TX packets:2731 errors:0 dropped:0 overruns:0 carrier:0", "collisions:0 txqueuelen:0 ", "RX bytes:105722737 (105.7 MB)  TX bytes:115765 (115.7 KB)"]}, {"qr-54f631f2-1a": ["Link encap:Ethernet  HWaddr fa:16:3e:78:24:d1  ", "inet addr:10.31.0.1  Bcast:10.31.0.255  Mask:255.255.255.0", "inet6 addr: fe80::f816:3eff:fe78:24d1/64 Scope:Link", "UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1", "RX packets:383 errors:0 dropped:0 overruns:0 frame:0", "TX packets:207 errors:0 dropped:0 overruns:0 carrier:0", "collisions:0 txqueuelen:0 ", "RX bytes:34016 (34.0 KB)  TX bytes:21062 (21.0 KB)"]}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule/" + netnodeip + "/" + route_id
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        result = self.confirm_status(response)
+        if result.get("success"):
+            data = {}
+            for pbr_tables in result["success"]["result"]:
+                for pbr_table_name, info_str_list in pbr_tables.items():
+                    data[pbr_table_name] = {}
+                    if pbr_table_name == "lo":
+                        pattern = re.compile(r"Link encap:\s*(?P<link_encap>\w+)\s+(?P<hw_addr>\w+)\s*", re.I)
+                        pattern1 = re.compile(r"inet addr:\s*(?P<inet_addr>[\d\:./]+)\s+Mask:\s*(?P<mask>[\d.]+)\s*", re.I)
+                        pattern2 = re.compile(r"inet6 addr:\s*(?P<inet6_addr>[\w\:./]+)\s+Scope:\s*(?P<scope>\w+)\s*", re.I)
+                        data[pbr_table_name]["b_cast"] = "-"
+                        # pattern3 = re.compile(r"UP LOOPBACK RUNNING  MTU:65536  Metric:1", re.I)
+                        # pattern4 = re.compile(r"RX packets:0 errors:0 dropped:0 overruns:0 frame:0", re.I)
+                        # pattern5 = re.compile(r"TX packets:0 errors:0 dropped:0 overruns:0 carrier:0", re.I)
+                        # pattern6 = re.compile(r"collisions:0 txqueuelen:0 ", re.I)
+                        # pattern7 = re.compile(r"RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)", re.I)
+                    else:
+                        pattern = re.compile(r"Link encap:\s*(?P<link_encap>\w+)\s+HWaddr\s+(?P<hw_addr>[\w\:]+)\s*", re.I)
+                        pattern1 = re.compile(r"inet addr:\s*(?P<inet_addr>[\d.]+)\s+Bcast:\s*(?P<b_cast>[\d.]+)\s+Mask:\s*(?P<mask>[\d.]+)\s*", re.I)
+                        pattern2 = re.compile(r"inet6 addr:\s*(?P<inet6_addr>[\w\:./]+)\s+Scope:(?P<scope>\w+)\s*", re.I)
+                        # pattern3 = re.compile(r"UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1", re.I)
+                        # pattern4 = re.compile(r"RX packets:576391 errors:0 dropped:0 overruns:0 frame:0", re.I)
+                        # pattern5 = re.compile(r"TX packets:2731 errors:0 dropped:0 overruns:0 carrier:0", re.I)
+                        # pattern6 = re.compile(r"collisions:0 txqueuelen:0 ", re.I)
+                        # pattern7 = re.compile(r"RX bytes:105722737 (105.7 MB)  TX bytes:115765 (115.7 KB)", re.I)
+                    for info_str in info_str_list:
+                        m = pattern.search(info_str)
+                        if m:
+                            data[pbr_table_name].update(m.groupdict())
+                        else:
+                            m1 = pattern1.search(info_str)
+                            if m1:
+                                data[pbr_table_name].update(m1.groupdict())
+                            else:
+                                m2 = pattern2.search(info_str)
+                                if m2:
+                                    data[pbr_table_name].update(m2.groupdict())
+            result["success"]["result"] = data
+        return result
+
+    def get_route_src_rules(self, route_id, netnodeip, pbr_table_name):
+        """
+        송신지 기반 특정 라우터의 특정 테이블 상세 조회
+        :param route_id: qrouter-7dbafe64-7d18-4e82-b361-814036d26f43
+        :return: {"message": "Success", "code": 200, "result": ["broadcast 10.10.200.0 dev qg-aa2581f6-a9  proto kernel  scope link  src 10.10.200.57 ", "local 10.10.200.57 dev qg-aa2581f6-a9  proto kernel  scope host  src 10.10.200.57 ", "local 10.10.200.58 dev qg-aa2581f6-a9  proto kernel  scope host  src 10.10.200.58 ", "broadcast 10.10.200.58 dev qg-aa2581f6-a9  proto kernel  scope link  src 10.10.200.58 ", "broadcast 10.10.200.255 dev qg-aa2581f6-a9  proto kernel  scope link  src 10.10.200.57 ", "broadcast 127.0.0.0 dev lo  proto kernel  scope link  src 127.0.0.1 ", "local 127.0.0.0/8 dev lo  proto kernel  scope host  src 127.0.0.1 ", "local 127.0.0.1 dev lo  proto kernel  scope host  src 127.0.0.1 ", "broadcast 127.255.255.255 dev lo  proto kernel  scope link  src 127.0.0.1 ", "broadcast 192.168.132.0 dev qr-b37c13d4-d1  proto kernel  scope link  src 192.168.132.1 ", "local 192.168.132.1 dev qr-b37c13d4-d1  proto kernel  scope host  src 192.168.132.1 ", "broadcast 192.168.132.255 dev qr-b37c13d4-d1  proto kernel  scope link  src 192.168.132.1 "]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule/" + netnodeip + "/" + route_id + "/" + pbr_table_name
+        response = CustomHTTPClient.get_method(url, headers=self.HEADER)
+        result = self.confirm_status(response)
+        if result.get("success"):
+            temp = []
+            for src_rule in result["success"].get("result"):
+                if pbr_table_name == "local":
+                    pattern = re.compile(r"([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s*")
+                    matcher = pattern.search(src_rule)
+                    if matcher:
+                        temp.append({
+                            "str": src_rule,
+                            matcher.group(1): matcher.group(2),
+                            matcher.group(3): matcher.group(4),
+                            matcher.group(5): matcher.group(6),
+                            matcher.group(7): matcher.group(8),
+                            matcher.group(9): matcher.group(10)
+                        })
+
+                else:
+                    pattern = re.compile(r"([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)\s+([\S]+)")
+                    matcher = pattern.search(src_rule)
+                    pattern1 = re.compile(r"([\S]+)\s+([\S]+)\s+([\S]+)\s*")
+                    matcher1 = pattern1.search(src_rule)
+                    if matcher:
+                        temp.append({
+                            "str": src_rule,
+                            "dest": matcher.group(1),
+                            matcher.group(2): matcher.group(3),
+                            matcher.group(4): matcher.group(5)
+                        })
+                    elif matcher1:
+                        temp.append({
+                            "str": src_rule,
+                            "via": matcher1.group(1),
+                            matcher1.group(2): matcher1.group(3),
+                        })
+                    else:
+                        temp.append({
+                            "str": src_rule
+                        })
+            result["success"]["result"] = temp
+        return result
+
+    def create_route_src_rule_path(self, route_id, netnodeip, data):
+        """
+        송신지 기반 라우팅 테이블 추가 및 규칙 추가 (type1과 type2가 나뉘어져 있으며, type1 실행후 type2가 실행되어야 함)
+        :param data: {"type":"type1", "src":"172.16.10/24"} or {"type":"type2", "dest":"default", "via":"192.168.132.1","dev":"qr-b37c13d4-d1"}
+        :param route_id: qrouter-7dbafe64-7d18-4e82-b361-814036d26f43
+        :return: {"message": "Success", "code": 200, "result": [{"PBR_TABLE": "local", "order": "0", "target": "from all lookup"}, {"PBR_TABLE": "7dbafe64", "order": "32765", "target": "from 172.16.10.0/24 lookup"}, {"PBR_TABLE": "main", "order": "32766", "target": "from all lookup"}, {"PBR_TABLE": "default", "order": "32767", "target": "from all lookup"}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule/" + netnodeip + "/" + route_id
+        response = CustomHTTPClient.post_method(url, headers=self.HEADER, body=data)
+        return self.confirm_status(response)
+
+    def delete_route_src_rule_path(self, route_id, netnodeip, data_list):
+        """
+        가상 라우터의 라우터 네임스페이스에서 정책기반라우팅 테이블 내에 라우팅 규칙 조회 후 삭제  (삭제는 type2 -> type1 -> pbrtable 순으로 실행되어야 함)
+        :param data_list:
+        :param route_id: qrouter-fb4feaff-93b1-4564-8698-2ca8a67db277
+        :return: {"message": "Success", "code": 200, "result": [{"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "0.0.0.0", "Genmask": "0.0.0.0", "Flags": "UG", "Ref": "0", "Gateway": "10.10.200.1"}, {"Use": "0", "Iface": "qg-9f4212b2-d1", "Metric": "0", "Destination": "10.10.200.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}, {"Use": "0", "Iface": "qr-90ce90aa-cb", "Metric": "0", "Destination": "192.168.124.0", "Genmask": "255.255.255.0", "Flags": "U", "Ref": "0", "Gateway": "0.0.0.0"}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule/" + netnodeip + "/" + route_id
+        result = {"success": [], "error": []}
+        if len(data_list) == 2:
+            response2 = self.confirm_status(self.delete_route_src_rule_path_type2(route_id, netnodeip, data_list[1]))
+            if response2.get("message").lower() == "success":
+                result["success"].append(response2)
+            else:
+                result["error"].append(response2)
+        if len(data_list) >= 1:
+            response1 = self.delete_route_src_rule_path_type1(route_id, netnodeip, data_list[0])
+            if response1.get("message").lower() == "success":
+                result["success"].append(response1)
+            else:
+                result["error"].append(response1)
+        response = self.delete_route_src_rule_path_pbrtable(route_id, netnodeip)
+        if response.get("message").lower() == "success":
+            result["success"].append(response)
+        else:
+            result["error"].append(response)
+        return result
+
+    def delete_route_src_rule_path_type2(self, route_id, netnodeip, data):
+        """
+
+        :param route_id:
+        :param data: {"type":"type2", "dest":"default", "via":"192.168.132.1","dev":"qr-b37c13d4-d1"}
+        :return: {"message": "Success", "code": 200, "result": []}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule/" + netnodeip + "/" + route_id + "/type2"
+        response = CustomHTTPClient.put_method(url, headers=self.HEADER, body=data)
+        return self.confirm_status(response)
+
+    def delete_route_src_rule_path_type1(self, route_id, netnodeip, data):
+        """
+        가상 라우터의 라우터 네임스페이스에서 정책기반라우팅 규칙 조회 후 삭제
+        :param route_id:
+        :param data: {"type":"type1", "src":"172.16.10/24"}
+        :return: {"message": "Success", "code": 200, "result": [{"PBR_TABLE": "local", "order": "0", "target": "from all lookup"}, {"PBR_TABLE": "main", "order": "32766", "target": "from all lookup"}, {"PBR_TABLE": "default", "order": "32767", "target": "from all lookup"}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule/" + netnodeip + "/" + route_id + "/type1"
+        response = CustomHTTPClient.put_method(url, headers=self.HEADER, body=data)
+        return self.confirm_status(response)
+
+    def delete_route_src_rule_path_pbrtable(self, route_id, netnodeip, data):
+        """
+        정책기반라우팅 테이블 삭제
+        :param route_id:
+        :return: {"message": "Success", "code": 200, "result": [{"PBR_TABLE": "local", "order": "0", "target": "from all lookup"}, {"PBR_TABLE": "main", "order": "32766", "target": "from all lookup"}, {"PBR_TABLE": "default", "order": "32767", "target": "from all lookup"}]}
+        {"success": {"result": ["..."]}} 로 변환해서 return
+        """
+        url = self.CTRL_URL + "/route/src_rule/" + netnodeip + "/" + route_id + "/pbrtable"
+        response = CustomHTTPClient.put_method(url, headers=self.HEADER, body=data)
+        return self.confirm_status(response)
+
+
+    @staticmethod
+    def confirm_status(response):
+        status = response.status_code
+        flag = False
+
+        if status == 400:
+            contents = {"error": {"message": "BadRequest", "code": 400, "title": "ControlEngineMessage"}}
+        elif status == 404:
+            contents = {"error": {"message": "NotFound - URL", "code": 404, "title": "ControlEngine"}}
+        elif status == 500:
+            try:
+                contents = response.json()
+            except Exception as e:
+                contents = {"error": {"message": e.message, "code": 500, "title": "JsonError"}}
+        else:
+            flag = True
+            contents = CustomHTTPClient.confirm_status(response)
+        if not flag and LOG_LEVEL == "DEBUG":
+            request = response.request
+            log_str = """
+            ============================= Request ===============================
+            [CURL {}] {}
+            HEADERS: {}
+            BODY: {}
+            ============================= Response ===============================
+            status: {}
+            contents: {}
+            response: {}
+            =========================== end Response =============================
+            """.format(request.method, request.url, request.headers, request.body, str(status), contents, response.content)
+            logger.debug(log_str)
+        return contents
+

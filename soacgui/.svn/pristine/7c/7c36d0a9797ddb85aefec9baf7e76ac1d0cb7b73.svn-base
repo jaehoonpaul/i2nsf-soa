@@ -1,0 +1,115 @@
+# _*_ coding:utf-8 _*_
+
+CREATE_DATABASE = """
+    CREATE DATABASE soacgui
+"""
+
+CREATE_SECURITY_RESOURCE_GROUP_TABLE = """
+CREATE TABLE tb_security_resource_group (
+	SECURITY_ID          VARCHAR(100) NOT NULL COMMENT '보안장비ID',
+	DOMAIN_KEY           INT(11) NOT NULL COMMENT '도메인키',
+	SECURITY_NAME        VARCHAR(100) DEFAULT NULL COMMENT '보안장비명',
+	SECURITY_ICON        VARCHAR(300) DEFAULT NULL COMMENT '보안장비아이콘',
+	MANUFACTURER_NAME    VARCHAR(100) DEFAULT NULL COMMENT '제조사',
+	MANUFACTURER_ICON    VARCHAR(300) DEFAULT NULL COMMENT '제조사아이콘',
+	SOFTWARE_VERSION     VARCHAR(100) DEFAULT NULL COMMENT '소프트웨어버전',
+	IMAGE_NAME           VARCHAR(100) DEFAULT NULL COMMENT '이미지명',
+	TOPOLOGY_JSON        MEDIUMTEXT DEFAULT NULL COMMENT '토폴로지데이터',
+	LINK_JSON            MEDIUMTEXT DEFAULT NULL COMMENT '자원연결데이터',
+	SECURITY_JSON        VARCHAR(500) DEFAULT NULL COMMENT '보안자원데이터',
+	DESCRIPTION          VARCHAR(500) DEFAULT NULL COMMENT '설명',
+	INSDATE              DATETIME NOT NULL COMMENT '생성일시',
+	INSUSER              VARCHAR(18) DEFAULT 'system' COMMENT '생성자',
+	UPDDATE              DATETIME NOT NULL COMMENT '수정일시',
+	UPDUSER              VARCHAR(18) DEFAULT 'system' COMMENT '수정자',
+	PRIMARY KEY (SECURITY_ID,DOMAIN_KEY),
+	CONSTRAINT FK_SECURITY_RESOURCE_GROUP_01 FOREIGN KEY (DOMAIN_KEY) REFERENCES tb_domain (DOMAIN_KEY)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='보안장비'
+"""
+
+CREATE_SECURITY_RESOURCE_GROUP_TRIGGER = """
+CREATE TRIGGER tb_security_resource_group_DateTime_DEFAULT
+BEFORE INSERT
+    ON tb_security_resource_group FOR EACH ROW
+BEGIN
+    SET NEW.INSDATE = NOW();
+    SET NEW.UPDDATE = NOW();
+END;
+"""
+
+CREATE_ENGINE_DATABASE = """
+CREATE DATABASE ctrl_engine
+"""
+
+GRANT_ENGINE_USER = """
+GRANT ALL PRIVILEGES ON ctrl_engine.* TO 'ctrl'@'%' IDENTIFIED BY 'editer'
+"""
+
+CREATE_ENGINE_SESRVICE_ALLOCATION_TABLE = """
+CREATE TABLE `service_allocation` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `tenant_name` varchar(255) DEFAULT NULL,
+    `user_name` varchar(255) DEFAULT NULL,
+    `service_id` varchar(36) DEFAULT NULL,
+    `service_description` varchar(1000) DEFAULT NULL,
+    `region_id` varchar(36) DEFAULT NULL,
+    `mdc_id` varchar(36) DEFAULT NULL,
+    `stack_name` varchar(36) DEFAULT NULL,
+    `stack_id` varchar(36) DEFAULT NULL,
+    `status` varchar(30) DEFAULT NULL,
+    `create_at` datetime DEFAULT NULL,
+    `updated_at` datetime DEFAULT NULL,
+    `deleted_at` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+"""
+
+CREATE_ENGINE_STACK_TEMPLATE_TABLE = """
+CREATE TABLE `stack_template` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `tenant_name` varchar(255) DEFAULT NULL,
+    `user_name` varchar(255) DEFAULT NULL,
+    `service_id` varchar(36) DEFAULT NULL,
+    `stack_name` varchar(36) DEFAULT NULL,
+    `hot_path` varchar(255) DEFAULT NULL,
+    `user_template` longtext,
+    `template` longtext,
+    `created_at` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+"""
+
+CREATE_ENGINE_SFC_TABLE = """
+CREATE TABLE `sfc` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `tenant_name` varchar(255) DEFAULT NULL,
+    `user_name` varchar(255) DEFAULT NULL,
+    `service_id` varchar(36) DEFAULT NULL,
+    `sfc_name` VARCHAR(255) NULL DEFAULT NULL,
+    `sfc_desc` VARCHAR(2000) NULL DEFAULT NULL,
+    `sfc_status` VARCHAR(255) NULL DEFAULT NULL,
+    `fc_list` VARCHAR(4000) NULL DEFAULT NULL,
+    `sfg_list` VARCHAR(4000) NULL DEFAULT NULL,
+    `sfc_id` varchar(2000) DEFAULT NULL,
+    `chain_id` varchar(2000) DEFAULT NULL,
+    `flow_classifiers` varchar(2000) DEFAULT NULL,
+    `port_pairs` varchar(2000) DEFAULT NULL,
+    `port_pair_groups` varchar(2000) DEFAULT NULL,
+    `create_at` datetime DEFAULT NULL,
+    `updated_at` datetime DEFAULT NULL,
+    `deleted_at` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+"""
+
+CREATE_ENGINE_MAP_TABLE = """
+CREATE TABLE `map` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `service_id` VARCHAR(36) NULL DEFAULT '0',
+    `map_link_list` longtext DEFAULT NULL,
+    `create_at` DATETIME NULL DEFAULT NULL,
+    `updated_at` DATETIME NULL DEFAULT NULL,
+    `deleted_at` DATETIME NULL DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+"""

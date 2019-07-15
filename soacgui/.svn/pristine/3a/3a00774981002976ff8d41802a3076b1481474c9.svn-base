@@ -1,0 +1,56 @@
+{% extends 'service/right_pop.html' %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_router.png" alt="#">
+<div class="right_d01 type">라우터</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02">이름</div>
+<div class="right_d03 name">{{ router.name }}</div>
+<div class="right_d04">ID</div>
+<div class="right_d03 id">{{ router_id }}</div>
+<div class="right_d04">상태</div>
+<div class="right_d03 status">{{ router.status }}</div>
+<div class="right_d04">프로젝트 ID</div>
+<div class="right_d03 project_id">{{ router.tenant_id }}</div>
+<div class="right_d04">관리자 상태</div>
+<div class="right_d03 admin_state_up">{% if router.admin_state_up %}예{% else %}아니오{% endif %}</div>
+<div class="right_d04">외부 게이트웨이</div>
+<div class="right_d03">network_id: {{ router.external_gateway_info.network_id }}</div>
+<div class="right_d04">외부 고정 IP</div>
+{% for external_fixed_ip in router.external_gateway_info.external_fixed_ips %}
+<div class="right_d03">{{ external_fixed_ip.subnet_id }}, {{ external_fixed_ip.ip_address }}</div>
+{% endfor %}
+<!--<div class="right_d04">네트워크 이름</div>-->
+<!--<div class="right_d03 subnet">서브넷-id,ip address</div>-->
+<!--<div class="right_d04">인터페이스</div>-->
+<!--<div class="right_d03 port">인터페이스</div>-->
+{% endblock resourceInfo %}
+
+{% comment %}
+{
+	u'router': {
+		u'status': u'ACTIVE',
+		u'external_gateway_info': {
+			u'network_id': u'324f4b67-edb6-4237-8764-349c9a86a055',
+			u'enable_snat': True,
+			u'external_fixed_ips': [
+				{
+					u'subnet_id': u'1b4c5b34-cefd-4ac7-81a9-2f4ff3f04644',
+					u'ip_address': u'10.10.200.48'
+				}
+			]
+		},
+		u'availability_zone_hints': [],
+		u'availability_zones': [u'nova'],
+		u'description': u'',
+		u'admin_state_up': True,
+		u'tenant_id': u'04b2b71d7fd64bf5b15fb201395d2649',
+		u'routes': [],
+		u'id': u'9bba6bbe-27a9-4959-937e-fe5e87919c4e',
+		u'name': u'test_router1'
+	},
+	'code': 200
+}
+{% endcomment %}

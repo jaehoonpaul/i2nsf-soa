@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ETRI SecCurator</title>
+    {% load staticfiles %}
+    <link href='{% static "css/style.css" %}' rel="stylesheet" type="text/css"/>
+    <link href='{% static "lib/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css"/>
+    <link href='{% static "lib/lobibox/dist/css/lobibox.min.css" %}' rel="stylesheet" type="text/css"/>
+    <script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+
+    <script src='{% static "lib/bootstrap/3.3.7/js/bootstrap.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'lib/lobibox/dist/js/notifications.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+    <style>
+        .lobibox-notify-wrapper-large {
+            text-align: left;
+        }
+
+
+    </style>
+    <script>
+		$(document).ready(function() {
+
+			$("#domain_name").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+
+			$("#project_name").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+
+			$("#id").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+
+			$("#password").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+
+			$("#domain_name").focus();
+		});
+
+
+    </script>
+</head>
+
+<body class="login_body">
+<div class="login_d01">
+    <img class="login_img01" src="{% static 'img/login_01.png' %}" alt="#">
+    <!--<div class="login_d02">-->
+    <!--<span class="login_s01">Sign in</span> to your account-->
+    <!--</div>-->
+    <form action="" method="post" role="form" data-toggle="validator">
+        <input id="domain_name" class="login_text01" type="text" name="domain_name" placeholder="도메인 이름"
+               value="{{ domain_name }}" required>
+        <input id="project_name" class="login_text02" type="text" name="project_name" placeholder="프로젝트 이름"
+               value="{{ project_name }}">
+        <input id="id" class="login_text02" type="text" name="user_name" placeholder="사용자 이름" value="{{ user_name }}"
+               required>
+        <input id="password" class="login_text02" type="password" name="pass" placeholder="비밀번호" value="{{ pass }}"
+               required>
+        <div class="clear_float"></div>
+        <input id="save" class="login_checkbox01" style="margin:58px 0 0 60px;" type="checkbox" name="save" {{ save }}>
+        <div class="login_d03">정보를 기억합니다.</div>
+        <input type="hidden" id="csrfmiddlewaretoken" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <!--<input type="submit" value="" class="login_d04">-->
+        <!--<div id="btn_login" class="login_d04" onclick="javascript:document.forms[0].submit();"></div>-->
+        <button id="btn_login" type="submit" class="login_d04" style="border:0px;"></button>
+    </form>
+</div>
+</body>
+<style>
+    input.login_text01{
+        font-size:11px;
+        height:40px;
+    }
+    input.login_text02{
+        font-size:11px;
+        height:40px;
+    }
+
+
+</style>
+</html>

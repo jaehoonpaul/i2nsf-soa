@@ -1,0 +1,25 @@
+module: ietf-i2nsf-capability
+  +--rw i2nsf-capability
+     +--rw time-capabilities*                  enumeration
+     +--rw event-capabilities
+     |  +--rw system-event-capa*   identityref
+     |  +--rw system-alarm-capa*   identityref
+     +--rw condition-capabilities
+     |  +--rw generic-nsf-capabilities
+     |  |  +--rw ipv4-capa*   identityref
+     |  |  +--rw ipv6-capa*   identityref
+     |  |  +--rw tcp-capa*    identityref
+     |  |  +--rw udp-capa*    identityref
+     |  |  +--rw icmp-capa*   identityref
+     |  +--rw advanced-nsf-capabilities
+     |     +--rw antivirus-capa*    identityref
+     |     +--rw antiddos-capa*     identityref
+     |     +--rw ips-capa*          identityref
+     |     +--rw http-capa*         identityref
+     |     +--rw voip-volte-capa*   identityref
+     +--rw action-capabilities
+     |  +--rw ingress-action-capa*   identityref
+     |  +--rw egress-action-capa*    identityref
+     |  +--rw log-action-capa*       identityref
+     +--rw resolution-strategy-capabilities*   identityref
+     +--rw default-action-capabilities*        identityref

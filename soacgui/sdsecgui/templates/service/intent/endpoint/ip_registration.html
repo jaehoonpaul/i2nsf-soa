@@ -1,0 +1,39 @@
+<!-- IP Registration 탭-->
+
+		<div class="rs_d01">
+			<div class="ind_d02">
+				<div class="ind_d05">Registration field</div>
+				<div class="clear_float"></div>
+			</div>
+			<div class="rs_d02">
+				<p>User registration</p>
+				<br/>
+				<br/>
+
+				<p>User Name</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="ipRegUserName"/>
+				<div class="clear_float"></div>
+
+				<br/>
+				<p>Range of user IP</p>
+				<p>--Start IP address</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="ipRegStartIp"/>
+				<div class="clear_float"></div>
+
+				<br/>
+				<p>--End IP address</p>
+				<br/>
+				<input class="rs_text04" type="text" placeholder="" id="ipRegEndIp"/>
+				<div class="clear_float"></div>
+
+			</div>
+		</div>
+<script>
+	function getIPRegData(){
+		var IPReg = { "userName" : $("#ipRegUserName").val(), "startIP" : $("#ipRegStartIp").val(), "endIP" : $("#ipRegEndIp").val()}
+		return IPReg;
+	}
+</script>
+

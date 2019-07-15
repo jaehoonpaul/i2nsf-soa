@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ETRI SecCurator</title>
+    {% load staticfiles %}
+    <link href='{% static "css/style.css" %}' rel="stylesheet" type="text/css"/>
+    <!--<link href='{% static "lib/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css"/>-->
+    <!--<link href='{% static "lib/lobibox/dist/css/lobibox.min.css" %}' rel="stylesheet" type="text/css"/>-->
+    <script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+    <!--<script src='{% static "lib/bootstrap/3.2.0/js/bootstrap.min.js" %}'></script>-->
+    <!--<script type="text/javascript" src="{% static 'lib/lobibox/dist/js/notifications.min.js' %}"></script>-->
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+    <style>
+        .login_body { text-align:initial; }
+    </style>
+</head>
+<body class="domain_body">
+<div class="domain_select_header">
+    <div class="domain_select_d01">
+        <img class="domain_select_img03" src="/static/img/common/left_logo_01.png" alt="#">
+        <img class="domain_select_img01" src='{% static "img/dashboard/domain_select/domain_select_logo_01.png" %}'
+             alt="#">
+        <img class="domain_select_img02" id="settings"
+             src='{% static "img/dashboard/domain_select/domain_setup_bt_01.png" %}'
+             alt="#">
+        <div class="clear_float"></div>
+    </div>
+</div>
+<div class="domain_select_d02">
+    {% for domain in domains %}
+    <div class="domain_select_d03 domain_{{ domain.domain_key }}" data-domain_key="{{ domain.domain_key }}" data-auth_url="{{domain.auth_url}}" data-domain_name="{{domain.domain_name}}"
+         data-description="{{domain.description}}">
+        <div class="domain-info-simple">
+            <div class="domain-detail" hidden style="height:6px;"></div>
+            <div class="domain_select_d04 domain-simple">
+                <div class="domain-key-text">도메인</div>
+                <div class="domain-text">{{domain.domain_name}}</div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="domain_select_d05 domain-detail" hidden>
+                <div class="domain-key-text">도메인</div>
+                <div class="domain-text">{{domain.domain_name}}</div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="domain_select_d05">
+                <div class="domain-key-text">설명</div>
+                <div class="domain-text">{{domain.description}}</div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="domain_select_d05">
+                <div class="domain-key-text">상태</div>
+                <div class="domain-text status"><div class="off">Off-Line</div></div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="domain_select_d05 domain-detail" hidden>
+                <div class="domain-key-text">DB URL</div>
+                <div class="domain-text">{{ domain.db_ip }}</div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="domain_select_d05 domain-detail" hidden>
+                <div class="domain-key-text">DB 관리자 계정</div>
+                <div class="domain-text">{{ domain.db_user }}</div>
+                <div class="clear_float"></div>
+            </div>
+            <div class="domain_select_d05 domain-detail" hidden>
+                <div class="domain-key-text">DB 관리자 암호</div>
+                <div class="domain-text">*******</div>
+                <div class="clear_float"></div>
+            </div>
+            <button class="btn-domain-detail" onclick="">자세히</button>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="clear_float"></div>
+</div>
+<script>
+    $(".domain_select_d02").on("click", ".domain_select_d03", function() {
+        var auth_url = $(this).data("auth_url");
+        var domain_name = $(this).data("domain_name");
+        var domain_key = $(this).data("domain_key");
+        var description = $(this).data("description");
+        location.href = "/dashboard/login/?domain_key=" + domain_key{% if next_url %} + "&next={{ next_url }}"{% endif %};
+    });
+    $("#settings").on("click", function() {
+        var url = "/domain/login";
+        var title = "도메인 관리 - ETRI SecurityOnAirController";
+        var width = 1300;
+        var height = 900;
+        var left = window.screen.left + (screen.availWidth - width) / 2;
+        var top = window.screen.top + (screen.availHeight - height) / 2;
+        console.log("width=" + width + ", height=" + height + ", toolbar=no, menubar=no, location=no, top=" + top + ", left=" + left);
+        window.open(url, title, "width=" + width + ", height=" + height + ", toolbar=no, menubar=no, location=no, top=" + top + ", left=" + left);
+    });
+    $(function() {
+        $(".domain_select_d03").each(function(i, elem) {
+            var auth_url = $(elem).data("auth_url");
+            var domain_key = $(elem).data("domain_key");
+            U.ajax({
+                url: '/domain/check',
+                data: {auth_url: auth_url, domain_key: domain_key},
+                dataType: 'json',
+                success: function(jsonData) {
+                    if (jsonData.success && jsonData.success.version.status == "stable") {
+                        $(".domain_" + jsonData.success.domain_key).find(".status").html('<div class="on">On-Line</div>');
+                    } else {
+                        $(".domain_" + jsonData.success.domain_key).find(".status").html('<div class="off">Off-Line</div>');
+                    }
+                },
+                error: function(request) {
+
+                }
+            });
+        });
+        $(".btn-domain-detail").on("click", function(e) {
+            e.stopPropagation();
+            if ($(this).parents(".domain_select_d03").find(".domain-simple").css("display") == 'none') {
+                $(this).parents(".domain_select_d03").css("background-image", 'url("/static/img/domain_select/list_bg1.png")');
+                $(this).parents(".domain_select_d03").find(".domain-detail").hide();
+                $(this).parents(".domain_select_d03").find(".domain-simple").show();
+            } else {
+                $(this).parents(".domain_select_d03").css("background-image", 'url("/static/img/domain_select/list_bg.png")');
+                $(this).parents(".domain_select_d03").find(".domain-detail").show();
+                $(this).parents(".domain_select_d03").find(".domain-simple").hide();
+            }
+        });
+    });
+</script>
+</body>
+</html>

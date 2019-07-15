@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    {% load staticfiles %}
+    <script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+    <script src='{% static "js/test.js" %}'></script>
+</head>
+<body>
+<input class="input_file" type="file" name="security_icon" accept="image/*">
+<input class="input_file" type="file" name="manufacturer_icon" accept="image/*">
+<button id="submit"></button>
+</body>
+</html>

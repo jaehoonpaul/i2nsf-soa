@@ -1,0 +1,20 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="p50">
+    <div class="pop01_d04">
+        <div class="pop01_d05">서비스 ID</div>
+        <input class="pop01_text01" name="service_id" value="">
+        <div class="clear_float"></div>
+        <div>{{ data }}</div>
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="submit_sync">
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+</div>
+{% endblock modal_footer %}

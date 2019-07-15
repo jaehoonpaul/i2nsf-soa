@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">가상서버</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03 header_title_d01">{{ instance.name }}</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 click">{{ instance.name }}</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="instance_info">
+    <div class="ind_d02">
+        <div class="ind_d05">{{ instance.name }}</div>
+        <div class="clear_float"></div>
+    </div>
+
+    <table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0">
+        <tr data-filter="이름">
+            <th class="mypage_td01">이름</th><td class="mypage_td02">{{ instance.name }}</td>
+        </tr>
+        <tr data-filter="ID">
+            <th class="mypage_td01">ID</th><td class="mypage_td02">{{ instance.id}}</td>
+        </tr>
+        <tr data-filter="Status">
+            <th class="mypage_td01">Status</th><td class="mypage_td02">{{ instance.status }}</td>
+        </tr>
+        <tr data-filter="가용 구역">
+            <th class="mypage_td01">가용 구역</th><td class="mypage_td02">{{ instance.os_ext_az.availability_zone }}</td>
+        </tr>
+        <tr data-filter="생성됨">
+            <th class="mypage_td01">생성됨</th><td class="mypage_td02">{{ instance.created }}</td>
+        </tr>
+        <tr data-filter="updated">
+            <th class="mypage_td01">updated</th><td class="mypage_td02">{{ instance.updated }}</td>
+        </tr>
+        <tr data-filter="호스트">
+            <th class="mypage_td01">호스트</th>
+            <td class="mypage_td02">{{ instance.os_ext_srv_attr.host }}</td>
+        </tr><!--
+        <tr data-filter="이름">
+            <th class="mypage_td01">os_ext_sts</th>
+            <td class="mypage_td02">
+                Status:{{ instance.os_ext_sts.vm_state }}<br/>
+                task_state:{{ instance.os_ext_sts.task_state }}<br/>
+                power_state:{{ instance.os_ext_sts.power_state }}
+            </td>
+        </tr>-->
+        <tr data-filter="Flavor 이름">
+            <th class="mypage_td01">Flavor 이름</th><td class="mypage_td02">{{ instance.flavor.name }}</td>
+        </tr>
+        <tr data-filter="Flavor ID">
+            <th class="mypage_td01">Flavor ID</th><td class="mypage_td02">{{ instance.flavor.id }}</td>
+        </tr>
+        <tr data-filter="RAM">
+            <th class="mypage_td01">RAM</th><td class="mypage_td02">{{ instance.flavor.ram }}MB</td>
+        </tr>
+        <tr data-filter="VCPUs">
+            <th class="mypage_td01">VCPUs</th><td class="mypage_td02">{{ instance.flavor.vcpus }} VCPU</td>
+        </tr>
+        <tr data-filter="디스크">
+            <th class="mypage_td01">디스크</th><td class="mypage_td02">{{ instance.flavor.disk }}GB</td>
+        </tr>
+        <tr data-filter="security_groups">
+            <th class="mypage_td01">security_groups</th><td class="mypage_td02">{{ instance.security_groups }}</td>
+        </tr>
+        <tr data-filter="accessIPv4">
+            <th class="mypage_td01">accessIPv4</th><td class="mypage_td02">{{ instance.accessIPv4 }}</td>
+        </tr>
+        <tr data-filter="accessIPv6">
+            <th class="mypage_td01">accessIPv6</th><td class="mypage_td02">{{ instance.accessIPv6 }}</td>
+        </tr>
+<!--
+        <tr data-filter="이름">
+            <th class="mypage_td01">locked</th><td class="mypage_td02">{{ instance.locked}}</td>
+        </tr>-->
+        <tr data-filter="metadata">
+            <th class="mypage_td01">metadata</th><td class="mypage_td02">{{ instance.metadata}}</td>
+        </tr>
+        <tr data-filter="키 이름">
+            <th class="mypage_td01">키 이름</th><td class="mypage_td02">{{ instance.key_name}}</td>
+        </tr>
+        <tr data-filter="이미지 이름">
+            <th class="mypage_td01">이미지 이름</th>
+            <td class="mypage_td02">
+                {# if instance.image.name 있으면 <a>링크 #}
+                {{ instance.image.name }}
+                {# endif #}
+            </td>
+        </tr>
+        <tr data-filter="이미지 ID">
+            <th class="mypage_td01">이미지 ID</th><td class="mypage_td02">{{ instance.image.id}}</td>
+        </tr>
+        <tr data-filter="볼륨:연결된 곳">
+            <th class="mypage_td01">볼륨:연결된 곳</th><td class="mypage_td02">{{ instance.os_extended_volumes.volumes_attached}}</td>
+        </tr>
+        <!--
+        <tr data-filter="이름">
+            <th class="mypage_td01">os_extended_volume</th><td class="mypage_td02">{{ instance.os_extended_volume }}</td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">progress</th><td class="mypage_td02">{{ instance.progress}}</td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">os_dce:diskConfig</th><td class="mypage_td02">{{ instance.os_dce.diskConfig }}</td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">os_srv_usg</th>
+            <td class="mypage_td02">
+                terminated_at:{{ instance.os_srv_usg.terminated_at }}<br/>
+                launched_at:{{ instance.os_srv_usg.launched_at }}
+            </td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">config_drive</th><td class="mypage_td02">{{ instance.config_drive }}</td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">description</th><td class="mypage_td02">{{ instance.description }}</td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">hostId</th><td class="mypage_td02">{{ instance.hostId }}</td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">host_status</th><td class="mypage_td02">{{ instance.host_status }}</td>
+        </tr>
+        <tr data-filter="이름">
+            <th class="mypage_td01">public_network</th><td class="mypage_td02">{{ instance.public_network }}</td>
+        </tr>-->
+    </table>
+
+    <!--<p class="post{{ forloop.counter }}">{{ post.text|linebreaksbr }}</p>-->
+    <!--<p>{{ instanceList }}</p>-->
+	<div class="clear_float"></div>
+</div>
+{% endblock content %}

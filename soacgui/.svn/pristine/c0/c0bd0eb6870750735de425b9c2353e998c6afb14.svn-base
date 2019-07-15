@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03 header_title_d01">라우터</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<!--
+<div class="header_title_d01"></div>
+<div>
+    <a href="#"><div class="header_title_d04_click tab summary">개요</div></a>
+    <a href="#"><div class="header_title_d05 tab interface">인터페이스</div></a>
+    <a href="#"><div class="header_title_d05 tab static_path">정적 경로</div></a>
+</div>
+-->
+<div class="head_d05 click">개요</div>
+<div class="head_d05">인터페이스</div>
+<div class="head_d05">정적 경로</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<style>
+    .table-horizontal th {
+        float: left;
+        withh: 160px;
+        clear: left;
+        text-align: right;
+        overflow: hitden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    th {
+        font-weight: bold;
+    }
+</style>
+<div class="rs_d03">
+    <div class="rs_d04 summary click">개요</div>
+    <div class="rs_d04 interface">인터페이스</div>
+    <div class="rs_d04 static_path">정적 경로</div>
+    <div class="clear_float"></div>
+
+    <div class="rs_d05" id="summary">
+        <table class="mypage_tab01">
+            <tr>
+                <th class="mypage_td01">이름</th><td class="mypage_td02" id="name"></td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">ID</th><td class="mypage_td02" id="id"></td>
+            </tr>
+    <!--        <tr>
+                <th class="ind_th01">설명</th><td class="ind_td01" id="description"></td>
+            </tr>-->
+            <tr>
+                <th class="mypage_td01">프로젝트 ID</th><td class="mypage_td02" id="tenant_id"></td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">Status</th><td class="mypage_td02" id="status"></td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">관리자 상태</th><td class="mypage_td02" id="admin_state_up"></td>
+            </tr>
+    <!--        <tr>
+                <th class="ind_th01">L3 에이전트</th>
+                <td class="ind_td01">
+                    <table class="ind_tab01">
+                        <thead>
+                            <tr>
+                                <th class="ind_th01"><strong>호스트</strong></th>
+                                <th class="ind_th01"><strong>ID</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ind_td01">&lt;!&ndash; openstack &ndash;&gt;</td>
+                                <td class="ind_td01">&lt;!&ndash; <a href="/dashboard/admin/routers/8399a441-4ebf-4661-bcee-9e06a1fec21f/l3_agent_list">8399a441-4ebf-4661-bcee-9e06a1fec21f</a> &ndash;&gt;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th class="ind_th01">가용성 존</th><td class="ind_td01" id="availability_zones"></td>
+            </tr>-->
+        </table>
+        <h4>외부 게이트웨이</h4>
+        <hr class="header_rule">
+        <table class="mypage_tab01">
+            <tr>
+                <th class="mypage_td01">네트워크 이름</th><td class="mypage_td02" id="network_name"></td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">네트워크 ID</th><td class="mypage_td02" id="network_id"></td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">외부 fixed IP</th>
+                <td class="mypage_td02" id="external_fixed_ips">
+                    <!--<ul>
+                        <li><strong>서브넷 ID</strong> <a href="/dashboard/project/networks/subnets/8764c66c-4fa8-4b4e-82c8-ec0a76d31449/detail">8764c66c-4fa8-4b4e-82c8-ec0a76d31449</a></li>
+                        <li><strong>IP 주소</strong> 172.24.4.8</li>
+                    </ul>-->
+                </td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">SNAT</th><td class="mypage_td02" id="enable_snat"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="rs_d05" id="interface" style="display: block;">
+        <table class="common-tab-01 index" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+    <div class="rs_d05" id="static_path" style="display: block;">
+        <table class="common-tab-01 index" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+</div>
+{% load staticfiles %}
+<script src='{% static "js/admin/routers/info.js" %}'></script>
+<script>
+$(function(){
+    getRouterAjax("{{ router_id }}");
+});
+</script>
+{% endblock content %}

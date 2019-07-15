@@ -1,0 +1,43 @@
+{% load staticfiles %}
+<div class="topology_left_d01" id="item_left_menu" hidden>
+    <div class="topology_left_d03 click" id="security_tab">{{ _('보<br>안<br>장<br>비') }}</div>
+    <div class="topology_left_d04 " id="resource_tab">{{ _('가<br>상<br>자<br>원') }}</div>
+    <img class="topology_left_close01" id="left_close" src='{% static "img/dashboard/common/close_bt_02.png" %}'
+         alt="#">
+    <!--<img class="topology_left_img02 toggle" src='{% static "img/service/topology/topology_arrow_left_01.png" %}' alt="#">-->
+    <!--<img class="left_menu_img03 toggle" src='{% static "img/left_close.png" %}' alt="#">-->
+    <div id="resource_item" hidden>
+        <img class="topology_left_img01" id="vrouter_item" src='{% static "img/service/topology/router_01.png" %}'
+             alt="#">
+        <div class="topology_left_d02">{{ _('라우터') }}</div>
+        <img class="topology_left_img01" id="network_item" src='{% static "img/service/topology/network_01.png" %}'
+             alt="#">
+        <div class="topology_left_d02">{{ _('네트워크') }}</div>
+        <img class="topology_left_img01" id="vm_item" src='{% static "img/service/topology/virtual_machine_01.png" %}'
+             alt="#">
+        <div class="topology_left_d02">{{ _('가상머신') }}</div>
+        <img class="topology_left_img01" id="volume_item" src='{% static "img/service/topology/volume_01.png" %}'
+             alt="#">
+        <div class="topology_left_d02">{{ _('볼륨') }}</div>
+        <img class="topology_left_img01" id="autoscaling_item" src='{% static "img/service/topology/autoscaling_01.png" %}' alt="#auto scaling">
+        <div class="topology_left_d02">{{ _('오토스케일링') }}</div>
+    </div>
+    <div id="security_item"></div>
+    <!--<img class="left_menu_img01" id="vrouter_item" src='{% static "img/left_router.png" %}' alt="#">-->
+    <!--<div class="left_menu_d01">라우터</div>-->
+    <!--<img class="left_menu_img02" id="network_item" src='{% static "img/left_network.png" %}' alt="#">-->
+    <!--<div class="left_menu_d01">네트워크</div>-->
+    <!--<img class="left_menu_img02" id="vm_item" src='{% static "img/left_virtualmachine.png" %}' alt="#">-->
+    <!--<div class="left_menu_d01">가상머신</div>-->
+    <!--<img class="left_menu_img02" id="volume_item" src='{% static "img/left_volume.png" %}' alt="#">-->
+    <!--<div class="left_menu_d01">볼륨</div>-->
+    <!--<img class="left_menu_img02" id="firewall_item" src='{% static "img/left_firewall.png" %}' alt="#">-->
+    <!--<div class="left_menu_d01">방화벽</div>-->
+    <!--<img class="left_menu_img02" id="loadbalancer_item" src='{% static "img/left_loadbalancer.png" %}' alt="#">-->
+    <!--<div class="left_menu_d01">로드밸런서</div>-->
+</div>
+<!--<div class="security_left_menu left_menu" id="security_item" hidden>
+    <img class="security_left_menu_handle toggle" src='{% static "img/service/topology/topology_arrow_left_01.png" %}'
+         alt="#">
+</div>-->
+<script src="{% static 'js/service/left_menu.js' %}"></script>

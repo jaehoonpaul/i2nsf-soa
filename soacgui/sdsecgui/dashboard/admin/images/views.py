@@ -1,0 +1,106 @@
+# _*_ coding:utf-8 _*_
+import json
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+
+from sdsecgui.tools.openstack_restapi import GlanceRestAPI, KeystoneRestAPI
+from sdsecgui.cmodels.image import Image
+
+# set_log_dir()
+# logger = get_logger("myapp.myLogger")
+from sdsecgui.tools.keystone_exception import Unauthorized
+
+
+def get_image_list(request):
+    # logger.info("get_instance_list")
+    # sess = login("admin", "chiron", "demo", "http://192.168.10.6/identity/v3", 'default')
+
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    glance = GlanceRestAPI(auth_url, token)
+    keystone = KeystoneRestAPI(auth_url, token)
+
+    resultImageList = glance.get_image_list()
+    imageList = resultImageList.get("success").get("images")
+    for image in imageList:
+        project = keystone.get_project(image.get("owner"))
+        if project.get("success"):
+            image["project_name"] = project.get("success").get("project").get("name")
+
+    if request.is_ajax() and request.method == 'POST':
+        return JsonResponse({"success":{"imageList":[image for image in imageList]}})
+    else:
+        return render(request, 'admin/images/index.html', {'imageList': imageList})
+
+
+def get_image_by_id(request, image_id):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    if not token:
+        return redirect("/dashboard/domains/?next=/dashboard/admin/images/" + image_id)
+    glance = GlanceRestAPI(auth_url, token)
+
+    image = glance.get_image(image_id).get("success")
+    return render(request, 'admin/images/info.html', {'image': image})
+
+
+def image_modal(request, image_id=None):
+    modal_title = request.GET.get("modal_title")
+    data = {"modal_title": modal_title}
+    if image_id:
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        glance = GlanceRestAPI(auth_url, token)
+        result = glance.get_image(image_id)
+        if result.get("success"):
+            data.update({"image": result["success"]})
+    # data["container_format"] = {
+    #     "aki": "AKI - Amazon Kernel Image",
+    #     "ami": "AMI - Amazon Machine Image",
+    #     "ari": "ARI - Amazon Ramdisk Image",
+    #     "docker": "Docker",
+    #     "iso": "ISO - Optical Disk Image",
+    #     "ova": "OVA - Open Virtual Appliance",
+    #     "qcow2": "QCOW2 - QEMU Emulator",
+    #     "raw": "Raw",
+    #     "vdi": "VDI - Virtual Disk Image",
+    #     "vhd": "VHD - Virtual Hard Disk",
+    #     "vmdk": "VMDK - Virtual Machine Disk",
+    # }
+
+    return render(request, 'admin/images/modal.html', data)
+
+
+def create_image(request):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    data = json.loads(request.POST.get("data"))
+    if type(data.get("min_ram")) != int:
+        data["min_ram"] = int(data["min_ram"])
+    if type(data.get("min_disk")) != int:
+        data["min_disk"] = int(data["min_disk"])
+
+    if data.get("disk_format") in "ami|ari|aki":
+        data["container_format"] = data["disk_format"]
+    elif data.get("disk_format") in "bare|ovf|ova|docker":
+        data["container_format"] = data["disk_format"]
+        data["disk_format"] = None
+    elif data.get("disk_format") in "raw":
+        data["container_format"] = "bare"
+    else:
+        data["container_format"] = None
+    del data["is_copying"]
+
+    glance = GlanceRestAPI(auth_url, token)
+    result = glance.create_image(data)
+    return JsonResponse(result)
+
+
+def delete_image(request, image_id):
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+
+    glance = GlanceRestAPI(auth_url, token)
+    result = glance.delete_image(image_id)
+    return JsonResponse(result)

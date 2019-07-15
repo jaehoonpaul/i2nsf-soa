@@ -1,0 +1,20 @@
+# _*_coding:utf-8_*_
+from django.conf.urls import url, include
+from sdsecgui.dashboard.service.intent import views
+urlpatterns = [
+    url(r'^new_service$', views.new_service, name='new_service'),
+    url(r'^new_service/$', views.new_service, name='new_service'),
+    url(r'^rule_modal$', views.create_rule, name='rule_modal'),
+    url(r'^rule$', views.get_rule_list, name='get_rule_list'),
+    url(r'^rule/(?P<rule_key>[\w\-]+)/detail$', views.get_rule, name='get_rule'),
+    url(r'^rule/create$', views.create_rule, name='create_rule'),
+    url(r'^rule/(?P<rule_key>[\w\-]+)/update$', views.update_rule, name='update_rule'),
+    url(r'^rule/(?P<rule_key>[\w\-]+)/delete$', views.delete_rule, name='delete_rule'),
+    url(r'^endpoint$', views.endpoints, name='endpoints'),
+    url(r'^endpoint/create$', views.create_endpoint, name='create_endpoint'),
+    url(r'^endpoint/resend$', views.resend_endpoint, name='resend_endpoint'),
+    url(r'^endpoint/(?P<endpoint_key>[\w\-]+)/update$', views.update_endpoint, name='update_endpoint'),
+    url(r'^endpoint/(?P<endpoint_key>[\w\-]+)/delete$', views.delete_endpoint, name='delete_endpoint'),
+    #url(r'^template$', views.new_template, name='new_template'),
+]
+

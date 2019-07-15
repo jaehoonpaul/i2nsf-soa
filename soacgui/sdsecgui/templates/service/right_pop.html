@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<script>
+</script>
+<div class="right_d07">
+    {% block rightPopTitle %}
+    {% endblock %}
+    <img class="right_img02 right_pop_close" src='{% static "img/right_close.png" %}' alt="#">
+    <div class="clear_float"></div>
+</div>
+<div class="resource_info">
+    {% block resourceInfo %}
+    {% endblock %}
+</div>
+<div class="right_d08"></div>
+<div class="right_d06">
+    <img class="right_img03" src='{% static "img/dashboard/service/interim_save_bt_01.png" %}' alt="#" id="resource_update" hidden>
+    <img src='{% static "img/dashboard/common/del_bt_01.png" %}' alt="#" id="delBtn" hidden>
+    <img class="right_img04 right_pop_close" src='{% static "img/dashboard/service/right_pop_close_bt_01.png" %}'
+         alt="#" id="closeBtn">
+</div>

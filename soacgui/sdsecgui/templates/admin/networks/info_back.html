@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03 header_title_d01">네트워크</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03 header_title_d01">{# network.name #}</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<!--
+<div class="header_title_d01">{# network.name #}</div>
+<div>
+    <a href="#"><div class="header_title_d04_click tab summary">개요</div></a>
+    <a href="#"><div class="header_title_d05 tab subnet">서브넷</div></a>
+    <a href="#"><div class="header_title_d05 tab port">포트</div></a>
+    <a href="#"><div class="header_title_d05 tab DHCPagent">DHCP 에이전트</div></a>
+</div>
+-->
+<div class="head_d05 click">개요</div>
+<div class="head_d05">서브넷</div>
+<div class="head_d05">포트</div>
+<div class="head_d05">DHCP 에이전트</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d03">
+    <div class="rs_d04 summary click">개요</div>
+    <div class="rs_d04 subnet">서브넷</div>
+    <div class="rs_d04 port">포트</div>
+    <div class="rs_d04 DHCPagent">DHCP 에이전트</div>
+    <div class="clear_float"></div>
+
+    <div class="rs_d05" id="summary">
+        <div class="clear_float"></div>
+            <img class="all_check_bt01" src="/static/img/common/btn/del_bt_01.png" alt="#">
+            <img class="all_check_bt02" src="/static/img/common/btn/edit_bt_01.png" alt="#">
+        <div class="clear_float"></div>
+        <table class="mypage_tab01" cellpadding="0" border="0" cellspacing="0">
+            {% comment %}
+            <tr>
+                 <th class="mypage_td01">이름</th>          <td class="mypage_td02">{{ network.name }}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">ID</th>            <td class="mypage_td02">{{ network.id}}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">프로젝트 ID</th>   <td class="mypage_td02">{{ network.project_id }}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">Status</th>        <td class="mypage_td02">{{ network.status }}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">관리자 상태</th>   <td class="mypage_td02">{{ network.admin_state_up }}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">공유</th>          <td class="mypage_td02">{{ network.shared }}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">외부 네트워크</th> <td class="mypage_td02">{{ network.router.external }}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">MTU</th>           <td class="mypage_td02">{{ network.mtu }}</td>
+            </tr>
+            <tr>
+                 <th class="mypage_td01">공급자 네트워크</th>
+                 <td class="mypage_td02">
+                    네트워크 타입 {# network.provider.network_type #}<br/>
+                    물리적인 네트워크 {# network.provider.physical_network #}<br/>
+                    구분 ID: {# network.provider.segmentation_id #}
+                </td>
+            </tr>
+            {% endcomment %}
+        </table>
+    </div>
+
+    <div class="rs_d05" id="subnet">
+        <img class="all_check_bt01" src="/static/img/common/btn/port_del_bt_01.png" alt="#">
+        <img class="all_check_bt02" src="/static/img/common/btn/port_plus_bt_01.png" alt="#">
+        <!--<input class="rs_text03" type="text" placeholder="필터">-->
+        <div class="clear_float"></div>
+        <table class="mypage_tab01" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+    {# include "admin/networks/subnets/index.html" #}
+
+    <div class="rs_d05" id="port">
+        <table class="mypage_tab01" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+    {# include "admin/networks/ports/index.html" #}
+
+    <div class="rs_d05" id="DHCPagent">
+        <table class="mypage_tab01" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+</div>
+
+{% load staticfiles %}
+<script src='{% static "js/admin/networks/info.js" %}'></script>
+<script>
+$(function(){
+    getNetworkAjax("{{ network_id }}");
+});
+
+</script>
+{% endblock content %}

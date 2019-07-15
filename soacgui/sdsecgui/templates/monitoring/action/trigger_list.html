@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load staticfiles %}
+    <meta charset="UTF-8">
+    <title>Triggers</title>
+    <link href='{% static "css/style.css" %}' rel="stylesheet" type="text/css" />
+    <link href='{% static "css/trigger_list.css" %}' rel="stylesheet" type="text/css" />
+    <script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'lib/tinymce/jquery.tinymce.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/lobibox/dist/js/notifications.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/monitoring/trigger_list.js' %}"></script>
+</head>
+<body>
+<div class="article">
+    <div class="header-title table">
+        <div class="cell">
+            <h1>Triggers</h1>
+        </div>
+        <div class="cell nowrap">
+            <form method="post" action="popup.php" accept-charset="utf-8">
+                <ul>
+                    <li>
+                        <label for="groupid">Group</label>
+                        <div class="form-input-margin">
+                        </div>
+                        <select id="groupid" name="groupid">
+                            {% for hostgroup in hostgroups %}
+                            <option value="{{ hostgroup.groupid }}">{{ hostgroup.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </li>
+                    <li>
+                        <label for="hostid">Host</label>
+                        <div class="form-input-margin"></div>
+                        <select id="hostid" name="hostid"></select>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+    <form method="post" accept-charset="utf-8" name="triggerform" id="triggers">
+        <table class="common-tab-01">
+            <thead>
+            <tr>
+                <th class="cell-width">
+                    <input id="all_triggers" name="all_triggers" value="1" class="checkbox-radio" type="checkbox">
+                    <label for="all_triggers"><span></span></label>
+                </th>
+                <th>이름</th>
+                <th>심각도</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <button type="button" id="select" name="select">Select</button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+</body>
+</html>

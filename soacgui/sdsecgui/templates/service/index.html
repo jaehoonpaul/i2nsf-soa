@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+
+{% block headerTitle %}
+<div class="head_d02">{{ _("서비스") }}</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">{{ _("서비스 조회") }}</div>
+{% endblock headerTitle %}
+{% block header %}
+<!-- <style>
+/*html {
+    overflow:hidden;
+}*/
+.contents {
+    padding:10px 10px 10px 10px;
+    height:50%;
+}
+
+</style> -->
+
+<!--<script src="{% static 'js\service\list\flip.js' %}"></script>-->
+<!--<div class="header_title_d03">
+    <img class="header_title_img01" src='{% static "img/service_list.png" %}' alt="#">
+</div>-->
+<!--<a href="#"><div class="header_title_d04_click">서비스리스트</div></a>-->
+<div class="head_d05 click">{{ _("서비스 목록") }}</div>
+<!--<a href="/dashboard/service/new_service">
+    <img class="all_service_bt01" src="/static/img/common/btn/service_new_bt_01.png" alt="#">
+</a>-->
+<div class="clear_float"></div>
+{% endblock header %}
+
+
+{% block content %}
+
+<style>
+#scrollbox {
+    overflow: auto;
+}
+
+.track {
+    width: 10px;
+    background: rgba(0, 0, 0, 0);
+    margin-right: 2px;
+    border-radius: 10px;
+    -webkit-transition: background 250ms linear;
+    transition: background 250ms linear;
+}
+
+.track:hover,
+.track.dragging {
+    background: #d9d9d9;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.handle {
+    width: 7px;
+    right: 0;
+    background: #999;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 7px;
+    -webkit-transition: width 250ms;
+    transition: width 250ms;
+}
+
+.track:hover .handle,
+.track.dragging .handle {
+    width: 10px;
+}
+
+</style>
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">{{ _("서비스 목록") }}</div>
+        <div class="clear_float"></div>
+    </div>
+    <div id="service_list">
+        <table class="rs_tab02 tl" cellpadding="0" border="0" cellspacing="0">
+            <colgroup>
+                <col width="13%">
+                <col width="9%">
+                <col width="7%">
+                <col width="13%">
+                <col width="17%">
+                <col width="7%">
+                <col width="12%">
+                <col width="12%">
+                <col width="10%">
+            </colgroup>
+            <tbody>
+            <tr>
+                <th class="rs_td01 stack_name">{{ _("이름") }}</th>
+                <th class="rs_td01 tenant_name">{{ _("프로젝트") }}</th>
+                <th class="rs_td01 user_name">{{ _("사용자") }}</th>
+                <th class="rs_td01 service_description">{{ _("설명") }}</th>
+                <th class="rs_td01 status">{{ _("상태") }}</th>
+                <th class="rs_td01 sfc_cnt">{{ _("체이닝 수") }}</th>
+                <th class="rs_td01 create_at">{{ _("생성일") }}</th>
+                <th class="rs_td01 updated_at">{{ _("수정일") }}</th>
+                <th class="rs_td01 customHtml">{{ _("액션") }}</th>
+            </tr>
+            <tr>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+                <td class="rs_td02">&nbsp;</td>
+            </tr>
+            </tbody>
+        </table>
+        <!--<thead>
+        <tr>
+            <td class="rs_td01">이름</td>
+            <td class="rs_td01">프로젝트</td>
+            <td class="rs_td01">사용자</td>
+            <td class="rs_td01">설명</td>
+            <td class="rs_td01">상태</td>
+            <td class="rs_td01">서비스 체이닝 수</td>
+            <td class="rs_td01">생성일</td>
+            <td class="rs_td01">수정일</td>
+            <td class="rs_td01">Actions</td>
+        </tr>
+        </thead>
+        <tbody></tbody>-->
+    </div>
+    <div class="clear_float"></div>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/direct.list.css' %}">
+<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>
+<script src="{% static 'js\service\service_list.js' %}"></script>
+<script>
+    //var error_msg_list = {% autoescape off %}{{error_msg_list}}{% endautoescape %};
+</script>
+{% endblock content %}

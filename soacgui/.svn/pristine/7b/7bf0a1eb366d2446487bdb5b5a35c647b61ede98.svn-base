@@ -1,0 +1,76 @@
+{% extends 'common/top_modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<style>
+    .input-field {width: 100%; height: 23px; border: none; padding-left: 10px;}
+    .field-value {text-overflow: ellipsis; text-align: left; white-space: nowrap; width: 252px; float: left; overflow: hidden;}
+    .multiselect-list>li {line-height: 17px;}
+    #addCapability {cursor: pointer; float: right; margin: 0 0 0 10px;}
+    .div-field-container {float: right; width: 300px; border: 1px solid #ccc; border-radius: 3px; min-height: 25px; font-size: 14px; margin: 0 0 0 15px;}
+    .btn-delete-field {margin: 0px 3px 0px 0px; border: 1px solid #770000; background: linear-gradient(to bottom, #db5757, #ba4a4a); border-radius: 3px; color: #fff; padding: 0px 6px; font-size: 10px; font-weight: normal; float: right; cursor: pointer;}
+    .btn-delete-capability {margin: 10px 0px; border: 1px solid #770000; background: linear-gradient(to bottom, #db5757, #ba4a4a); border-radius: 3px; color: #fff; padding: 10px 20px; font-size: 13px; font-weight: normal; float: right; cursor: pointer;}
+</style>
+<div class="pop02_d02">
+    <div class="pop01_d05">NSF 명*</div>
+    <input class="pop01_text01" name="nsf_name" value="" />
+</div>
+<div class="clear_float"></div>
+<div class="pop02_d02">
+    <div class="pop01_d05">프로세싱</div>
+    <input class="pop01_text01" name="processing" value=""/>
+</div>
+<div class="clear_float"></div>
+<div class="pop02_d02">
+    <div class="pop01_d05">인바운드</div>
+    <input class="pop01_text01" name="inbound" value=""/>
+</div>
+<div class="clear_float"></div>
+<div class="pop02_d02">
+    <div class="pop01_d05">아웃바운드</div>
+    <input class="pop01_text01" name="outbound" value=""/>
+</div>
+<div class="clear_float"></div>
+<div class="pop02_d02">
+    <div class="pop01_d05">활성화여부*</div>
+    <input type="radio" name="initiated" value="true" checked> 예  <input type="radio" name="initiated" value="false"> 아니오
+</div>
+<div class="clear_float"></div>
+<div class="pop02_d01"></div>
+<div id="capaField" class="pop02_d02">
+    <div class="pop01_d08">Capability 목록</div>
+    <input type="button" id="addCapability" class="btn-ok" value="+ Capability 추가" />
+    <div class="pop02_d02 capability-group">
+        <div class="clear_float"></div>
+        <div class="pop02_d01"></div>
+        <div class="pop02_d02">
+            <div class="pop01_d05">Capability 명*</div>
+            <input type="text" class="pop01_text01" name="capability_name"/>
+        </div>
+        <div class="clear_float"></div>
+        <div class="pop02_d02">
+            <div class="pop01_d05">Field*</div>
+            <div class="div-field-container">
+                <div class="selected">
+                    <ul class="capability-field-list multiselect-list">
+                    </ul>
+                </div>
+                <input type="text" class="input-field" placeholder="입력후 엔터키를 누르십시오."/>
+            </div>
+        </div>
+        <div class="clear_float"></div>
+        <button class="btn-delete-capability">- Capability 제거</button>
+    </div>
+</div>
+
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="createCapabilityAdd" data-dismiss='modal'>
+    <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+</div>
+
+<script src="{% static 'js/security/popup/capability_modal.js' %}">
+
+{% endblock modal_footer %}

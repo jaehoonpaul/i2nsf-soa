@@ -1,0 +1,45 @@
+# _*_ coding:utf-8 _*_
+from django.conf.urls import url, include
+
+from sdsecgui.dashboard import views
+from sdsecgui.dashboard.admin import urls as admin_urls
+from sdsecgui.dashboard.identity import urls as identity_urls
+from sdsecgui.dashboard.security import urls as security_urls
+from sdsecgui.dashboard.service.chaining import urls
+from sdsecgui.dashboard.service import urls as service_urls
+from sdsecgui.dashboard.telemeter import urls as telemeter_urls
+from sdsecgui.dashboard.domain import urls as domain_urls
+from sdsecgui.dashboard.monitoring import urls as monitoring_urls
+
+urlpatterns = [
+    url(r'^dashboard/login/?$', views.user_login, name='ajaxLogin'),
+    url(r'^auth/switch/project/?$', views.switch_project_with_token, name='switch_project'),
+
+    url(r'^dashboard/admin/', include('sdsecgui.dashboard.admin.urls', namespace='admin')),
+    url(r'^dashboard/identity/', include('sdsecgui.dashboard.identity.urls', namespace='identity')),
+    url(r'^dashboard/service/', include('sdsecgui.dashboard.service.urls', namespace='service')),
+    url(r'^dashboard/service_chaining/', include('sdsecgui.dashboard.service.chaining.urls', namespace='service_chaining')),
+
+    url(r'^dashboard/telemeter/', include('sdsecgui.dashboard.telemeter.urls', namespace='telemeter')),
+
+    url(r'^dashboard/security/', include('sdsecgui.dashboard.security.urls', namespace='security')),
+
+    url(r'dashboard/monitoring/', include('sdsecgui.dashboard.monitoring.urls', namespace='monitoring')),
+
+    url(r'^dashboard/?$', views.main, name='dashboard'),
+    url(r'^$', views.main, name='home'),
+
+    url(r'^auth/projects$', views.get_available_project_scopes, name="auth_projects"),
+    url(r'^auth/domains$', views.get_available_domain_scopes, name="auth_domains"),
+
+    url(r'^files/upload$', views.upload_file, name="fileUpload"),
+    url(r'^files/download/(?P<file_name>[^/]+)$', views.show_image_file, name="fileDownload"),
+
+    url(r'', include('sdsecgui.dashboard.domain.urls', namespace='domain')),
+
+    url(r'^revoke_token$', views.revoke_token, name='revoke_token'),
+    url(r'^test$', views.test, name='test'),
+    url(r'^dashboard/check_status/(?P<r_type>[^/]+)/(?P<r_id>[^/]+)$', views.check_status, name='check_status'),
+
+    url(r'^language/(?P<language_code>[^/]+)$', views.set_language, name='set_language'),
+]

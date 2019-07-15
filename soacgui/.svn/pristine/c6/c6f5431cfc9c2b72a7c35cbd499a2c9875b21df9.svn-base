@@ -1,0 +1,236 @@
+# _*_coding:utf-8_*_
+import re
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+
+import logging
+
+from pymysql import ProgrammingError, InternalError, NotSupportedError
+
+from sdsecgui.db.db_connector import SOAControlDBConnector, SOAControlDomainDBConnector
+from sdsecgui.db.db_create_query import *
+from sdsecgui.tools.openstack_restapi import KeystoneRestAPI
+from sdsecgui.db.query import *
+from sdsecgui.db.soa_db_connector import SOAManagerDBConnector
+from sdsecgui.db.soa_query import *
+
+logger = logging.getLogger("myapp.myLogger")
+
+
+def set_database(request):
+    if request.method == 'POST':
+        message = ""
+        domain_key = request.POST.get("domain_key")
+        conn = SOAControlDBConnector.getInstance()
+        domain = conn.select_one(SELECT_DOMAINS_ONE, (domain_key))
+        db_ip = domain.get("db_ip")
+        db_user = domain.get("db_user")
+        db_pass = domain.get("db_password")
+        db_port = domain.get("db_port")
+        try:
+            message = db_ip + ":" + str(db_port) + u" 접속"
+            conn = SOAControlDomainDBConnector(db_user=db_user, db_pass=db_pass, db_ip=db_ip, db_port=db_port)
+            try:
+                message = u"soacgui DB 생성"
+                conn.execute(CREATE_DATABASE)
+            except ProgrammingError:  # 이미존재
+                pass
+            message = db_ip + ":" + str(db_port) + u" soacgui 접속"
+            conn = SOAControlDomainDBConnector(db_nm="soacgui", db_user=db_user, db_pass=db_pass, db_ip=db_ip,
+                                               db_port=db_port)
+            try:
+                message = u"tb_security_resource_group Table 생성"
+                conn.execute(CREATE_SECURITY_RESOURCE_GROUP_TABLE)
+            except InternalError:  # 이미존재
+                pass
+            try:
+                message = u"tb_security_resource_group Trigger 생성"
+                conn.execute(CREATE_SECURITY_RESOURCE_GROUP_TRIGGER)
+            except NotSupportedError:
+                pass
+
+            message = db_ip + ":" + str(db_port) + u" 접속"
+            conn = SOAControlDomainDBConnector(db_user=db_user, db_pass=db_pass, db_ip=db_ip, db_port=db_port)
+            message = u" ctrl_engine DB 생성"
+            conn.execute(CREATE_ENGINE_DATABASE)
+            message = db_ip + ":" + str(db_port) + u" ctrl_engine 접속"
+            conn = SOAControlDomainDBConnector(db_nm="ctrl_engine", db_user=db_user, db_pass=db_pass, db_ip=db_ip,
+                                               db_port=db_port)
+            message = u"service_allocation Table 생성"
+            conn.execute(CREATE_ENGINE_SESRVICE_ALLOCATION_TABLE)
+            message = u"stack_template Table 생성"
+            conn.execute(CREATE_ENGINE_STACK_TEMPLATE_TABLE)
+            message = u"sfc Table 생성"
+            conn.execute(CREATE_ENGINE_SFC_TABLE)
+            message = u"map Table 생성"
+            conn.execute(CREATE_ENGINE_MAP_TABLE)
+            return JsonResponse({"success": {"message": u"DB 생성 완료", "code": 200, "title": "Success"}})
+        except Exception as e:
+            return JsonResponse({"error": {"message": "{!r}".format(e), "code": 500, "title": message + u" 실패"}})
+
+
+def get_domains(request):
+    if request.session.get("domain_admin"):
+        conn = SOAControlDBConnector.getInstance()
+        next_url = request.GET.get("next")
+        select_domains = conn.select(SELECT_DOMAINS)
+        pattern = re.compile("https?://(\d+\.\d+\.\d+\.\d+):?\d+/?v?3?", re.I)
+        for domain in select_domains:
+            matcher = re.match(pattern, domain.get("auth_url"))
+            if matcher:
+                domain["ip"] = matcher.group(1)
+        request.session["available_domains"] = select_domains
+        return render(request, 'domain/domain.html', {"domains": select_domains, "next_url": next_url})
+    else:
+        return redirect('/login')
+
+
+def setting_domain_login(request):
+    if request.method == 'GET':
+        if request.session.get("domain_admin"):
+            return redirect("/domain/setting")
+        return render(request, 'domain/domain_setting_login.html', {})
+    elif request.method == "POST":
+        user_id = request.POST.get("user_id")
+        user_pass = request.POST.get("user_pass")
+        if user_id == "admin" and user_pass == "etri!@#":
+            request.session["domain_admin"] = True
+            return redirect("/domain/setting")
+        else:
+            return render(request, 'domain/domain_setting_login.html', {"error": u"아이디 또는 비밀번호가 틀렸습니다."})
+
+
+def setting_domain(request):
+    if request.session.get("domain_admin"):
+        conn = SOAControlDBConnector.getInstance()
+        try:
+            select_domains = conn.select(SELECT_DOMAINS)
+            return render(request, 'domain/domain_setting.html', {"domains": select_domains})
+        except Exception as e:
+            result = {"error": {"message": e.message, "title": u"에러"}}
+            return render(request, 'domain/domain_setting.html', result)
+
+
+def setting_domain_sequp(request, domain_key):
+    if request.method == "POST":
+        conn = SOAControlDBConnector.getInstance()
+        order_num = int(request.POST.get("seq"))
+        next_domain_key = request.POST.get("next_domain_key")
+        if next_domain_key:
+            conn.update(UPDATE_SEQ_DOMAIN, (order_num, next_domain_key))
+        conn.update(UPDATE_SEQ_DOMAIN, (order_num+1, domain_key))
+        return JsonResponse({"success": True})
+
+
+def setting_domain_seqdown(request, domain_key):
+    if request.method == "POST":
+        conn = SOAControlDBConnector.getInstance()
+        order_num = int(request.POST.get("seq"))
+        pre_domain_key = request.POST.get("pre_domain_key")
+        if pre_domain_key:
+            conn.update(UPDATE_SEQ_DOMAIN, (order_num, pre_domain_key))
+        conn.update(UPDATE_SEQ_DOMAIN, (order_num-1, domain_key))
+        return JsonResponse({"success": True})
+
+
+def create_domain(request):
+    if request.method == 'POST' and request.is_ajax():
+        domain_name = request.POST.get("domain_name")
+        auth_url = request.POST.get("auth_url")
+        description = request.POST.get("description")
+        db_ip = request.POST.get("db_ip")
+        db_port = request.POST.get("db_port")
+        db_user = request.POST.get("db_user")
+        db_pass = request.POST.get("db_pass")
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name, auth_url, description, db_ip, db_port, db_user, db_pass)
+        conn.insert(INSERT_DOMAINS, params)
+        cnt = conn.select_one(SELECT_DOMAINS_COUNT)
+        conn.update(SET_SEQ_DOMAINS, (cnt.get("cnt"), domain_name))
+        result = {"success": {"message": u"도메인 추가 성공", "title": u"성공", "code": 200}}
+        try:
+            soa_conn = SOAManagerDBConnector.getInstance()
+            params = (domain_name, auth_url, description)
+            soa_conn.insert(INSERT_SOAM_DOMAIN, params)
+        except Exception as e:
+            logger.debug(u"soa 도메인 추가 실패(" + domain_name + ")" + e.message)
+        return JsonResponse(result)
+
+
+def update_domain(request, domain_key):
+    if request.method == 'POST' and request.is_ajax():
+        domain_name = request.POST.get("domain_name")
+        auth_url = request.POST.get("auth_url")
+        description = request.POST.get("description")
+        db_ip = request.POST.get("db_ip")
+        db_port = request.POST.get("db_port")
+        db_user = request.POST.get("db_user")
+        db_pass = request.POST.get("db_pass")
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_name, auth_url, description, db_ip, db_port, db_user, db_pass, domain_key)
+        conn.insert(UPDATE_DOMAINS, params)
+        result = {"success": {"message": u"도메인 수정 성공", "title": u"성공", "code": 200}}
+        try:
+            origin_domain_name = request.POST.get("origin_domain_name")
+            params = (domain_name, auth_url, description, origin_domain_name)
+            soa_conn = SOAManagerDBConnector.getInstance()
+            soa_conn.update(UPDATE_SOAM_DOMAIN, params)
+        except Exception as e:
+            logger.debug(u"soa 도메인 수정 실패(" + domain_name + ")" + e.message)
+        return JsonResponse(result)
+
+
+def delete_domain(request, domain_key):
+    if request.method == 'POST' and request.is_ajax():
+        domain_name = request.POST.get("domain_name")
+        conn = SOAControlDBConnector.getInstance()
+        params = (domain_key)
+        conn.delete(DELETE_DOMAINS, params)
+        result = {"success": {"message": u"도메인 삭제 성공", "title": u"성공", "code": 200}}
+        try:
+            params = (domain_name)
+            soa_conn = SOAManagerDBConnector.getInstance()
+            soa_conn.update(DELETE_SOAM_DOMAIN, params)
+        except Exception as e:
+            logger.debug(u"soa 도메인 삭제 실패(" + domain_name + ")" + e.message)
+
+        return JsonResponse(result)
+
+
+def domain_modal(request, domain_key=None):
+    modal_title = request.GET.get("modal_title")
+    data = {
+        "modal_title": modal_title
+    }
+    if domain_key:
+        params = (domain_key)
+        conn = SOAControlDBConnector.getInstance()
+        try:
+            select_domain = conn.select_one(SELECT_DOMAINS_ONE, params)
+            data["domain"] = select_domain
+        except Exception as e:
+            return JsonResponse({"error": {"message": e.message, "title": u"에러"}})
+    return render(request, 'domain/modal.html', data)
+
+
+def check_domain(request):
+    try:
+        result = KeystoneRestAPI.check_status(request.POST.get("auth_url"))
+        result["domain_key"] = request.POST.get("domain_key")
+    except Exception as e:
+        result = {"version": {"status": "error"}}
+    return JsonResponse({"success": result})
+
+
+def root_login(request):
+    if request.method == "GET":
+        return render(request, 'root_login.html')
+    elif request.method == "POST":
+        conn = SOAControlDBConnector.getInstance()
+        params = (request.POST.get("user_id"), request.POST.get("user_pass"))
+        user_info = conn.select_one(SELECT_USER, params)
+        if user_info:
+            request.session["domain_admin"] = True
+            return redirect("/dashboard/domains")
+        else:
+            return render(request, 'root_login.html', {"error": u"아이디 또는 비밀번호가 틀렸습니다."})

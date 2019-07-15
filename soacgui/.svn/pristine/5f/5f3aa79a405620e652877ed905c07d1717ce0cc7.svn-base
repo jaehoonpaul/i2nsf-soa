@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/direct.list.css' %}">
+{% endblock style %}
+
+{% block headerTitle %}
+<div class="head_d02">서비스</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">전체 서비스 조회</div>
+{% endblock headerTitle %}
+{% block header %}
+<div class="head_d05 click">전체 서비스 조회</div>
+<div class="clear_float"></div>
+{% endblock header %}
+
+{% block content %}
+<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>
+<script src="{% static 'js\service\service_all_list.js' %}"></script>
+<!--{{service_list|default:"서비스 리스트가 없습니다."}}-->
+<br/>
+{% comment %}
+<!--{% autoescape off %}{{service}}{% endautoescape %}-->
+{% endcomment %}
+{% if not service_list %}서비스 리스트가 없습니다.{% endif %}
+{% for service in service_list %}
+<div class="all_service_card_d01" data-service_id="{{service.service_id}}" data-project_name="{{service.tenant_name}}">
+    <div class="ind_d02">
+        <div class="ind_d05">
+            {% if 'COMPLETE' in service.status %}<img class="security_card_img01" src="/static/img/STATUS_COMPLETE.png" alt="#">
+            {% elif 'PROGRESS' in service.status %}<img class="security_card_img01" src="/static/img/STATUS_PROGRESS.png" alt="#">
+            {% elif 'FAILED' in service.status %}<img class="security_card_img01" src="/static/img/STATUS_FAILED.png" alt="#">
+            {% endif %}
+            <div style="float:left;">{{service.tenant_name}}</div>
+            <div class="clear_float"></div>
+        </div>
+        <table class="all_service_card_tab01" id="serviceTable" cellpadding="0" border="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <th class="security_card_td01">
+                        <img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">서비스 이름</th>
+                    <td class="security_card_td02">{{service.stack_name}}</td>
+                </tr>
+                <tr>
+                    <th class="security_card_td01">
+                        <img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">상태</th>
+                    <td class="security_card_td02">{{service.status}}</td>
+                </tr>
+                <tr>
+                    <th class="security_card_td01">
+                        <img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">생성일시</th>
+                    <td class="security_card_td02 date_type">{{service.created_at}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="clear_float"></div>
+        <div class="all_service_card_d02" id="vis_{{service.service_id}}"></div>
+    </div>
+</div>
+{% endfor %}
+<script>
+$(function(){
+    loadFinished();
+    replaceAllDateTimeFormatFromTD();
+});
+</script>
+
+{% endblock content %}

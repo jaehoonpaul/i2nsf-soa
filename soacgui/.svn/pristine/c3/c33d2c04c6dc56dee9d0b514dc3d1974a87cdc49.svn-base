@@ -1,0 +1,21 @@
+{% load staticfiles %}
+<div class="topology_left_d01" id="item_left_menu" hidden>
+    <div class="topology_left_d03" id="security_tab">보<br>안<br>장<br>비</div>
+    <div class="topology_left_d04 click" id="resource_tab">가<br>상<br>자<br>원</div>
+    <img class="topology_left_close01" id="left_close" src='{% static "img/dashboard/common/close_bt_02.png" %}'
+         alt="#">
+    <div id="resource_item">
+        <div style="height:12px"></div>
+        <img class="topology_left_img01" id="network_item" src='{% static "img/service/topology/network_01.png" %}'
+             alt="#">
+        <div class="topology_left_d02">네트워크</div>
+        <img class="topology_left_img01" id="vm_item" src='{% static "img/service/topology/virtual_machine_01.png" %}'
+             alt="#">
+        <div class="topology_left_d02">가상머신</div>
+        <img class="topology_left_img01" id="volume_item" src='{% static "img/service/topology/volume_01.png" %}'
+             alt="#">
+        <div class="topology_left_d02">볼륨</div>
+    </div>
+    <div id="security_item" hidden></div>
+</div>
+<script src="{% static 'js/security/left_menu.js' %}"></script>

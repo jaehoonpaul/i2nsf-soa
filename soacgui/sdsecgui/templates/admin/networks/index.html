@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load commontags %}
+{% load staticfiles %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">네트워크</div>
+<!--<img class="head_img03" src='{% static "img/common/head_user_01.png" %}' alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 click">네트워크</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="network_list">
+    <div class="ind_d02">
+        <div class="ind_d05">네트워크</div>
+        <div class="clear_float"></div>
+    </div>
+    <!--<img class="all_check_bt01" src='{% static "img/dashboard/admin/networks/network_del_bt_01.png" %}' alt="#">-->
+    <button id="createNetwork" class="btn-ok">네트워크 생성</button>
+    <!--<input class="rs_text03" type="text" placeholder="필터" id="inputFilter" />-->
+
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+        <tr>
+            <th class="project_name">프로젝트</th>
+            <th class="name">네트워크 이름</th>
+            <th class="subnets">관련 서브넷</th>
+            <th class="shared">공유</th>
+            <th class="router:external">외부</th>
+            <th class="status">상태</th>
+            <th class="admin_state_up">관리자 상태</th>
+            <th class="customHtml">액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for network in networks %}
+        <tr data-id="{{ network.id }}" data-filter="{{ network.name }}" data-data="{{ network }}">
+            <td class="project_name">{{ network.project_name|default:network.tenant_id }}</td>
+            <td class="name link"><a class="list_a01" href="#" data-id="{{ network.id }}">{{ network.name }}</a>
+            </td>
+            <td class="subnets">
+                <ul>
+                    {% for subnet in network.subnets %}
+                    <li>{{ subnet.name }} {{ subnet.cidr }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td class="shared">{% if network.shared %}예{% else %}아니오{% endif %}</td>
+            <td class="router:external">{% get_dict network "router:external" as router_external %}{% if router_external %}예{% else %}아니오{% endif %}</td>
+            <td class="status">{{ network.status }}</td>
+            <td class="admin_state_up">{% if network.admin_state_up %}UP{% else %}DOWN{% endif %}</td>
+            <td>
+                <div class="button_group_bt02">
+                    <div class="button_group_d01 btnUpdate">네트워크 편집</div>
+                    <div class="button_group_d02 action">
+                        <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                    </div>
+                    <div class="clear_float"></div>
+                    <div class="actionGroup actionGroup01" hidden>
+                        <a href="#" class="addSubnet actionGroup_a01"><div>서브넷 추가</div></a>
+                        <a href="#" class="deleteNetwork actionGroup_a01"><div>네트워크 삭제</div></a>
+                        {% if sync %}
+                        <a href="#" class="sync actionGroup_a01"><div>soam 연동</div></a><!-- TODO: soam sync delete -->
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% for value in networks|length|range:5 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="rs_td03 tl" colspan="8">Displaying {{ networks|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="clear_float"></div>
+<div class="rs_d03" id="info_tab"></div>
+
+<script src='{% static "js/admin/networks/port.js" %}'></script>
+<script src='{% static "js/admin/networks/index.js" %}'></script>
+{% endblock content %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+{% block headerTitle %}
+<div class="head_d02">보안장비</div>
+<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03" id="service_name">보안장비 조회</div>
+{% endblock headerTitle %}
+{% block header %}
+<div class="head_d05 click">보안장비 목록</div>
+<div class="clear_float"></div>
+
+
+{% endblock header %}
+
+
+{% block content %}
+<!--
+
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">보안장비 목록</div>
+        <div class="clear_float"></div>
+    </div>
+    <div id="security_list">
+        <table class="rs_tab02 tl" cellpadding="0" border="0" cellspacing="0">
+        </table>
+    </div>
+    <div class="clear_float"></div>
+</div>
+-->
+
+<div id='detail_modal' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center; padding-top: 100px;">
+    <div class="modal_pop_d01 modal-container" style="width: 810px;">
+        <div class="ind_d02 modal_header">
+            <div class="ind_d05 modal-title" id="modalTitle"></div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="modal-body" id="detail">
+            <table class="security_info_pop_tab01" cellpadding="0" border="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td class="security_info_pop_td01">
+                            <img class="security_info_img01" src="/static/img/common/br_img_03.png" alt="#">
+                            기능설명
+                        </td>
+                        <td class="security_info_pop_td02 security_description"></td>
+                    </tr>
+                    <tr>
+                        <td class="security_info_pop_td01">
+                            <img class="security_info_img01" src="/static/img/common/br_img_03.png" alt="#">
+                            이미지 이름
+                        </td>
+                        <td class="security_info_pop_td02 security_image"></td>
+                    </tr>
+                    <tr class="tr-capability">
+                        <td class="security_info_pop_td01">
+                            <img class="security_info_img01" src="/static/img/common/br_img_03.png" alt="#">
+                            Capability
+                        </td>
+                        <td class="security_info_pop_td02 capability_xml"></td>
+                    </tr>
+                    <tr class="tr-capability-contents" hidden>
+                        <td class="security_info_pop_td01">
+                            <img class="security_info_img01" src="/static/img/common/br_img_03.png" alt="#">
+                            내용
+                        </td>
+                        <td class="security_info_pop_td02 capability_contents"></td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <!--<h3>기능설명</h3>-->
+            <!--<p class="security_description"></p>-->
+            <!--<h3>이미지 이름</h3>-->
+            <!--<p class="security_image"></p>-->
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop_d03">
+                <img class="pop_cancel_bt_img01" src='{% static "img/common/close_bt_01.png" %}' alt="#" id="confirmCancel" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>
+<script src="{% static 'js\security\security_list.js' %}"></script>
+<script>
+    //var error_msg_list = {% autoescape off %}{{error_msg_list}}{% endautoescape %};
+
+</script>
+{% endblock content %}

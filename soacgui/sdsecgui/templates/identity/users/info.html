@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% load staticfiles %}
+<div class="header_title_d01">
+    <div class="head_d05 click">사용자</div>
+</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="user" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">프로젝트</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="common-tab-02 index" cellpadding="0" border="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <th class="domain_id">Domain ID</th>
+            <td class="domain_id">{{ user.domain_id }}</td>
+        </tr>
+        <tr>
+            <th class="domain_name">Domain 이름</th>
+            <td class="domain_name">{{ user.domain_name }}</td>
+        </tr>
+        <tr>
+            <th class="name">유저 이름</th>
+            <td class="name">{{ user.name }}</td>
+        </tr>
+        <tr>
+            <th class="description">설명</th>
+            <td class="description">{{ user.description }}</td>
+        </tr>
+        <tr>
+            <th class="id">ID</th>
+            <td class="id">{{ user.id }}</td>
+        </tr>
+        <tr>
+            <th class="email">Email</th>
+            <td class="email">{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th class="enabled">사용 여부</th>
+            <td class="enabled">{% if user.enabled %}예{% else %}아니오{% endif %}</td>
+        </tr>
+        <tr>
+            <th class="project_id">프로젝트 ID</th>
+            <td class="project_id">{{ user.project_id }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src='{% static "js/identity/users/info.js" %}'></script>
+{% endblock content %}

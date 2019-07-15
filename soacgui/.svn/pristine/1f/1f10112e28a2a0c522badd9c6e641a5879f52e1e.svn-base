@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ETRI SecCurator</title>
+{% load staticfiles %}
+    <link href='{% static "css/style.css" %}' rel="stylesheet" type="text/css" />
+    <!--<link href='{% static "lib/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css" />-->
+    <link href='{% static "lib/lobibox/dist/css/lobibox.min.css" %}' rel="stylesheet" type="text/css" />
+    <script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+
+    <script src='{% static "lib/bootstrap/3.3.7/js/bootstrap.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'lib/lobibox/dist/js/notifications.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/login.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+    <style>
+        .lobibox-notify-wrapper-large {
+            text-align: left;
+        }
+    </style>
+	<script>
+		$(document).ready(function() {
+            $("#btn_login").on("click", function() {
+                $("form").submit();
+            });
+			$("#domain_name").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+
+			$("#project_name").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+
+			$("#id").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+
+			$("#password").on("keyup", function(e){
+				if( e.keyCode==13 ){
+					$("#btn_login").trigger("click");
+				}
+			});
+			{% if error %}
+                U.lobiboxMessage("{{error.message}}", "error", "{{error.title}}");
+            {% endif %}
+		});
+	</script>
+</head>
+
+<body class="new_login_body">
+<div class="new_login_d01">
+    <div class="new_login_d04">
+        <div class="new_login_d05">도메인</div>
+        <div class="new_login_d07">{{ domain_name }}</div>
+            <div class="clear_float"></div>
+    </div>
+    <div class="new_login_d06">
+        <div class="new_login_d05">설명</div>
+        <div class="new_login_d07">{{description}}</div>
+        <div class="clear_float"></div>
+    </div>
+
+    <form action="" method="post" role="form" data-toggle="validator">
+        <input id="auth_url" type="hidden" name="auth_url" value="{{ auth_url }}">
+        <input id="domain_name" type="hidden" name="domain_name" value="{{ domain_name }}">
+        <input id="project_name" type="hidden" name="project_name" value="{{ project_name }}">
+        <input type="hidden" id="csrfmiddlewaretoken" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <div class="new_login_d06">
+            <div class="new_login_d05">아이디</div>
+            <input id="id" class="new_login_text02" name="user_name" placeholder="아이디 입력" type="text" required>
+            <div class="clear_float"></div>
+        </div>
+        <div class="new_login_d06">
+            <div class="new_login_d05">비밀번호</div>
+            <input id="password" class="new_login_text02" name="pass" placeholder="비밀번호 입력" type="password" required>
+            <div class="clear_float"></div>
+        </div>
+        <div class="new_login_d08">
+            <img class="new_login_img01" id="btn_login" src='{% static "img/dashboard/common/login_bt_01.png" %}'
+                 alt="#">
+            <img class="new_login_img02" id="selectDomain"
+                 src='{% static "img/dashboard/common/domain_select_bt_01.png" %}'
+                 alt="#">
+            <div class="clear_float"></div>
+        </div>
+        </form>
+    </div>
+</body>
+<style>
+    input.login_text01{
+        font-size:11px;
+        height:40px;
+    }
+    input.login_text02{
+        font-size:11px;
+        height:40px;
+    }
+</style>
+</html>

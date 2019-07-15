@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load commontags %}
+
+{% block header %}
+{% load staticfiles %}
+<div class="head_d05 click">프로젝트</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="project_list" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">프로젝트</div>
+        <div class="clear_float"></div>
+    </div>
+    <button id="create_project" class="btn-ok">프로젝트 생성</button>
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+            <tr>
+                <th class="name">이름</th>
+                <th class="description">설명</th>
+                <th class="id">프로젝트 ID</th>
+                <th class="domain_id">도메인 ID</th>
+                <th class="enabled">활성화 됨</th>
+                <th class="action">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for project in projects %}
+            <tr data-id="{{ project.id }}" data-filter="{{ project.name }}">
+                <td class="{% cycle 'rs_td02' 'rs_td03' as tdClass %} tl name link">
+                    <a href="/dashboard/identity/projects/{{ project.id }}/detail">{{ project.name }}</a>
+                </td>
+                <td class="description ">{{ project.description }}</td>
+                <td class="id">{{ project.id }}</td>
+                <td class="domain_id">{{ project.domain_id }}</td>
+                <td class="enabled">{{ project.enabled }}</td>
+                <td class="">
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 btnUpdate">Members 관리</div>
+                        <div class="button_group_d02 action">
+                            <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                        </div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="edit_project actionGroup_a01"><div>프로젝트 수정</div></a>
+                            <a href="#" class="delete_project actionGroup_a01"><div>프로젝트 삭제</div></a>
+                            <a href="#" class="set_active actionGroup_a01"><div>프로젝트 활성화</div></a>
+                            <div class="actionGroup_d02 separation"></div>
+                            <a href="#" class="modify_groups actionGroup_a01"><div>그룹 수정</div></a>
+                            <a href="#" class="view_usage actionGroup_a01"><div>사용량 조회</div></a>
+                            <a href="#" class="edit_quotas actionGroup_a01"><div>Quotas 수정</div></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in projects|length|range:15 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="tl" colspan="6">Displaying {{ projects|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script src='{% static "js/identity/projects/index.js" %}'></script>
+<script src='{% static "js/table_button_util.js" %}'></script>
+{% endblock content %}

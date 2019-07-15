@@ -1,0 +1,242 @@
+{% extends 'common/modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<input type="hidden" name="router_id" value="{{ router_id }}">
+<input type="hidden" name="netnodeip" value="{{ netnodeip }}">
+<div class="p50">
+    <div class="tab-area">
+        <div class="rs_d04 tab-btn click">목적지 기반</div>
+        <div class="rs_d04 tab-btn">송신지 기반</div>
+        <!--<div class="rs_d04 tab-btn">local</div>-->
+        <!--<div class="rs_d04 tab-btn">src_list</div>-->
+        <div class="clear_float"></div>
+
+        <div class="tab-body" ><!-- 목적지 기반 -->
+            <button id="create_dst_rule" class="btn-ok">규칙 추가</button>
+            <div class="clear_float"></div>
+            <div id="dst_route_list">
+                <table class="common-tab-01" cellpadding="0" border="0" cellspacing="0">
+                    <colgroup>
+                        <col width="14%">
+                        <col width="13%">
+                        <col width="16%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="17%">
+                        <col width="12%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="destination">Destination</th>
+                        <th class="gateway">Gateway</th>
+                        <th class="genmask">Genmask</th>
+                        <th class="flags">Flags</th>
+                        <th class="metric">Metric</th>
+                        <th class="ref">Ref</th>
+                        <th class="use">Use</th>
+                        <th class="iface">Iface</th>
+                        <th class="customHtml">액션</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dst_rule in dst_rules %}
+                    <tr data-dest="{{ dst_rule.Destination }}" data-via="{{ dst_rule.Gateway }}" data-dev="{{ dst_rule.Iface }}">
+                        <td>{{ dst_rule.Destination }}</td>
+                        <td>{{ dst_rule.Gateway }}</td>
+                        <td>{{ dst_rule.Genmask }}</td>
+                        <td>{{ dst_rule.Flags }}</td>
+                        <td>{{ dst_rule.Metric }}</td>
+                        <td>{{ dst_rule.Ref }}</td>
+                        <td>{{ dst_rule.Use }}</td>
+                        <td>{{ dst_rule.Iface }}</td>
+                        <td>
+                            <div class="btn-ok small delete_dst_rule">삭제</div>
+                            <div class="clear_float"></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for value in dst_rules|length|range:5 %}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td class="tl" colspan="9">Displaying {{ dst_rules|length }} item</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="tab-body" ><!-- 송신지 기반 -->
+            <button id="create_src_rule" class="btn-ok">규칙 추가</button>
+            <div class="clear_float"></div>
+            <div id="src_route_list">
+                <table class="common-tab-01" cellpadding="0" border="0" cellspacing="0">
+                    <colgroup>
+                        <col width="30%">
+                        <col width="30%">
+                        <col width="30%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>목적지 네트워크</th>
+                        <th>다음 경유지</th>
+                        <th>인터페이스</th>
+                        <th class="customHtml">액션</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for src_rule in src_rules %}
+                    <tr data-src_rule="{{ src_rule.str }}" data-dest="{{ pbr }}" data-via="{{ src_rule.via }}" data-dev="{{ src_rule.dev }}" data-type="type2">
+                        <td>{{ src_rule.table|default:'-' }}</td>
+                        <td>{{ src_rule.via|default:'-' }}</td>
+                        <td>{{ src_rule.dev|default:'-' }}</td>
+                        <td>
+                            <div class="btn-ok small delete_src_rule">삭제</div>
+                            <div class="clear_float"></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for value in src_rules|length|range:5 %}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td class="tl" colspan="9">Displaying {{ src_rules|length }} item</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="tab-body" ><!-- local -->
+            <div class="clear_float"></div>
+            <div id="src_route_list2">
+                <table class="common-tab-01" cellpadding="0" border="0" cellspacing="0">
+                    <colgroup>
+                        <col width="17%">
+                        <col width="17%">
+                        <col width="20%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="16%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>broadcast</th>
+                        <th>local</th>
+                        <th>dev</th>
+                        <th>proto</th>
+                        <th>scope</th>
+                        <th>src</th>
+                        <th class="customHtml">액션</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for src_rule2 in src_rules2 %}
+                    <tr data-src_rule="{{ src_rule2.str }}" data-dest="{{ src_rule2.dest }}" data-via="{{ src_rule2.src }}" data-dev="{{ src_rule2.dev }}" data-type="type2">
+                        <td>{{ src_rule2.broadcast|default:'-' }}</td>
+                        <td>{{ src_rule2.local|default:'-' }}</td>
+                        <td>{{ src_rule2.dev|default:'-' }}</td>
+                        <td>{{ src_rule2.proto|default:'-' }}</td>
+                        <td>{{ src_rule2.scope|default:'-' }}</td>
+                        <td>{{ src_rule2.src|default:'-' }}</td>
+                        <td>
+                            <div class="btn-ok small delete_src_rule2">삭제</div>
+                            <div class="clear_float"></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for value in src_rules2|length|range:5 %}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td class="tl" colspan="9">Displaying {{ src_rules2|length }} item</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="tab-body" ><!-- src_list -->
+            <!--<button id="create_src_rule" class="btn-ok">규칙 추가</button>-->
+            <div class="clear_float"></div>
+            <div id="src_route_list_list">
+                <table class="common-tab-01" cellpadding="0" border="0" cellspacing="0">
+                    <colgroup>
+                        <col width="90%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>broadcast</th>
+                        <th class="customHtml">액션</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, src_rule in src_rule_list.0.routers.items %}
+                    <tr data-src_rule="{{ src_rule.str }}" data-dest="{{ src_rule.dest }}" data-via="{{ src_rule.src }}" data-dev="{{ src_rule.dev }}" data-type="pbrtable">
+                        <td>{{ key }}{{ src_rule|default:'-' }}</td>
+                        <td>
+                            <div class="btn-ok small delete_src_rule">삭제</div>
+                            <div class="clear_float"></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for value in src_rule_list|length|range:5 %}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td class="tl" colspan="9">Displaying {{ src_rule_list|length }} item</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <div class="pop_cancel_bt_img01" id="cancel" style="display:inline-block;">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+{% endblock modal_footer %}

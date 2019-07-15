@@ -1,0 +1,23 @@
+{% extends 'service/right_pop.html' %}
+{% load commontags %}
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_as_virtual_machine.png" alt="#">
+<div class="right_d01 type">{{ _("가상머신") }}</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02">{{ _("이름") }}</div>
+<div class="right_d03 name">{{ data.resource_name }}</div>
+{% for key, val in data.items %}
+{% if key == "required_by" %}
+<div class="right_d04">{{ key }}</div>
+{% for val1 in val %}
+<div class="right_d03">{{ val1 }}</div>
+{% endfor %}
+{% elif key == "name" or key == "links" %}
+{% else %}
+<div class="right_d04">{{ key }}</div>
+<div class="right_d03">{{ val }}</div>
+{% endif %}
+{% endfor %}
+{% endblock resourceInfo %}

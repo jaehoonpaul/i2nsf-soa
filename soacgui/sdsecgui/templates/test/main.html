@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/direct.app.css' %}">
+</head>
+<body>
+    <div id="vis"></div>
+    <div id="node_info">
+        <table id="nameTable">
+        </table>
+        <table id="infoTable">
+        </table>
+    </div>
+    <img src='{% static "img/getting_started_with_python.png" %}' alt="My image"/>
+    <input type="date" id="start"> ~ <input type="date" id="end"> <input type="button" id="submitBtn">
+
+</body>
+    <!--<script src="{% static 'js/customdirect/js/partitions.js' %}"></script>-->
+    <!--<script src="{% static 'js/customdirect/js/partitions_index.js' %}"></script>-->
+    <script src='http://d3js.org/d3.v3.min.js'></script>
+    <script src="{% static 'js/customdirect/js/direct.js' %}"></script>
+    <script>
+        $('#submitBtn').on('click', function(){
+            start = $('#start').val();
+            end = $('#end').val();
+
+            /*
+            U.ajax({
+                url : '/add_post/',
+                data : {title:title, text:text},
+                success:function(data){
+                    $('body').append("<h3>글이 성공적으로 등록되었습니다.</h3>");
+
+                    alert("글이 성공적으로 등록되었습니다.");
+                    location.reload(true);
+                }
+            */
+            });
+        });
+    </script>
+</html>

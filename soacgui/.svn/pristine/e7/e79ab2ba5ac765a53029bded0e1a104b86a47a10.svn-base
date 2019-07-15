@@ -1,0 +1,132 @@
+/* partitions */
+#vis {
+    height:100%;
+}
+
+svg {
+    /*background-color: #FFF;*/
+    margin: 0px 0px 0px 0px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    /*border: 1px solid #ddd;*/
+}
+
+/*svg:not(.active):not(.ctrl) {
+    cursor: crosshair;
+}*/
+
+path.link {
+    fill: none;
+    stroke: #999;
+    stroke-width: 2px;
+}
+
+
+path.link.selected {
+    stroke-dasharray: 10,2;
+}
+
+path.link.dragline {
+    pointer-events: none;
+}
+
+path.link.hidden {
+    stroke-width: 0;
+}
+
+/* partitions */
+path.subset {
+    stroke-width: 30px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    opacity: .3;
+}
+
+/* partitions */
+circle.bead {
+    pointer-events: none;
+}
+
+circle.node {
+    stroke-width: 1.5px;
+    cursor: pointer;
+}
+
+circle.node.reflexive {
+    /*stroke: #000 !important;*/
+    stroke-width: 2.5px;
+}
+
+circle.item {
+    stroke-width: 1.5px;
+    cursor: pointer;
+}
+
+circle.item.reflexive {
+    /*stroke: #000 !important;*/
+    stroke-width: 2.5px;
+}
+
+text {
+    font-family: Noto Sans KR;
+    fill:#52525a;
+    text-anchor: middle;
+    /*font-weight: bold;*/
+    font-size: 10px;
+}
+
+
+
+
+
+
+.front {
+	overflow:hidden;
+	z-index:900;
+	-webkit-transform: rotateX(0deg) rotateY(0deg);
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+
+	-moz-transform: rotateX(0deg) rotateY(0deg);
+	-moz-transform-style: preserve-3d;
+	-moz-backface-visibility: hidden;
+
+	-o-transition: all .4s ease-in-out;
+	-ms-transition: all .4s ease-in-out;
+	-moz-transition: all .9s ease-in-out;
+	-webkit-transition: all .4s ease-in-out;
+	transition: all .9s ease-in-out;
+}
+
+.active .front {
+	-webkit-transform: rotateY(180deg);
+	-moz-transform: rotateY(180deg);
+}
+
+.back {
+	background-repeat: no-repeat;
+	height:100%;
+	width:100%;
+	z-index:800;
+	-webkit-transform: rotateY(-180deg);
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+
+	-moz-transform: rotateY(-179deg);
+	-moz-transform-style: preserve-3d;
+	-moz-backface-visibility: hidden;
+
+	-o-transition: all .4s ease-in-out;
+	-ms-transition: all .4s ease-in-out;
+	-moz-transition: all .9s ease-in-out;
+	-webkit-transition: all .4s ease-in-out;
+	transition: all .9s ease-in-out;
+}
+.active .back {
+	z-index: 1000;
+	-webkit-transform: rotateX(0deg) rotateY(0deg);
+	-moz-transform: rotateX(0deg) rotateY(0deg);
+}

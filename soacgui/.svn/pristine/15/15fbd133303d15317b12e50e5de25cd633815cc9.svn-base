@@ -1,0 +1,58 @@
+
+var category = d3.scale.category10();
+
+var r,
+  w,
+  n = 5;
+
+var svg = d3.select("#vis").append("svg");
+var g = svg.append("g");
+
+resize();
+
+function resize() {
+var width = 960,
+    p = 10;
+svg.attr("width", width);
+w = width / 10;
+r = w / 2 - 2 * p;
+g.attr("transform", "translate(" + [w / 2, w / 2] + ")");
+update();
+}
+
+function update() {
+    g.selectAll("g").remove();
+    var i = 0;
+    partitions(n, function(a) {
+        var partition = g.append("g").attr("transform", "translate(" + [w * (i % 10), w * ~~(i / 10)] + ")");
+        var subsets = d3.range(n).map(function() { return []; });
+        a.forEach(function(d, i) { subsets[d].push(i); });
+        partition.selectAll("path.subset")
+            .data(subsets.filter(function(d) { return d.length; }))
+            .enter().append("path")
+            .attr("class", "subset")
+            .style("stroke", function(d, i) { return category(i); })
+            .style("fill", function(d, i) { return category(i); })
+            .attr("d", function(subset) {
+                var d = [];
+                subset.forEach(function(i, j) {
+                var a = 3 * Math.PI / 2 + i * 2 * Math.PI / n;
+                d.push(j ? "L" : "M", r * Math.cos(a), ",", r * Math.sin(a));
+                });
+                if (subset.length !== 2) d.push("Z"); // work around Firefox bug.
+                return d.join("");
+            })
+            .append("title")
+            .text(function(d) { return "{" + d.join(", ") + "}"; });
+        partition.selectAll("circle.bead")
+            .data(d3.range(n))
+            .enter().append("circle")
+            .attr("class", "bead")
+            .attr("r", 2.5)
+            .attr("transform", function(d, i) { return "rotate(" + i * 360 / n + ")translate(0," + -r + ")"; });
+        i++;
+    });
+    svg.attr("height", Math.ceil(i / 10) * w);
+    d3.select("#count").property("value", i);
+    d3.select("#output").property("value", "{" + d3.range(1, n + 1).join(", ") + "}.");
+}

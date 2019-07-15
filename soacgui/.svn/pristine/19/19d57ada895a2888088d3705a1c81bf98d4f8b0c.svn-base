@@ -1,0 +1,67 @@
+{% load commontags %}
+{% load staticfiles %}
+
+<div class="tab-header">
+    <div class="rs_d04 tab-btn click">개요</div>
+    <div class="rs_d04 tab-btn">서브넷</div>
+    <div class="rs_d04 tab-btn">포트</div>
+    <div class="rs_d04 tab-btn">DHCP 에이전트</div>
+</div>
+<div class="clear_float"></div>
+
+<div class="rs_d05 tab-body" id="network_info" data-network_id="{{ network.id }}" data-network_name="{{ network.name }}" style="display:block;">
+    <div class="clear_float"></div>
+    <img id="deleteNetwork" class="all_check_bt01" src='{% static "img/dashboard/common/del_bt_01.png" %}' alt="#">
+    <img id="updateNetwork" class="all_check_bt02" src='{% static "img/dashboard/common/edit_bt_01.png" %}' alt="#">
+    <div class="clear_float"></div>
+    <table class="mypage_tab01" cellpadding="0" border="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <th class="mypage_td01">이름</th>
+            <td class="mypage_td02 name">{{ network.name }}</td>
+            <th class="mypage_td01">ID</th>
+            <td class="mypage_td02 id">{{ network.id }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">프로젝트 ID</th>
+            <td class="mypage_td02 tenant_id">{{ network.project_id }}</td>
+            <th class="mypage_td01">상태</th>
+            <td class="mypage_td02 status">{{ network.status }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">관리자 상태</th>
+            <td class="mypage_td02 admin_state_up">{{ network.admin_state_up }}</td>
+            <th class="mypage_td01">공유</th>
+            <td class="mypage_td02 shared">{{ network.shared|default:"-" }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">외부 네트워크</th>
+            <td class="mypage_td02 router:external">{% get_dict network "router:external" as router_external %}{{ router_external|default:"-" }}</td>
+            <th class="mypage_td01">MTU</th>
+            <td class="mypage_td02 mtu">{{ network.mtu }}</td>
+        </tr>
+        <tr>
+            <th class="mypage_td01">공급자 네트워크</th>
+            <td class="mypage_td02 provider">
+                네트워크 타입 {% get_dict network "provider:network_type" as network_type %}{{ network_type|default:"-" }}<br/>
+                물리적인 네트워크 {% get_dict network "provider:physical_network" as physical_network %}{{ physical_network|default:"-" }}<br/>
+                구분 ID {% get_dict network "provider:segmentation_id" as segmentation_id %}{{ segmentation_id|default:"-" }}<br/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="rs_d05 tab-body" id="subnet_list" data-subnets="{{ network.subnets }}" hidden style="display: block;">
+    {% include "admin/networks/subnets/index.html" %}
+</div>
+
+<div class="rs_d05 tab-body" id="port_list"  data-ports="{{ network.ports }}" hidden style="display: block;">
+    {% include "admin/networks/ports/index.html" %}
+</div>
+
+<div class="rs_d05 tab-body" id="DHCPagent_list" data-dhcp_agents="{{ network.dhcpAgents }}" hidden style="display: block;">
+    {% include "admin/networks/dhcp_agents/index.html" %}
+</div>
+
+<script src='{% static "js/admin/networks/info.js" %}'></script>

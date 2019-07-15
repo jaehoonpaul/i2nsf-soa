@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% block sub_left_menu %}
+{% include "service/sub_left_menu.html" %}
+{% endblock sub_left_menu %}
+
+
+{% block headerTitle %}
+            <div class="head_d02">서비스</div>
+            <img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+            <div class="head_d03">서비스 조회</div>
+            <img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">-</div>
+<!--<img class="head_img02" src='{% static "img/common/head_arrow_02.png" %}' alt="#">
+<div class="head_d03">서비스 체이닝 목록</div>-->
+{% endblock headerTitle %}
+
+{% block header %}
+<a href="#" id="serviceTab"><div class="head_d05">서비스 토폴로지</div></a>
+<a href="#" id="chainTab"><div class="head_d05 click">서비스 체이닝</div></a>
+<a href="#" id="telemeterTab"><div class="head_d05">서비스 모니터링</div></a>
+<a href="#" id="addSFC"><img class="all_service_bt01" src='{% static "img/common/btn/service_chain_plus_bt_01.png" %}' alt="#"></a>
+{% endblock header %}
+
+{% block content %}
+
+
+<link rel="stylesheet" href="{% static 'css/direct.app.css' %}">
+<form id="addForm" method="post">
+    <input type="hidden" id="input_name" name="sfc_name">
+    <input type="hidden" id="input_desc" name="sfc_desc" >
+</form>
+
+<div id="empty_message" class="none_text_01" style="display:none;">
+   생성된 서비스 체인이 없습니다.
+</div>
+
+
+<link href="{% static 'css/d3-context-menu.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/chain.css' %}">
+<script src="{% static 'lib/d3/d3.v3.min.js' %}"></script>
+<script src="{% static 'js/d3-context-menu.js' %}"></script>
+<script src="{% static 'js/service/interact.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/service/chaining.js' %}"></script>
+<script>
+    $(function(){
+        var urlStr = $(location).attr('pathname');
+        var match = new RegExp("/dashboard/service/([\\w-]+)/.*").exec(urlStr);
+        var service_id = match[1];
+        $("#serviceTab").attr("href", "/dashboard/service/" +service_id + "/detail");
+        $("#chainTab").attr("href", "/dashboard/service/" +service_id + "/chaining");
+        $("#telemeterTab").attr("href", "/dashboard/telemeter/" +service_id + "/detail");
+        $("#routingTab").attr("href", "/dashboard/service/" +service_id + "/routing");
+        $("#addSFC").attr("href", "/dashboard/service/" +service_id + "/chaining/create");
+
+        U.ajax({
+            progress : true,
+            url : 'list',
+            data : {},
+            success:function(result){
+                if(result.success) {
+                    var sfc_list = [];
+                    if (result.success.list) {
+                        sfc_list = result.success.list;
+                    }
+                    if(sfc_list.length == 0) {
+                        $("#empty_message").show();
+                    }
+                    log(sfc_list);
+                    initialize(sfc_list);
+                } else {
+                    log("만들어진 서비스 체이닝 없음");
+                }
+            }
+        });
+        {% if service_detail %}
+            var jsonData = {% autoescape off %}{{ service_detail }}{% endautoescape %};
+            $('#addSFC').removeAttr("href");
+            $("#addSFC").click(function(){postMove("/dashboard/service/" +service_id + "/chaining/create/", JSON.stringify(jsonData))});
+            $('#chainTab').removeAttr("href");
+            $("#chainTab").click(function(){postMove("/dashboard/service/" +service_id + "/chaining/", JSON.stringify(jsonData))});
+            $("#chainTab").css("cursor", "pointer");
+        {% endif %}
+    });
+</script>
+
+{% endblock content %}

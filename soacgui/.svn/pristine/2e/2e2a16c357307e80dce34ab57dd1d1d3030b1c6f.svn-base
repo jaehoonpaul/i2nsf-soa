@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">기본 할당량</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 click">기본 할당량</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<style>
+    th.limit{
+        width:140px;
+    }
+    .name{
+        text-align:left !important;
+    }
+    .limit{
+        text-align:left !important;
+    }
+</style>
+<div class="rs_d01" id="quotas">
+    <div class="ind_d02">
+        <div class="ind_d05">기본 할당량</div>
+        <div class="clear_float"></div>
+    </div>
+    <img class="all_check_bt01" src="/static/img/common/btn/basics_quota_edit_bt_01.png" alt="#" id="btnEditDefault">
+    <!--<input class="rs_text03" type="text" placeholder="필터" id="inputFilter">-->
+    <div class="clear_float"></div>
+    <table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0"></table>
+</div>
+
+<!--
+<div id='editModal' class='modal fade' role='dialog' data-backdrop="static">
+    <div class='modal-dialog'>
+        <div class='modal-content login_d01'>
+            <div class='' style="text-align:center;">
+                <img class="login_img01" src="/static/img/login_01.png" alt="#" style="margin: 60px 50px 0 auto;">
+                <input class="login_text01" type="text" name="domain_name" placeholder="도메인 이름" required>
+                <input class="login_text02" type="text" name="project_name" placeholder="프로젝트 이름" >
+                <input class="login_text02" type="text" name="user_name" placeholder="사용자 이름"  required>
+                <input class="login_text02" type="password" name="pass" placeholder="비밀번호" onkeydown="if(event.keyCode == 13) document.getElementById('submit_btn').click()" required>
+                <div class="clear_float"></div>
+                <input class="login_checkbox01" type="checkbox" >
+                <div class="login_d03">정보를 기억합니다.</div>
+                <input type="submit" value="" class="login_d04">
+                <div class="login_d04" id="submit_btn" onclick="loginSubmit()"></div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+<div id='modalEdit' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center;">
+    <div class="modal_pop_d01" style="width: 800px;">
+        <div class="ind_d02 modal_header">
+            <div class="ind_d05" id="modalEditTitle">기본 할당량 업데이트</div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="modal-body" style="text-align: left;">
+			<table class="rs_tab02" style="width: 700px;">
+				<tr>
+					<th class="mypage_td01">이름</th>
+					<td class="mypage_td02"><input type="text" id="alarm_name" class="checkField"></td>
+				</tr>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop_d03">
+                <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="btnEditSave">
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% load staticfiles %}
+<script src='{% static "js/admin/defaults/index.js" %}'></script>
+<script>
+$(function(){
+    getQuotasAjax();
+    setFilter($("#quotas table"), $("#inputFilter"));
+});
+</script>
+
+{% endblock content%}

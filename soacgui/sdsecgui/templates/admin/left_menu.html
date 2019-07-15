@@ -1,0 +1,53 @@
+<div class="sub_left_menu">
+    <div class="sub_left_menu_d01 usages">
+        <a href="/dashboard/admin">{{ _("개요") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 hypervisors">
+        <a href="#">{{ _("하이퍼바이저") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 aggregates">
+        <a href="/dashboard/admin/aggregates">{{ _("호스트 집합") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 instances">
+        <a href="/dashboard/admin/instances">{{ _("가상서버") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 volumes">
+        <a href="/dashboard/admin/volumes">{{ _("볼륨") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 flavors">
+        <a href="/dashboard/admin/flavors">flavor</a>
+    </div>
+    <div class="sub_left_menu_d01 images">
+        <a href="/dashboard/admin/images">{{ _("이미지") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 networks">
+        <a href="/dashboard/admin/networks">{{ _("네트워크") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 routers">
+        <a href="/dashboard/admin/routers">{{ _("라우터") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 defaults">
+        <a href="/dashboard/admin/defaults">{{ _("기본") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 info">
+        <a href="/dashboard/admin/info">{{ _("시스템 정보") }}</a>
+    </div>
+    <div class="sub_left_menu_d01 alarms">
+        <a href="/dashboard/telemeter/alarms">{{ _("알람") }}</a>
+    </div>
+</div>
+<script>
+    $(function(){
+        var selSubMenu = ""
+        var urlStr = $(location).attr('pathname');
+        var match = new RegExp("/dashboard/admin/(\\w+)/.*").exec(urlStr);
+        if (match) {
+            selSubMenu = match[1];
+        } else {
+            selSubMenu = "usages";
+        }
+        $("."+selSubMenu).addClass("sub_left_menu_d01_click");
+        $("."+selSubMenu).removeClass("sub_left_menu_d01");
+    });
+
+</script>

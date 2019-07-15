@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load commontags %}
+{% block headerTitle %}
+<!--<div class="header_title_d01">가상서버</div>-->
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">가상서버</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<!--
+<div>
+    <a href="#"><div class="header_title_d04_click tab service_info">가상서버</div></a>
+
+    <a href="/dashboard/admin/instances/create">
+        <img class="header_title_img02" src="/static/img/service_plus_bt.png" alt="#">
+    </a>
+</div>
+-->
+<div class="head_d05 click">가상서버</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">가상서버</div>
+        <div class="clear_float"></div>
+    </div>
+    <button class="btn-ok" id="create">가상서버 생성</button>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15 index" cellpadding="0" border="0" cellspacing="0" id="instance_list">
+    <thead>
+        <tr>
+            <th>프로젝트</th>
+            <th>호스트</th>
+            <th>이름</th>
+            <th>이미지 이름</th>
+            <th>IP 주소</th>
+            <th>크기</th>
+            <th>상태</th>
+            <th>작업</th>
+            <th>전원 상태</th>
+            <th>생성된 이후 시간</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+        <tbody>
+        {% for instance in success.instanceList %}
+            <tr data-id="{{instance.id}}">
+                <td>{{instance.project_name}}</td>
+                <td>{{ instance.host_name }}</td>
+                <td class=" name"><a class="list_a01" href="/dashboard/admin/instances/{{instance.id}}/detail">{{ instance.name }}</a></td>
+                <td>{{instance.image.name}}</td>
+                <td>
+                    {% for key, value in instance.networks.items %}
+                        {% for ip in value %}
+                            {{ ip }}<br/>
+                        {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if instance.flavor.name %}
+                    <a class="list_a01" href="#" id="flavor_details_{{instance.id}}" class="link-popover" rel="popover" tabindex="0" data-trigger="focus" data-original-title="Flavor 세부 정보: {{instance.flavor.name}}" data-content="<table class='table table-bordered'><tr><th>ID</th><td>{{instance.flavor.id}}</td></tr><tr><th>VCPUs</th><td>{{instance.flavor.vcpus}}</td></tr><tr><th>RAM</th><td>{{instance.flavor.ram}}MB</td></tr><tr><th>크기</th><td>{{instance.flavor.disk}}GB</td></tr></table>">
+                        {{ instance.flavor.name }}
+                    </a>
+                    <script type="text/javascript" charset="utf-8">
+                    $(function () {
+                        var $flavor = $("#flavor_details_{{instance.id}}");
+                        if ( $flavor.popover ) {
+                              $flavor.popover({html:true});
+                        }
+
+                    });
+                    </script>
+                    {% else %}
+                    Flavor를 찾을 수 없음
+                    {% endif %}
+                </td>
+                <!--<td class="ind_td01">{{ instance.id }}</td>-->
+                <td>{{ instance.status }}</td>
+                <td>{{ instance.task_state }}</td>
+                <td>{{ instance.power_state }}</td>
+                <td>{% parse_time_format_z instance.created %}</td>
+                <td>
+                    <div class="button_group_bt02">
+                        <div class="button_group_d01 update">수정</div>
+                        <div class="button_group_d02 action"><img src="/static/img/dashboard/common/arrow_img_01.png" alt="#"></div>
+                        <div class="clear_float"></div>
+                        <div class="actionGroup actionGroup01" hidden>
+                            <a href="#" class="actionBtn actionGroup_a02 console"><div>콘솔</div></a>
+                            <!--<a href="#" class="actionBtn log"><div>로그확인</div></a>-->
+                            <!--<a href="#" class="actionBtn snapshot"><div>스냅샷 생성</div></a>-->
+                            <a href="#" class="actionBtn actionGroup_a02 start"><div>가상서버 시작</div></a>
+                            <a href="#" class="actionBtn actionGroup_a02 stop"><div>가상서버 정지</div></a>
+                            <a href="#" class="actionBtn actionGroup_a02 unpause"><div>가상서버 재시작</div></a>
+                            <a href="#" class="actionBtn actionGroup_a02 pause"><div>가상서버 일시 중단</div></a>
+                            <!--<a href="#" class="actionBtn shelve"><div>가상서버 Shelve</div></a>-->
+                            <!--<a href="#" class="actionBtn migration"><div>가상서버 마이그레이션</div></a>-->
+                            <!--<a href="#" class="actionBtn real_time_migration"><div>실시간 가상서버 마이그레이션</div></a>-->
+                            <a href="#" class="actionBtn actionGroup_a02 soft_reboot"><div>가상서버 소프트 재시작</div></a>
+                            <a href="#" class="actionBtn actionGroup_a02 hard_reboot"><div>가상서버 하드 리부트</div></a>
+                            <a href="#" class="actionBtn actionGroup_a02 delete"><div>가상서버 삭제</div></a>
+                            {% if sync %}
+                            <a href="#" class="sync actionGroup_a01"><div>soam 연동</div></a><!-- TODO: soam sync delete -->
+                            {% endif %}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for value in success.instanceList|length|range:15 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr><td colspan="11" class="rs_td03 tl">Displaying {{ success.instanceList|length }} item</td></tr>
+        </tfoot>
+    </table>
+    <!--<p class="post{{ forloop.counter }}">{{ post.text|linebreaksbr }}</p>-->
+    <!--<p>{{ instanceList }}</p>-->
+</div>
+
+<style>
+#modalCreate {position: fixed;z-index: 1050;border-radius: 10px;border: 1px solid #d6dadd;}
+</style>
+
+<script src="{% static 'js/admin/instances/index.js' %}"></script>
+<script src="{% static 'js/table_button_util.js' %}"></script>
+{% endblock content %}

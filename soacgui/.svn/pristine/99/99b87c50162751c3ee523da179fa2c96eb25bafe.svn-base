@@ -1,0 +1,156 @@
+{% extends 'service/right_pop.html' %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_loadbalancer.png" alt="#">
+<div class="right_d01 type">로드밸런서</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02 "></div>
+<div class="pop03_d02">
+    <div class="pop03_d03">이름 *</div>
+    <input class="pop03_text01" name="name" placeholder="이름" type="text" value="{{ data.name }}" autofocus>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03">설명</div>
+    <input class="pop03_text01" name="description" placeholder="설명" type="text" value="{{ data.description }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03">가상 네트워크 이름*</div>
+    <input type="text" class="pop03_sel01" name="tenant_net" value="{{ data.tenant_net }}" readonly>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">외부 네트워크 IP 할당 여부</div>
+    <input type="checkbox" name="public_vip" class="pop03_check01"{% if data.public_vip %} checked{% endif %}>
+    <div class="clear_float"></div>
+</div>
+<!--<div class="pop03_d02">-->
+    <!--<div class="pop03_d03 ">외부 네트워크</div>-->
+    <!--<input type="text" class="pop03_sel01" name="external_network" value="{{ data.external_network }}">-->
+    <!--<div class="clear_float"></div>-->
+<!--</div>-->
+<div class="pop03_d02">
+    <div class="pop03_d03 ">알고리즘*</div>
+    <select class="pop03_sel01" name="lb_algorithm" data-selected="{{ data.lb_algorithm }}">
+        <option value="ROUND_ROBIN">ROUND ROBIN</option>
+        <option value="LEAST_CONNECTIONS">LEAST CONNECTIONS</option>
+        <option value="SOURCE_IP">SOURCE IP</option>
+    </select>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">프로토콜*</div>
+    <select class="pop03_sel01" name="protocol" data-selected="{{ data.protocol|default:'HTTP' }}">
+        <option value="PING">PING</option>
+        <option value="TCP">TCP</option>
+        <option value="HTTP">HTTP</option>
+        <option value="HTTPS">HTTPS</option>
+    </select>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">포트*</div>
+    <input type="number" class="pop03_text01" name="protocol_port" value="{{ data.protocol_port|default:80 }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">초당 최대 연결 세션수</div>
+    <input type="number" class="pop03_text01" name="connection_limit" value="{{ data.connection_limit }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">persistence</div>
+    <select class="pop03_sel01" name="persistence" data-selected="{{ data.persistence }}">
+        <option value="source_ip">SOURCE_IP</option>
+        <option value="http_cookie">HTTP_COOKIE</option>
+        <option value="app_cookie">APP_COOKIE</option>
+    </select>
+    <!--
+    -	SOURCE_IP:클라이언트의 IP 주소값이 같은지 비교
+    -	HTTP_COOKIE: 클라이언트로부터 수신된 요청에 쿠키값이 같은지 비교(쿠키값은 부하분산 노드가 생성함)
+    -	APP_COOKIE: 클라이언트로부터 수신된 요청에 쿠키값이 같은지 비교(쿠키값은 응용이 생성)
+    -->
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">cookie_name</div>
+    <input type="text" class="pop03_sel01" name="cookie_name" value="{{ data.cookie_name }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d04 " onclick="detailToggle('.pool_member_detail_info', this)">
+    <div class="pop03_d05 ">pool member</div>
+    <img class="pop03_img01" src="/static/img/dashboard/common/arrow_02.png" alt="#">
+</div>
+<div class="pool_member_detail_info">
+    <div class="pop03_d02">
+        <div class="pop03_d03">이름*</div>
+        <input type="text" class="pop03_text01" name="pool_member_name" value="{{ data.pool_member.name }}" readonly>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03">포트*</div>
+        <input type="text" class="pop03_text01" name="pool_member_protocol_port" value="{{ data.pool_member.protocol_port|default:80 }}">
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03">부하분산 가중치</div>
+        <input type="number" class="pop03_text01" name="pool_member_weight" value="{{ data.pool_member.weight|default:1 }}">
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03">서브넷*</div>
+        <input type="text" class="pop03_text01" name="pool_member_subnet" value="{{ data.pool_member.subnet }}" readonly>
+        <div class="clear_float"></div>
+    </div>
+</div>
+<div class="pop03_d04 " onclick="detailToggle('.monitor_detail_info', this)">
+    <div class="pop03_d05 ">모니터링</div>
+    <img class="pop03_img01" src="/static/img/dashboard/common/arrow_02.png" alt="#">
+</div>
+<div class="monitor_detail_info" style="display: none;" hidden>
+    <div class="clear_float"></div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">이름*</div>
+        <input type="text" class="pop03_text01" name="monitor_name" value="{{ data.monitor.name }}">
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">타입*</div>
+        <select class="pop03_sel01" name="monitor_type" data-selected="{{ data.monitor.type|default:'TCP' }}">
+            <option value="PING">PING</option>
+            <option value="TCP">TCP</option>
+            <option value="HTTP">HTTP</option>
+            <option value="HTTPS">HTTPS</option>
+        </select>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03">점검 주기(sec)*</div>
+        <input type="number" class="pop03_text01" name="monitor_delay" value="{{ data.monitor.delay|default:5 }}">
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03">timeout(sec)</div>
+        <input type="number" class="pop03_text01" name="monitor_timeout" value="{{ data.monitor.timeout|default:5 }}">
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03">max_retries</div>
+        <input type="number" class="pop03_text01" name="monitor_max_retries" value="{{ data.monitor.max_retries|default:5 }}">
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02 group-monitor-http" style="display:none;">
+        <div class="pop03_d03">http_method</div>
+        <input type="text" class="pop03_text01" name="monitor_http_method" value="{{ data.monitor.http_method|default:'GET' }}">
+        <div class="clear_float"></div>
+    </div>
+    <!--<div class="pop03_d02 group-monitor-http" style="display:none;">-->
+        <!--<div class="pop03_d03">url_path</div>-->
+        <!--<input type="text" class="pop03_text01" name="monitor_url_path" value="{{ data.monitor.url_path }}">-->
+        <!--<div class="clear_float"></div>-->
+    <!--</div>-->
+</div>
+{% endblock resourceInfo %}

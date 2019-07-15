@@ -1,0 +1,32 @@
+{% extends 'service/right_pop.html' %}
+{% load commontags %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_network.png" alt="#">
+<div class="right_d01 type">{{ _("네트워크") }}</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02">{{ _("이름") }}</div>
+<div class="right_d03 name">{{ network.name }}</div>
+<div class="right_d04">ID</div>
+<div class="right_d03 id">{{ network.id }}</div>
+<div class="right_d04">{{ _("상태") }}</div>
+<div class="right_d03 status">{{ network.status }}</div>
+<div class="right_d04">{{ _("프로젝트") }} ID</div>
+<div class="right_d03 project_id">{{ network.tenant_id }}</div>
+<div class="right_d04">{{ _("관리자 상태") }}</div>
+<div class="right_d03 admin_state_up">{% if network.admin_state_up %}{{ _("예") }}{% else %}{{ _("아니오") }}{% endif %}</div>
+<div class="right_d04">{{ _("공유") }}</div>
+<div class="right_d03 shared">{% if network.shared %}{{ _("예") }}{% else %}{{ _("아니오") }}{% endif %}</div>
+<div class="right_d04">{{ _("외부 네트워크") }}</div>
+<div class="right_d03 external">{% if 'network.router:external' %}{{ _("예") }}{% else %}{{ _("아니오") }}{% endif %}</div>
+<div class="right_d04">MTU</div>
+<div class="right_d03 mtu">{{ network.mtu }}</div>
+<div class="right_d02">{{ _("타입") }}</div>
+<div class="right_d03 network_type">{{ 'network.provider:network_type' }}</div>
+<div class="right_d04">{{ _("구분 ID") }}</div>
+<div class="right_d03 segmentation">{{ 'network.provider:segmentation_id' }}</div>
+<div class="right_d04">{{ _("물리적인 네트워크") }}</div>
+<div class="right_d03 physical_network">{{ 'network.provider:physical_network' }}</div>
+{% endblock resourceInfo %}

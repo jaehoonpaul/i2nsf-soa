@@ -1,0 +1,352 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-05 02:49+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: jinsik kang <kangjinsik@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: static/js/service/common_topology.js:345
+#: static/js/service/common_topology.js:457
+#: static/js/service/common_topology.js:481
+#: static/js/service/common_topology.js:484
+#: static/js/service/common_topology.js:507
+#: static/js/service/common_topology.js:516
+#: static/js/service/common_topology.js:523
+#: static/js/service/common_topology.js:548
+#: static/js/service/common_topology.js:557
+#: static/js/service/common_topology.js:567 static/js/service/service.js:11
+#: static/js/service/service.js:14 static/js/service/service.js:461
+#: static/js/service/service.js:637
+msgid "정보"
+msgstr "Information"
+
+#: static/js/service/common_topology.js:350
+msgid "취소"
+msgstr "Cancel"
+
+#: static/js/service/common_topology.js:351
+msgid ""
+"작업중인 데이터를 전부 지우고<br/><br/> 리스트 페이지로 이동하시겠습니까?"
+msgstr "Delete all working data and going to list page?"
+
+#: static/js/service/common_topology.js:457
+#: static/js/service/common_topology.js:557
+msgid "잘못된 연결 입니다."
+msgstr "It is a wrong connection."
+
+#: static/js/service/common_topology.js:481
+#: static/js/service/common_topology.js:507
+#: static/js/service/common_topology.js:548
+msgid ""
+"'은 이미 연결 되었거나 이미 존재하는<br/>이름입니다. 이름을 변경후 연결해주세"
+"요."
+msgstr "is already connected or existed name. Please change the name and conne"
+"ct it."
+
+#: static/js/service/common_topology.js:484
+msgid "'은 이미 다른 라우터에 연결되었습니다."
+msgstr "is already connected to other router."
+
+#: static/js/service/common_topology.js:516
+msgid "network의 이름을 변경후 연결해주세요."
+msgstr "Change the network's name and connect it."
+
+#: static/js/service/common_topology.js:523
+msgid "이미 "
+msgstr "already"
+
+#: static/js/service/common_topology.js:523
+msgid "에 연결되있습니다."
+msgstr "is conected."
+
+#: static/js/service/common_topology.js:567
+msgid "볼륨("
+msgstr "Volume("
+
+#: static/js/service/common_topology.js:567
+msgid ")은 이미 가상서버("
+msgstr ")is already virtual server("
+
+#: static/js/service/common_topology.js:567
+msgid ")에 연결 되어있습니다.<br/>연결 해제 후 다시 시도해주세요."
+msgstr ")connected. Try again after disconnecting."
+
+#: static/js/service/common_topology.js:1029
+msgid "저장하기"
+msgstr "Save"
+
+#: static/js/service/common_topology.js:1030
+msgid "입력중인 정보창이 열려있습니다.<br/><br/>저장하시겠습니까?"
+msgstr "Current information window is opening. Will you save it?"
+
+#: static/js/service/common_topology.js:1462
+msgid "해당자원이 존재하지 않습니다."
+msgstr "Corresponding resources are not existed."
+
+#: static/js/service/common_topology.js:1471
+msgid "연결 정보가 올바르지 않습니다."
+msgstr "Conneting information is wrong."
+
+#: static/js/service/common_topology.js:1471
+msgid "에러"
+msgstr "Error"
+
+#: static/js/service/common_topology.js:2236
+msgid "오토스케일링 그룹에는 Volume만 추가할 수 있습니다."
+msgstr "Only Volume can be added in autoscaling group."
+
+#: static/js/service/intent/endpoint/index.js:8
+msgid "Endpoint 생성"
+msgstr "Creating Endpoint"
+
+#: static/js/service/intent/endpoint/index.js:31
+msgid "Endpoint 수정"
+msgstr "Revising Endpoint"
+
+#: static/js/service/intent/endpoint/index.js:54
+#: static/js/service/intent/rule/index.js:45
+msgid "가 삭제되었습니다."
+msgstr "is deleted."
+
+#: static/js/service/intent/endpoint/index.js:56
+#: static/js/service/intent/rule/index.js:47 static/js/service/service.js:231
+#: static/js/service/service.js:524 static/js/service/service_list.js:168
+msgid "삭제"
+msgstr "Delete"
+
+#: static/js/service/intent/endpoint/index.js:58
+#: static/js/service/intent/rule/index.js:49
+msgid "삭제 실패"
+msgstr "Fail to delete"
+
+#: static/js/service/intent/endpoint/index.js:65
+#: static/js/service/intent/rule/index.js:78
+msgid "Rule에서 intent 기반 서비스 생성을 누르세요."
+msgstr "Press Intent based service creating in Rule"
+
+#: static/js/service/intent/endpoint/index.js:73
+msgid ")을 삭제하시겠습니까?"
+msgstr ") delete?"
+
+#: static/js/service/intent/endpoint/index.js:82
+msgid "성공"
+msgstr "Success"
+
+#: static/js/service/intent/endpoint/index.js:82
+msgid "전송"
+msgstr "Send"
+
+#: static/js/service/intent/endpoint/index.js:84
+msgid "전송 실패"
+msgstr "Fail to send"
+
+#: static/js/service/intent/rule/index.js:5
+msgid "룰 생성"
+msgstr "is created"
+
+#: static/js/service/intent/rule/index.js:92
+msgid "룰 수정"
+msgstr "is revised"
+
+#: static/js/service/service.js:11
+msgid "같은 이름의 보안장비가 존재합니다."
+msgstr "The same name of security equiment is existed."
+
+#: static/js/service/service.js:14
+msgid "보안장비 이름은 필수항목입니다."
+msgstr "The name of security equiment is neccessary."
+
+#: static/js/service/service.js:324
+msgid "상세 정보 조회"
+msgstr "Check detail information"
+
+#: static/js/service/service.js:335
+msgid "스냅샷 생성"
+msgstr "Create Snapshot"
+
+#: static/js/service/service.js:343
+msgid "볼륨 연결 해제"
+msgstr "Disconnect to Volume"
+
+#: static/js/service/service.js:345
+msgid "볼륨 연결"
+msgstr "Connect to Volume"
+
+#: static/js/service/service.js:354
+msgid "볼륨 삭제"
+msgstr "Delete to Volume"
+
+#: static/js/service/service.js:361
+msgid "포트 조회"
+msgstr "Check Port"
+
+#: static/js/service/service.js:372
+msgid "서버 종료"
+msgstr "Quit the server"
+
+#: static/js/service/service.js:379
+msgid "서버 일시정지"
+msgstr "Pause the server"
+
+#: static/js/service/service.js:386
+msgid "서버 재부팅"
+msgstr "Reboot the server"
+
+#: static/js/service/service.js:393
+msgid "콘솔창 열기"
+msgstr "Open console"
+
+#: static/js/service/service.js:400
+msgid "서버 시작"
+msgstr "Start the server"
+
+#: static/js/service/service.js:408
+msgid "서버 재시작"
+msgstr "Restart the server"
+
+#: static/js/service/service.js:418
+msgid "서버 강제 재부팅"
+msgstr "Reboot the server by force"
+
+#: static/js/service/service.js:433 static/js/service/service.js:437
+msgid "정책 관리"
+msgstr "Manage the Policies"
+
+#: static/js/service/service.js:459
+msgid "인터페이스 관리"
+msgstr "Manage the Interfaces"
+
+#: static/js/service/service.js:465 static/js/service/service.js:469
+msgid "라우팅 정책 설정"
+msgstr "Configurate Routing Policies"
+
+#: static/js/service/service.js:495 static/js/service/service.js:546
+msgid "오토스케일링 그룹 접기"
+msgstr "Folding the autoscaling group"
+
+#: static/js/service/service.js:503 static/js/service/service.js:554
+msgid "오토스케일링 그룹 펼치기"
+msgstr "Spread out the autoscaling group"
+
+#: static/js/service/service.js:513
+msgid "편집"
+msgstr "Edit"
+
+#: static/js/service/service.js:568 static/js/service/service.js:572
+msgid "아이콘 위치 고정 해제"
+msgstr "Remove fixing the Icon position"
+
+#: static/js/service/service.js:570 static/js/service/service.js:574
+msgid "아이콘 위치 고정"
+msgstr "Fixing the Icon position"
+
+#: static/js/service/service.js:626
+msgid "(재)시작"
+msgstr "(Re)Start"
+
+#: static/js/service/service.js:628
+msgid "재부팅"
+msgstr "Reboot"
+
+#: static/js/service/service.js:631
+msgid "종료"
+msgstr "Exit"
+
+#: static/js/service/service.js:634
+msgid "일시정지"
+msgstr "Pause"
+
+#: static/js/service/service_list.js:83
+msgid "서비스 수정"
+msgstr "Revise the service"
+
+#: static/js/service/service_list.js:87
+msgid "서비스 토폴로지"
+msgstr "Service Topology"
+
+#: static/js/service/service_list.js:88
+msgid "서비스 체이닝"
+msgstr "Service Chaining"
+
+#: static/js/service/service_list.js:89
+msgid "서비스 모니터링"
+msgstr "Service Monitoring"
+
+#: static/js/service/service_list.js:91
+msgid "서비스 일시정지"
+msgstr "Pause the Service"
+
+#: static/js/service/service_list.js:92
+msgid "서비스 재시작"
+msgstr "Restart the Service"
+
+#: static/js/service/service_list.js:93
+msgid "서비스 삭제"
+msgstr "Delete the Service"
+
+#: static/js/service/service_list.js:107
+msgid "이름"
+msgstr "Name"
+
+#: static/js/service/service_list.js:108
+msgid "프로젝트"
+msgstr "Project"
+
+#: static/js/service/service_list.js:109
+msgid "사용자"
+msgstr "User"
+
+#: static/js/service/service_list.js:110
+msgid "설명"
+msgstr "Exaplanation"
+
+#: static/js/service/service_list.js:111
+msgid "상태"
+msgstr "Status"
+
+#: static/js/service/service_list.js:112
+msgid "체이닝 수"
+msgstr "Number of Chaining"
+
+#: static/js/service/service_list.js:113
+msgid "생성일"
+msgstr "Date of creation"
+
+#: static/js/service/service_list.js:114
+msgid "수정일"
+msgstr "Date of revision"
+
+#: static/js/service/service_list.js:115
+msgid "액션"
+msgstr "Action"
+
+#: static/js/service/service_list.js:169
+msgid "를 삭제하시겠습니까?"
+msgstr "delete?"
+
+#: static/js/service/service_list.js:176
+msgid "삭제 실패: "
+msgstr "Fail to delete"
+
+#: static/js/service/service_list.js:179
+msgid "삭제 요청 성공"
+msgstr "Success to the delete requirement"
+
+#: static/js/service/topology.js:588
+msgid "불러오기"
+msgstr "Call"
+
+#: static/js/service/topology.js:589
+msgid "작업중인 데이터가 있습니다. 데이터를 불러오겠습니까?"
+msgstr "Working data is existed. Will you call the data?"

@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ETRI SecCurator</title>
+    {% load staticfiles %}
+    <link href='{% static "css/style.css" %}' rel="stylesheet" type="text/css"/>
+    <!--<link href='{% static "lib/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css"/>-->
+    <!--<link href='{% static "lib/lobibox/dist/css/lobibox.min.css" %}' rel="stylesheet" type="text/css"/>-->
+    <script src='{% static "lib/jquery/1.12.4/jquery.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+    <!--<script src='{% static "lib/bootstrap/3.2.0/js/bootstrap.min.js" %}'></script>-->
+    <script type="text/javascript" src="{% static 'lib/lobibox/dist/js/notifications.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+    <style>
+        .login_body { text-align:initial; }
+    </style>
+</head>
+<body class="new_login_body">
+<div class="domain_select_header">
+    <div class="domain_select_d01">
+        <img class="domain_select_img01" src='{% static "img/dashboard/domain_select/domain_select_logo_01.png" %}'
+             alt="#">
+        <img class="domain_select_img02" id="settings"
+             src='{% static "img/dashboard/domain_select/domain_setup_bt_01.png" %}'
+             alt="#">
+        <div class="clear_float"></div>
+    </div>
+</div>
+<div class="domain_select_d02">
+    {% for domain in domains %}
+    <div class="domain_select_d03" data-auth_url="{{domain.auth_url}}" data-domain_name="{{domain.domain_name}}"
+         data-description="{{domain.description}}">
+        <div class="domain_select_d04">
+            <div class="new_login_d05">IP</div>
+            <div class="new_login_d07">{{domain.ip}}</div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="domain_select_d05">
+            <div class="new_login_d05">별칭</div>
+            <div class="new_login_d07">{{domain.description}}</div>
+            <div class="clear_float"></div>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="clear_float"></div>
+</div>
+<script>
+    $(".domain_select_d02").on("click", ".domain_select_d03", function() {
+        var auth_url = $(this).data("auth_url");
+        var domain_name = $(this).data("domain_name");
+        var description = $(this).data("description");
+        location.href = "/dashboard/login/?auth_url=" + auth_url + "&domain_name=" + domain_name + "&description=" + description{% if next_url %} + "&next={{ next_url }}"{% endif %};
+    });
+    $("#settings").on("click", function() {
+        var url = "/domain/login";
+        var title = "도메인 관리 - ETRI SecurityOnAirController";
+        var width = 1300;
+        var height = 900;
+        var left = window.screen.left + (screen.availWidth - width) / 2;
+        var top = window.screen.top + (screen.availHeight - height) / 2;
+        console.log("width=" + width + ", height=" + height + ", toolbar=no, menubar=no, location=no, top=" + top + ", left=" + left);
+        window.open(url, title, "width=" + width + ", height=" + height + ", toolbar=no, menubar=no, location=no, top=" + top + ", left=" + left);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% load staticfiles %}
+<div class="head_d05 click">프로젝트</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "identity/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="project" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">프로젝트</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="common-tab-02 info" cellpadding="0" border="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <th class=" name">프로젝트 이름</th>
+            <td class=" name">{{ project.name }}</td>
+        </tr>
+        <tr>
+            <th class=" name">프로젝트 ID</th>
+            <td class=" name">{{ project.id }}</td>
+        </tr>
+        <tr>
+            <th class=" enabled">활성화됨</th>
+            <td class=" enabled">{% if project.enabled %}예{% else %}아니오{% endif %}</td>
+        </tr>
+        <tr>
+            <th class=" description">설명</th>
+            <td class="mypage_td02 description">{{ project.description }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src='{% static "js/identity/projects/info.js" %}'></script>
+{% endblock content %}

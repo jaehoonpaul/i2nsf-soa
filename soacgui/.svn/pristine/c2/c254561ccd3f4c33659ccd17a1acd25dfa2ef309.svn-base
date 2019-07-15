@@ -1,0 +1,91 @@
+{% load staticfiles %}
+{% load commontags %}
+<!-- Rule Create 탭-->
+
+<div class="rs_d04 tab-btn click">Rule</div>
+<div class="rs_d04 tab-btn">설정값</div>
+<div class="clear_float"></div>
+
+<div class="rs_d05 tab-body" id="ruleInfo" style="display:block;">
+    <div class="clear_float"></div>
+    <div class="division">
+        <div class="clear_float"></div>
+        <img class="mypage_img01" src="/static/img/dashboard/common/mypage_icon_02.png" alt="#">
+        <div class="mypage_d01">정책</div>
+    </div>
+    <img id="deleteRule" class="all_check_bt01" src='{% static "img/dashboard/common/del_bt_01.png" %}' alt="#" data-key="{{ rule.rule_key }}" data-name="{{ rule.policy_name }}">
+    <img id="updateRule" class="all_check_bt02" src='{% static "img/dashboard/common/edit_bt_01.png" %}' alt="#" data-key="{{ rule.rule_key }}" data-name="{{ rule.policy_name }}">
+    <div class="clear_float"></div>
+    <table class="mypage_tab01">
+        <colgroup></colgroup>
+        <tbody>
+            <tr>
+                <th class="mypage_td01">이름</th><td class="mypage_td02" colspan="3">{{ rule.policy_name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">출발지</th><td class="mypage_td02">{{ rule.source_target.name }}</td>
+                <th class="mypage_td01">목적지</th><td class="mypage_td02">{{ rule.destination_target.name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">시작 시간</th><td class="mypage_td02">{{ rule.start_time }}</td>
+                <th class="mypage_td01">종료 시간</th><td class="mypage_td02">{{ rule.end_time }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">액션 종류</th><td class="mypage_td02" colspan="3">{{ rule.action_data }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="rs_d05 tab-body" hidden style="display: block;">
+    <div class="division">
+        <div class="clear_float"></div>
+        <img class="mypage_img01" src="/static/img/dashboard/common/mypage_icon_02.png" alt="#">
+        <div class="mypage_d01">출발지</div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="mypage_tab01">
+        <colgroup></colgroup>
+        <tbody>
+            <tr>
+                <th class="mypage_td01"><div>이름</div></th>
+                <td class="mypage_td02">{{ rule.source_target.name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">종류</th>
+                <td class="mypage_td02">{{ rule.source_target.endpoint_type }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">IP 범위</th>
+                <td class="mypage_td02">{{ rule.source_target.metadata_str }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if rule.destination_target.endpoint_type == "device" or rule.destination_target.endpoint_type == "url" %}
+    <div class="division">
+        <div class="clear_float"></div>
+        <img class="mypage_img01" src="/static/img/dashboard/common/mypage_icon_02.png" alt="#">
+        <div class="mypage_d01">목적지</div>
+    </div>
+    <div class="clear_float"></div>
+    <table class="mypage_tab01">
+        <colgroup></colgroup>
+        <tbody>
+            <tr>
+                <th class="mypage_td01">이름</th>
+                <td class="mypage_td02">{{ rule.destination_target.name }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">종류</th>
+                <td class="mypage_td02">{{ rule.destination_target.endpoint_type }}</td>
+            </tr>
+            <tr>
+                <th class="mypage_td01">{% if rule.destination_target.endpoint_type == "device" }IP 범위{% else %}URL{% endif %}</th>
+                <td class="mypage_td02">{{ rule.destination_target.metadata_str }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+    <div class="clear_float"></div>
+</div>
+<div class="clear_float"></div>

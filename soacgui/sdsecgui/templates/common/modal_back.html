@@ -1,0 +1,138 @@
+{% load staticfiles %}
+<div id="common_modal" class="modal_pop_d01">
+    <div class="ind_d02 modal_header">
+        <div class="ind_d05" id="modal-title">제목</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="modal-body">
+        <div class="collapse navbar-collapse wizard-nav" id="wizard-side-nav" style="float:left;">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#" class="tabBtn info" ><span>세부 정보</span></a></li>
+                <li><a href="#" class="tabBtn source" ><span>소스</span></a></li>
+                <li><a href="#" class="tabBtn flavor" ><span>Flavor</span></a></li>
+                <li><a href="#" class="tabBtn network" ><span>네트워크</span></a></li>
+                <li><a href="#" class="tabBtn port" ><span>네트워크 포트</span></a></li>
+                <li><a href="#" class="tabBtn security" ><span>시큐리티 그룹</span></a></li>
+                <li><a href="#" class="tabBtn keyPair" ><span>키 페어</span></a></li>
+                <li><a href="#" class="tabBtn configuration" ><span>구성</span></a></li>
+                <li><a href="#" class="tabBtn metadata" ><span>메타데이터</span></a></li>
+            </ul>
+        </div>
+        <div class="tabBody info" style="float:left;">
+            <div class="pop_d02">이름</div>
+            <input class="pop_input01" id="name" value="">
+            <div class="clear_float"></div>
+            <div class="pop_d02">가용구역</div>
+            <select class="pop_sel01" id="availabilityZone">
+                <option>선택</option>
+                <option>nova</option>
+            </select>
+            <div class="clear_float"></div>
+            <div class="pop_d02">갯수</div>
+            <input type="number" class="pop_input01" id="number" value="">
+        </div>
+        <div class="tabBody source" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <div class="pop_d02">부팅 소스 선택</div>
+            <select class="pop_sel01" id="bootingSource">
+                <option>이미지</option>
+                <option>가상서버 스넵샷</option>
+                <option>볼륨</option>
+                <option>볼륨 스넵샷</option>
+            </select>
+            <div class="clear_float"></div>
+            <div class="pop_d02">새로운 볼륨 생성</div>
+            <button>예</button>
+            <button>아니오</button>
+            <div class="clear_float"></div>
+            <div class="pop_d02">할당된</div>
+            <div class="clear_float"></div>
+            <table class="rs_tab02" id="source_allocated">
+                <thead>
+                    <tr>
+                        <th>이름</th><th>업데이트 일시</th><th>크기</th><th>유형</th><th>권한</th>
+                    </tr>
+                </thead>
+                <tbody>아래 목록에서 소스를 선택합니다.</tbody>
+            </table>
+            <div class="clear_float"></div>
+            <div class="pop_d02">사용가능</div>
+            <div class="clear_float"></div>
+            <table class="rs_tab02" id="source_available">
+                <thead>
+                    <tr>
+                        <th class="rs_td01">이름</th><th class="rs_td01">업데이트 일시</th><th class="rs_td01">크기</th><th class="rs_td01">유형</th><th class="rs_td01">권한</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="tabBody flavor" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <table class="rs_tab02" id="flavor_allocated">
+                <thead>
+                    <tr>
+                        <th class="rs_td01">이름</th><th class="rs_td01">업데이트 일시</th><th class="rs_td01">크기</th><th class="rs_td01">유형</th><th class="rs_td01">권한</th>
+                    </tr>
+                </thead>
+                <tbody>아래 목록에서 소스를 선택합니다.</tbody>
+            </table>
+            <div class="clear_float"></div>
+            <div class="pop_d02">사용가능</div>
+            <div class="clear_float"></div>
+            <table class="rs_tab02" id="flavor_available">
+                <thead>
+                    <tr>
+                        <th class="rs_td01">이름</th><th class="rs_td01">업데이트 일시</th><th class="rs_td01">크기</th><th class="rs_td01">유형</th><th class="rs_td01">권한</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="tabBody network" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <div class="pop_d02">이름</div>
+        </div>
+        <div class="tabBody port" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <div class="pop_d02">이름</div>
+        </div>
+        <div class="tabBody security" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <div class="pop_d02">이름</div>
+        </div>
+        <div class="tabBody keyPair" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <div class="pop_d02">이름</div>
+        </div>
+        <div class="tabBody configuration" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <div class="pop_d02">이름</div>
+        </div>
+        <div class="tabBody metadata" style="float:left;" hidden>
+            <div class="clear_float"></div>
+            <div class="pop_d02">이름</div>
+        </div>
+        <!--
+            <div class="clear_float"></div>
+            <div class="pop_d02">항목1</div>
+            <select class="pop_sel01"><option value="">선택</option>
+            </select>
+            <div class="clear_float"></div>
+            <div class="pop_d02">항목2</div>
+            <select class="pop_sel01"><option value="">선택</option>
+            </select>
+            <div class="clear_float"></div>
+            <div class="pop_d02">항목3</div>
+            <select class="pop_sel01"><option value="">선택</option>
+            </select>
+        -->
+    </div>
+    <div class="modal-footer">
+        <div class="clear_float"></div>
+        <div class="pop_d03">
+            <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#">
+            <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#">
+        </div>
+    </div>
+</div>

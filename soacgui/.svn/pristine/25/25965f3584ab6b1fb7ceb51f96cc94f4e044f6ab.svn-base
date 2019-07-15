@@ -1,0 +1,46 @@
+{% load staticfiles %}
+
+{% for service in service_list %}
+{% comment %}
+<!--{% autoescape off %}{{service}}{% endautoescape %}-->
+{% endcomment %}
+<div class="all_service_card_d01" data-service_id="{{service.service_id}}" data-project_name="{{service.tenant_name}}">
+    <div class="ind_d02">
+        <div class="ind_d05">
+            {% if 'COMPLETE' in service.status %}<img class="security_card_img01" src="/static/img/STATUS_COMPLETE.png" alt="#">
+            {% elif 'PROGRESS' in service.status %}<img class="security_card_img01" src="/static/img/STATUS_PROGRESS.png" alt="#">
+            {% elif 'FAILED' in service.status %}<img class="security_card_img01" src="/static/img/STATUS_FAILED.png" alt="#">
+            {% endif %}
+            <div style="float:left;">{{service.tenant_name}}</div>
+            <div class="clear_float"></div>
+        </div>
+        <table class="all_service_card_tab01" id="serviceTable" cellpadding="0" border="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <th class="security_card_td01">
+                        <img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">서비스 이름</th>
+                    <td class="security_card_td02">{{service.stack_name}}</td>
+                </tr>
+                <tr>
+                    <th class="security_card_td01">
+                        <img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">상태</th>
+                    <td class="security_card_td02">{{service.status}}</td>
+                </tr>
+                <tr>
+                    <th class="security_card_td01">
+                        <img class="br_img03" src="/static/img/common/br_img_03.png" alt="#">생성일시</th>
+                    <td class="security_card_td02 date_type">{{service.created_at}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="clear_float"></div>
+        <div class="all_service_card_d02" id="vis_{{service.service_id}}"></div>
+    </div>
+</div>
+{% endfor %}
+<script>
+$(function(){
+    loadFinished();
+    replaceAllDateTimeFormatFromTD();
+});
+</script>

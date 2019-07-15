@@ -1,0 +1,142 @@
+{% extends 'service/right_pop.html' %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_autoscaling.png" alt="#">
+<div class="right_d01 type">오토스케일링 그룹</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02 "></div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">이름 *</div>
+    <input class="pop03_text01" name="name" placeholder="이름" type="text" value="{{ data.name }}" autofocus>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">cooldown</div>
+    <input type="number" class="pop03_text01" name="cooldown" value="{{ data.cooldown|default:60 }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">최초 VM 개수*</div>
+    <input type="number" class="pop03_sel01" name="desired_capacity" value="{{ data.desired_capacity|default:1 }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">VM 개수 *</div>
+    <div class="right-pop-input-group">
+        <input type="number" class="pop03_text01 half" name="min_size" value="{{ data.min_size|default:1 }}">
+        <span class="span-middle">&nbsp;~&nbsp;</span>
+        <input type="number" class="pop03_text01 half" name="max_size" value="{{ data.max_size|default:5 }}">
+    </div>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d04 " onclick="detailToggle('.group-scaling-policy', this)">
+    <div class="pop03_d05 ">Scaling In/Out 정책 설정 *</div>
+    <img class="pop03_img01" src="/static/img/dashboard/common/arrow_02.png" alt="#">
+</div>
+<div class="group-scaling-policy">
+    <div class="append-scaling-policy">
+        {% for scaling_policy in data.scaling_policy_list %}
+        <div class="scaling_policy_detail_info">
+            <div class="pop03_d02">
+                <div class="pop03_d03">정책이름*</div>
+                <input type="text" class="pop03_text01" name="scaling_policy_name" value="{{ scaling_policy.name }}">
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">유형*</div>
+                <select class="pop03_text01" name="scaling_policy_adjustment_type" data-selected="{{ scaling_policy.adjustment_type|default:'change_in_capacity' }}">
+                    <option value="change_in_capacity">CHANGE IN CAPACITY</option>
+                    <option value="exact_capacity">EXACT CAPACITY</option>
+                    <option value="percent_change_in_capacity">PERCENT CHANGE IN CAPACITY</option>
+                </select>
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">scaling<br/>조정 단위*</div>
+                <input type="number" class="pop03_text01" name="scaling_policy_scaling_adjustment" value="{{ scaling_policy.scaling_adjustment|default:1 }}">
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">Cooldown(sec)</div>
+                <input type="number" class="pop03_text01" name="scaling_policy_cooldown" value="{{ scaling_policy.cooldown|default:60 }}">
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">Meter Name*</div>
+                <select class="pop03_sel01" name="scaling_policy_meter_name" data-selected="{{ scaling_policy.meter_name }}">
+                    <option value="cpu_util">cpu_util</option>
+                    <option value="memory">memory</option>
+                    <option value="memory.usage">memory.usage</option>
+                    <option value="memory.resident">memory.resident</option>
+                    <option value="cpu">cpu</option>
+                    <option value="cpu.delta">cpu.delta</option>
+                    <option value="vcpus">vcpus</option>
+                    <option value="disk.read.requests">disk.read.requests</option>
+                    <option value="disk.write.requests">disk.write.requests</option>
+                    <option value="disk.read.bytes">disk.read.bytes</option>
+                    <option value="disk.write.bytes">disk.write.bytes</option>
+                    <option value="disk.read.requests.rate">disk.read.requests.rate</option>
+                    <option value="disk.write.requests.rate">disk.write.requests.rate</option>
+                    <option value="disk.read.bytes.rate">disk.read.bytes.rate</option>
+                    <option value="disk.write.bytes.rate">disk.write.bytes.rate</option>
+                    <option value="disk.root.size">disk.root.size</option>
+                    <option value="disk.ephemeral.size">disk.ephemeral.size</option>
+                    <option value="disk.capacity">disk.capacity</option>
+                    <option value="disk.allocation">disk.allocation</option>
+                    <option value="disk.usage">disk.usage</option>
+                </select>
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">임계값*</div>
+                <input type="number" class="pop03_text01" name="scaling_policy_threshold" value="{{ scaling_policy.threshold|default:60 }}">
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">통계 방법</div>
+                <select class="pop03_text01" name="scaling_policy_statistic" data-selected="{{ scaling_policy.statistic }}">
+                    <option value="avg">AVG</option>
+                    <option value="count">COUNT</option>
+                    <option value="max">MAX</option>
+                    <option value="min">MIN</option>
+                    <option value="sum">SUM</option>
+                </select>
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">측정 간격</div>
+                <input type="number" class="pop03_text01" name="scaling_policy_period" value="{{ scaling_policy.period|default:60 }}">
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">Evaluation<br/>Periods</div>
+                <input type="number" class="pop03_text01" name="scaling_policy_evaluation_periods" value="{{ scaling_policy.evaluation_periods|default:1 }}">
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <div class="pop03_d03">연산자</div>
+                <select class="pop03_text01" name="scaling_policy_comparison_operator" data-selected="{{ scaling_policy.comparison_operator|default:'gt' }}">
+                    <option value="ge">&ge; (이상)</option>
+                    <option value="gt">&gt; (초과)</option>
+                    <option value="eq">= (같음)</option>
+                    <option value="ne">&ne; (같지않음)</option>
+                    <option value="lt">&lt; (미만)</option>
+                    <option value="le">&le; (이하)</option>
+                </select>
+                <div class="clear_float"></div>
+            </div>
+            <div class="pop03_d02">
+                <button type="button" class="btnRemove" style="margin:0px;">- 정책 삭제</button>
+                <div class="clear_float"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="pop03_d02">
+        <button type="button" class="btnAdd" style="margin:0px;">+ scaling in/out 정책 추가</button>
+        <div class="clear_float"></div>
+    </div>
+</div>
+{% endblock resourceInfo %}

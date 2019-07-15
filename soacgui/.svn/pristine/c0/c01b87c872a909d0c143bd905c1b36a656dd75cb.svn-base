@@ -1,0 +1,61 @@
+{% extends 'common/top_modal.html' %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="p50">
+    <div id="src_route_create">
+        <table class="common-tab-02" cellpadding="0" border="0" cellspacing="0">
+            <colgroup>
+                <col width="30%">
+                <col width="70%">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <th>Table(PBR)</th>
+                    <td id="create_pbr_table_name">{{ pbr_table }}</td>
+                </tr>
+                <tr>
+                    <th>송신지 네트워크</th>
+                    <td><input type="text" name="src_src" placeholder="192.168.124.0/24"></td>
+                </tr>
+                <tr>
+                    <th>다음 경유지</th>
+                    <td><input type="text" name="src_via" placeholder="192.168.124.1"></td>
+                </tr>
+                <tr>
+                    <th>목적지 네트워크</th>
+                    <td>
+                        <select name="dest_net" class="select-route">
+                            {% for dest_table in dest_tables %}
+                            <option value="{{ dest_table.PBR_TABLE }}" data-info="{% parse_json dest_table %}">{{ dest_table.PBR_TABLE }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>인터페이스</th>
+                    <td>
+                        <select name="src_dev" class="select-route">
+                            {% for interface in interfaces %}
+                            <option value="{{ interface.Iface }}" data-info="{% parse_json interface %}">{{ interface.Iface }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="dst-info"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <div class="pop_plus_bt_img01" id="submit_src_rule" style="display:inline-block;">
+        <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+    </div>
+    <div class="pop_cancel_bt_img01" id="cancel" style="display:inline-block;">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+{% endblock modal_footer %}

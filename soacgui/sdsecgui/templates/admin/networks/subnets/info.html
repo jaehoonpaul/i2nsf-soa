@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="header_title_d01">
+    <div class="head_d05 click">서브넷</div>
+</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div id="subnet" class="rs_d01">
+    <div class="ind_d02">
+        <div class="ind_d05">서브넷</div>
+        <div class="clear_float"></div>
+    </div>
+    <table class="common-tab-02 info" cellpadding="0" border="0" cellspacing="0">
+        <tr>
+            <th>이름</th>     <td id="name"></td>
+        </tr>
+        <tr>
+            <th>ID</th>       <td id="id"></td>
+        </tr>
+        <tr>
+            <th>네트워크 이름</th>   <td id="status"></td>
+        </tr>
+        <tr>
+            <th>네트워크 ID</th>     <td id="network_id"></td>
+        </tr>
+        <tr>
+            <th>서브넷풀</th>     <td id="subnetpool_id"></td>
+        </tr>
+        <tr>
+            <th>IP 버전</th> <td id="ip_version"></td>
+        </tr>
+        <tr>
+            <th>CIDR</th>   <td id="cidr"></td>
+        </tr>
+        <tr>
+            <th>IP 할당 pool</th>   <td id="allocation_pools"></td>
+        </tr>
+        <tr>
+            <th>게이트웨이 IP</th><td id="gateway_ip"></td>
+        </tr>
+        <tr>
+            <th>DHCP 사용</th><td id="enable_dhcp"></td>
+        </tr>
+        <tr>
+            <!--<th>IPv6 주소 설정 모드</th><td id="ipv6_address_mode"></td>-->
+        </tr>
+        <tr>
+            <th>추가 경로</th><td><-???</td>
+        </tr>
+        <tr>
+            <th>DNS 네임 서버</th><td id="dns_nameservers"></td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function(){
+        U.ajax({
+            url : '',
+            data : { id:"{{ subnet_id }}"},
+            success:function(data){
+                data = data.success;
+                var allocation_pools = data.subnet["allocation_pools"];
+                /*
+                var tempList = data.subnet["allocation_pools"];
+                var allocation_pools = [];
+                for( i in tempList ){
+                    var allocation_pool = JSON.parse(tempList[i]);
+                    allocation_pools.push(allocation_pool);
+                }
+                */
+                for( key in data.subnet ){
+                    var resultHtml = "";
+                    if( key == "allocation_pools" ){
+					    for( var i = 0; i < allocation_pools.length; i++ ){
+					        if( resultHtml != "" ){
+					            resultHtml += "<br/>";
+					        }
+							resultHtml += "시작 " + allocation_pools[i]["start"] + " - 끝 " + allocation_pools[i]["end"];
+						}
+					} else if (key == "network_id") {
+					    // resultHtml = "<a href='/dashboard/admin/networks/?select=" + data.subnet[key] + "'>" + data.subnet[key] + "</a>";
+					    resultHtml = "<a href='/dashboard/admin/networks/'>" + data.subnet[key] + "</a>";
+					} else {
+						resultHtml = data.subnet[key];
+					}
+                    if( resultHtml == "" ){
+						resultHtml = "None"
+					}
+					$("#"+key).html(resultHtml);
+                }
+            }
+        });
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,626 @@
+{% load staticfiles %}
+<!--<div id='modalCreate' class='modal fade' role='dialog' data-backdrop="static" style="text-align: center;">-->
+<div id='modalCreate' hidden>
+    <div class="pop01_d01">
+        <div class="ind_d02 modal_header">
+            <div class="ind_d05" id="modal-title">가상서버 생성</div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="modal-body">
+            <div class="pop01_d02">
+                <div class="pop01_d03 tabBtn info click">세부 정보</div>
+                <div class="pop01_d03 tabBtn source">소스</div>
+                <div class="pop01_d03 tabBtn flavor">Flavor</div>
+                <div class="pop01_d03 tabBtn network">네트워크</div>
+                <div class="pop01_d03 tabBtn port">네트워크 포트</div>
+                <div class="pop01_d03 tabBtn security">시큐리티 그룹</div>
+                <div class="pop01_d03 tabBtn keyPair">키 페어</div>
+                <div class="pop01_d03 tabBtn configuration">구성</div>
+                <div class="pop01_d03 tabBtn metadata">메타데이터</div>
+            </div>
+            <div class="pop01_d06">
+
+                <div class="tabBody info">
+                    <div class="pop01_d04">
+                        <div class="pop01_d05">이름</div>
+                        <input class="pop01_text01" id="name" value="">
+                        <div class="clear_float"></div>
+                    </div>
+                    <div class="pop01_d04">
+                        <div class="pop01_d05">가용구역</div>
+                        <select class="pop01_sel01" id="availabilityZone">
+                            <option>선택</option>
+                            <option>nova</option>
+                        </select>
+                        <div class="clear_float"></div>
+                    </div>
+                    <div class="pop01_d04">
+                        <div class="pop01_d05">갯수</div>
+                        <input type="number" class="pop01_text01" id="number" value="">
+                    </div>
+                </div>
+                <div class="tabBody source"  hidden>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">부팅 소스 선택</div>
+                    <select class="pop_sel01" id="bootingSource">
+                        <option>이미지</option>
+                        <option>가상서버 스넵샷</option>
+                        <option>볼륨</option>
+                        <option>볼륨 스넵샷</option>
+                    </select>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">새로운 볼륨 생성</div>
+                    <div id="newVolumeRadioArea">
+                        <input type="hidden" name="newVolume" value="0" />
+                        <button data-value="1" class="radio">예</button>
+                        <button data-value="0" class="radio">아니오</button>
+                    </div>
+                    <div class="clear_float"></div>
+                    <div id="newVolumeArea">
+                        <div class="pop_d02">볼륨 크기 (GB)</div>
+                        <input type="number" name="volumeSize" value="1" min="0" />
+                        <div class="clear_float"></div>
+                        <div class="pop_d02">가상서버 삭제시 볼륨 삭제</div>
+                        <div id="syncVolumeRadioArea">
+                            <input type="hidden" name="syncVolume" value="0" />
+                            <button data-value="1" class="radio ">예</button>
+                            <button data-value="0" class="radio">아니오</button>
+                        </div>
+                        <div class="clear_float"></div>
+                    </div>
+                    <div class="pop_d02">할당된</div>
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="source_allocated">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">업데이트 완료</th>
+                            <th class="rs_td01">크기</th>
+                            <th class="rs_td01">유형</th>
+                            <th class="rs_td01">가시성</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot><tr><td colspan="6">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                    </table>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">사용가능</div>
+                    <!--<input class="rs_text03" type="text" placeholder="필터" id="sourceFilter">-->
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="source_available">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">업데이트 완료</th>
+                            <th class="rs_td01">크기</th>
+                            <th class="rs_td01">유형</th>
+                            <th class="rs_td01">가시성</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!--<tr data-id="asdf" data-filter="cirros">-->
+                            <!--<td>cirros</td>-->
+                            <!--<td>6/2/17 5:36 PM</td>-->
+                            <!--<td>12.67 MB</td>-->
+                            <!--<td>QCOW2</td>-->
+                            <!--<td>공용</td>-->
+                            <!--<td><button class="btnAdd">+</button></td>-->
+                        <!--</tr>-->
+                        <!--<tr data-id="qwer" data-filter="Ubuntu 14.04 LTS">-->
+                            <!--<td>Ubuntu 14.04 LTS</td>-->
+                            <!--<td>8/9/17 8:12 AM</td>-->
+                            <!--<td>1.03 GB</td>-->
+                            <!--<td>ISO</td>-->
+                            <!--<td>공용</td>-->
+                            <!--<td><button class="btnAdd">+</button></td>-->
+                        <!--</tr>-->
+                        </tbody>
+                        <tfoot><tr><td colspan="6">사용 가능한 항목 없음</td></tr></tfoot>
+                    </table>
+                </div>
+                <div class="tabBody flavor"  hidden>
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="flavor_allocated">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th><th class="rs_td01">VCPUS</th><th class="rs_td01">RAM</th><th class="rs_td01">디스크 총계</th><th class="rs_td01">Root 디스크</th><th class="rs_td01">Ephemeral 디스크</th><th class="rs_td01">공용</th><th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot><tr><td colspan="8">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                    </table>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">사용가능</div>
+                    <!--<input class="rs_text03" type="text" placeholder="필터" id="flavorFilter">-->
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="flavor_available">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th><th class="rs_td01">VCPUS</th><th class="rs_td01">RAM</th><th class="rs_td01">디스크 총계</th><th class="rs_td01">Root 디스크</th><th class="rs_td01">Ephemeral 디스크</th><th class="rs_td01">공용</th><th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!--<tr data-id="1" data-filter="m1.nano"><td>m1.nano</td><td>1</td><td>64 MB</td><td>1 GB</td><td>1 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>-->
+                        <!--<tr data-id="2" data-filter="m1.tiny"><td>m1.tiny</td><td>1</td><td>512 MB</td><td>1 GB</td><td>1 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>-->
+                        <!--<tr data-id="3" data-filter="m1.small"><td>m1.small</td><td>1</td><td>2 GB</td><td>1 GB</td><td>1 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>-->
+                        <!--<tr data-id="4" data-filter="m1.medium"><td>m1.medium</td><td>2</td><td>4 GB</td><td>80 GB</td><td>80 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>-->
+                        </tbody>
+                        <tfoot><tr><td colspan="8">사용 가능한 항목 없음</td></tr></tfoot>
+                    </table>
+                </div>
+                <div class="tabBody network"  hidden>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">Allocated</div>
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="network_allocated">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">네트워크</th>
+                            <th class="rs_td01">서브넷 특징</th>
+                            <th class="rs_td01">공유</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot><tr><td colspan="6">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                    </table>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">사용가능</div>
+                    <!--<input class="rs_text03" type="text" placeholder="필터" id="networkFilter">-->
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="network_available">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">네트워크</th>
+                            <th class="rs_td01">서브넷 특징</th>
+                            <th class="rs_td01">공유</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-id="1" data-filter="provider"><td>provider</td><td>provider</td><td>예</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>
+                        <tr data-id="2" data-filter="vNetwork-01"><td>vNetwork-01</td><td>vSubnet-01<br>vSubnet-02</td><td>아니오</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>
+                        </tbody>
+                        <tfoot><tr><td colspan="6">사용 가능한 항목 없음</td></tr></tfoot>
+                    </table>
+                </div>
+                <div class="tabBody port"  hidden>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">Allocated</div>
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="networkport_allocated">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">IP</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot><tr><td colspan="5">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                    </table>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">사용가능</div>
+                    <!--<input class="rs_text03" type="text" placeholder="필터" id="networkportFilter">-->
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="networkport_available">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">IP</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!--<tr data-id="1" data-filter="provider"><td>provider</td><td>1.1.1.1</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>-->
+                        <!--<tr data-id="2" data-filter="vNetwork-01"><td>vNetwork-01</td><td>2.2.2.2</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>-->
+                        </tbody>
+                        <tfoot><tr><td colspan="5">사용 가능한 항목 없음</td></tr></tfoot>
+                    </table>
+                </div>
+                <div class="tabBody security"  hidden>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">Allocated</div>
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="security_allocated">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">설명</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot><tr><td colspan="3">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                    </table>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">사용 가능</div>
+                    <!--<input class="rs_text03" type="text" placeholder="필터" id="securityFilter">-->
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="security_available">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">설명</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!--<tr data-id="1" data-filter="default"><td>default</td><td>Default security group</td><td><button class="btnAdd">+</button></td></tr>-->
+                        </tbody>
+                        <tfoot><tr><td colspan="3">사용 가능한 항목 없음</td></tr></tfoot>
+                    </table>
+                </div>
+                <div class="tabBody keyPair"  hidden>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">Allocated</div>
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="keypair_allocated">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">Fingerprint</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">사용 가능</div>
+                    <!--<input class="rs_text03" type="text" placeholder="필터" id="kaypairFilter">-->
+                    <div class="clear_float"></div>
+                    <table class="pop01_tab01" id="keypair_available">
+                        <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">Fingerprint</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tabBody configuration"  hidden>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">이름</div>
+                </div>
+                <div class="tabBody metadata"  hidden>
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">이름</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop_d03">
+                <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="btnCreateSave">
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+    <!--<div class="modal_pop_d01" style="width: 800px;">
+        <div class="ind_d02 modal_header">
+            <div class="ind_d05" id="modal-title">제목</div>
+            <div class="clear_float"></div>
+        </div>
+        <div class="modal-body">
+            <div class="collapse navbar-collapse wizard-nav" id="wizard-side-nav" style="float:left; width:160px;">
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#" class="tabBtn info"     ><span>세부 정보</span></a></li>
+                    <li><a href="#" class="tabBtn source"   ><span>소스</span></a></li>
+                    <li><a href="#" class="tabBtn flavor"   ><span>Flavor</span></a></li>
+                    <li><a href="#" class="tabBtn network"  ><span>네트워크</span></a></li>
+                    <li><a href="#" class="tabBtn port"      ><span>네트워크 포트</span></a></li>
+                    <li><a href="#" class="tabBtn security" ><span>시큐리티 그룹</span></a></li>
+                    <li><a href="#" class="tabBtn keyPair"  ><span>키 페어</span></a></li>
+                    <li><a href="#" class="tabBtn configuration" ><span>구성</span></a></li>
+                    <li><a href="#" class="tabBtn metadata" ><span>메타데이터</span></a></li>
+                </ul>
+            </div>
+            <div class="tabBody info">
+                <div class="pop_d02">이름</div>
+                <input class="pop_input01" id="name" value="">
+                <div class="clear_float"></div>
+                <div class="pop_d02">가용구역</div>
+                <select class="pop_sel01" id="availabilityZone">
+                    <option>선택</option>
+                    <option>nova</option>
+                </select>
+                <div class="clear_float"></div>
+                <div class="pop_d02">갯수</div>
+                <input type="number" class="pop_input01" id="number" value="1">
+            </div>
+            <div class="tabBody source"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">부팅 소스 선택</div>
+                <select class="pop_sel01" id="bootingSource">
+                    <option>이미지</option>
+                    <option>가상서버 스넵샷</option>
+                    <option>볼륨</option>
+                    <option>볼륨 스넵샷</option>
+                </select>
+                <div class="clear_float"></div>
+                <div class="pop_d02">새로운 볼륨 생성</div>
+                <div id="newVolumeRadioArea">
+                    <input type="hidden" name="newVolume" value="0" />
+                    <button data-value="1" class="radio">예</button>
+                    <button data-value="0" class="radio">아니오</button>
+                </div>
+                <div class="clear_float"></div>
+                <div id="newVolumeArea">
+                    <div class="pop_d02">볼륨 크기 (GB)</div>
+                    <input type="number" name="volumeSize" value="1" min="0" />
+                    <div class="clear_float"></div>
+                    <div class="pop_d02">가상서버 삭제시 볼륨 삭제</div>
+                    <div id="syncVolumeRadioArea">
+                        <input type="hidden" name="syncVolume" value="0" />
+                        <button data-value="1" class="radio ">예</button>
+                        <button data-value="0" class="radio">아니오</button>
+                    </div>
+                    <div class="clear_float"></div>
+                </div>
+                <div class="pop_d02">할당된</div>
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="source_allocated">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">업데이트 완료</th>
+                            <th class="rs_td01">크기</th>
+                            <th class="rs_td01">유형</th>
+                            <th class="rs_td01">가시성</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="6">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <input class="rs_text03" type="text" placeholder="필터" id="sourceFilter">
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="source_available">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">업데이트 완료</th>
+                            <th class="rs_td01">크기</th>
+                            <th class="rs_td01">유형</th>
+                            <th class="rs_td01">가시성</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="asdf" data-filter="cirros">
+                            <td>cirros</td>
+                            <td>6/2/17 5:36 PM</td>
+                            <td>12.67 MB</td>
+                            <td>QCOW2</td>
+                            <td>공용</td>
+                            <td><button class="btnAdd">+</button></td>
+                        </tr>
+                        <tr data-id="qwer" data-filter="Ubuntu 14.04 LTS">
+                            <td>Ubuntu 14.04 LTS</td>
+                            <td>8/9/17 8:12 AM</td>
+                            <td>1.03 GB</td>
+                            <td>ISO</td>
+                            <td>공용</td>
+                            <td><button class="btnAdd">+</button></td>
+                        </tr>
+                    </tbody>
+                    <tfoot><tr><td colspan="6">사용 가능한 항목 없음</td></tr></tfoot>
+                </table>
+            </div>
+            <div class="tabBody flavor"  hidden>
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="flavor_allocated">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th><th class="rs_td01">VCPUS</th><th class="rs_td01">RAM</th><th class="rs_td01">디스크 총계</th><th class="rs_td01">Root 디스크</th><th class="rs_td01">Ephemeral 디스크</th><th class="rs_td01">공용</th><th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="8">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <input class="rs_text03" type="text" placeholder="필터" id="flavorFilter">
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="flavor_available">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th><th class="rs_td01">VCPUS</th><th class="rs_td01">RAM</th><th class="rs_td01">디스크 총계</th><th class="rs_td01">Root 디스크</th><th class="rs_td01">Ephemeral 디스크</th><th class="rs_td01">공용</th><th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="1" data-filter="m1.nano"><td>m1.nano</td><td>1</td><td>64 MB</td><td>1 GB</td><td>1 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>
+                        <tr data-id="2" data-filter="m1.tiny"><td>m1.tiny</td><td>1</td><td>512 MB</td><td>1 GB</td><td>1 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>
+                        <tr data-id="3" data-filter="m1.small"><td>m1.small</td><td>1</td><td>2 GB</td><td>1 GB</td><td>1 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>
+                        <tr data-id="4" data-filter="m1.medium"><td>m1.medium</td><td>2</td><td>4 GB</td><td>80 GB</td><td>80 GB</td><td>0 GB</td><td>예</td><td><button class="btnAdd">+</button></td></tr>
+                    </tbody>
+                    <tfoot><tr><td colspan="8">사용 가능한 항목 없음</td></tr></tfoot>
+                </table>
+            </div>
+            <div class="tabBody network"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="network_allocated">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">네트워크</th>
+                            <th class="rs_td01">서브넷 특징</th>
+                            <th class="rs_td01">공유</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="6">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <input class="rs_text03" type="text" placeholder="필터" id="networkFilter">
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="network_available">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">네트워크</th>
+                            <th class="rs_td01">서브넷 특징</th>
+                            <th class="rs_td01">공유</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="1" data-filter="provider"><td>provider</td><td>provider</td><td>예</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>
+                        <tr data-id="2" data-filter="vNetwork-01"><td>vNetwork-01</td><td>vSubnet-01<br>vSubnet-02</td><td>아니오</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>
+                    </tbody>
+                    <tfoot><tr><td colspan="6">사용 가능한 항목 없음</td></tr></tfoot>
+                </table>
+            </div>
+            <div class="tabBody port"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="networkport_allocated">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">IP</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="5">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용가능</div>
+                <input class="rs_text03" type="text" placeholder="필터" id="networkportFilter">
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="networkport_available">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">IP</th>
+                            <th class="rs_td01">관리자 상태</th>
+                            <th class="rs_td01">상태</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="1" data-filter="provider"><td>provider</td><td>1.1.1.1</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>
+                        <tr data-id="2" data-filter="vNetwork-01"><td>vNetwork-01</td><td>2.2.2.2</td><td>Up</td><td>Active</td><td><button class="btnAdd">+</button></td></tr>
+                    </tbody>
+                    <tfoot><tr><td colspan="5">사용 가능한 항목 없음</td></tr></tfoot>
+                </table>
+            </div>
+            <div class="tabBody security"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="security_allocated">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">설명</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="3">아래 목록에서 소스를 선택합니다.</td></tr></tfoot>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용 가능</div>
+                <input class="rs_text03" type="text" placeholder="필터" id="securityFilter">
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="security_available">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">설명</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="1" data-filter="default"><td>default</td><td>Default security group</td><td><button class="btnAdd">+</button></td></tr>
+                    </tbody>
+                    <tfoot><tr><td colspan="3">사용 가능한 항목 없음</td></tr></tfoot>
+                </table>
+            </div>
+            <div class="tabBody keyPair"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">Allocated</div>
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="keypair_allocated">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">Fingerprint</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="clear_float"></div>
+                <div class="pop_d02">사용 가능</div>
+                <input class="rs_text03" type="text" placeholder="필터" id="kaypairFilter">
+                <div class="clear_float"></div>
+                <table class="rs_tab02" id="keypair_available">
+                    <thead>
+                        <tr>
+                            <th class="rs_td01">이름</th>
+                            <th class="rs_td01">Fingerprint</th>
+                            <th class="rs_td01"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="tabBody configuration"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">이름</div>
+            </div>
+            <div class="tabBody metadata"  hidden>
+                <div class="clear_float"></div>
+                <div class="pop_d02">이름</div>
+            </div>
+            <!--
+                <div class="clear_float"></div>
+                <div class="pop_d02">항목1</div>
+                <select class="pop_sel01"><option value="">선택</option>
+                </select>
+                <div class="clear_float"></div>
+                <div class="pop_d02">항목2</div>
+                <select class="pop_sel01"><option value="">선택</option>
+                </select>
+                <div class="clear_float"></div>
+                <div class="pop_d02">항목3</div>
+                <select class="pop_sel01"><option value="">선택</option>
+                </select>
+        </div>
+        <div class="modal-footer">
+            <div class="clear_float"></div>
+            <div class="pop_d03">
+                <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="btnCreateSave">
+                <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+            </div>
+        </div>
+    </div>
+</div>
+            -->

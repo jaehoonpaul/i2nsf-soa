@@ -1,0 +1,37 @@
+{% load commontags %}
+<img class="all_check_bt01" src="/static/img/dashboard/admin/networks/DHCP_new_bt_01.png" alt="#" id="createDHCPagent">
+<div class="clear_float"></div>
+<table class="common-tab-01" cellspacing="0" cellpadding="0" border="0">
+    <colgroup></colgroup>
+    <thead>
+    <tr>
+        <th class="host">호스트</th>
+        <th class="alive">상태</th>
+        <th class="admin_state_up">관리자 상태</th>
+        <th class="started_at">시작한 시간</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for dhcp_agent in network.dhcpAgents %}
+    <tr data-id="{{ dhcp_agent.id }}" data-filter="{{ dhcp_agent.name }}" data-data="{{ dhcp_agent }}">
+        <td class="host">{{ dhcp_agent.host }}</td>
+        <td class="alive">{{ dhcp_agent.alive }}</td>
+        <td class="admin_state_up">{% if dhcp_agent.admin_state_up %}UP{% else %}DOWN{% endif %}</td>
+        <td class="started_at">{{ dhcp_agent.started_at }}</td>
+    </tr>
+    {% endfor %}
+    {% for value in network.dhcpAgents|length|range:5 %}
+    <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td class="rs_td03 tl" colspan="6">Displaying {{ network.dhcpAgents|length }} item</td>
+    </tr>
+    </tfoot>
+</table>

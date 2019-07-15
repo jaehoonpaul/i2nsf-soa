@@ -1,0 +1,71 @@
+{% load staticfiles %}
+{% load i18n %}
+<div class="left_menu_d01">
+    <div class="left_menu_d02 homeLogo">
+        <img class="left_menu_img02" src='{% static "img/common/left_logo_01.png" %}' alt="#">
+        <div class="clear_float"></div>
+    </div>
+    <div class="service menu left_menu_d03">
+        <div class="left_menu_d04">서비스</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="service_sub left_menu_d07" style="display:none;">
+        {% if request.session.user_name == 'admin' %}
+            <a href="/dashboard/service/all_service/">
+                <div class="left_menu_d08 all_service">서비스 전체 조회</div>
+            </a>
+        {% endif %}
+        <a href="/dashboard/service/new_service/"><div class="left_menu_d08 service_create">서비스 생성</div></a>
+        <a href="/dashboard/service/intent/rule"><div class="left_menu_d08 intent_service_create">Intent 기반 서비스 생성</div></a>
+        <a href="/dashboard/service"><div class="left_menu_d08 topology">{{ _(서비스 조회) }}</div></a>
+    </div>
+    <div class="security menu left_menu_d09">
+        <div class="left_menu_d04">보안장비</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="security_sub left_menu_d07" style="display:none;">
+        <a href="/dashboard/security/create"><div class="left_menu_d08 security_create">보안장비 등록</div></a>
+        <a href="/dashboard/security"><div class="left_menu_d08 security_list">보안장비 조회</div></a>
+    </div>
+    <div class="monitoring menu left_menu_d11">
+        <div class="left_menu_d04">모니터링</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="monitoring_sub left_menu_d07" style="display:none;">
+        <a href="/dashboard/monitoring"><div class="left_menu_d08 monitoring_list">모니터링 조회</div></a>
+        <a href="/dashboard/monitoring/action"><div class="left_menu_d08 action_list">알람 설정</div></a>
+        <a href="/dashboard/monitoring/history"><div class="left_menu_d08 history_list">알람 이력</div></a>
+    </div>
+    {% if 'admin' in request.session.roles %}
+    <img class="left_line_img01" src='{% static "img/dashboard/common/left_line_01.png" %}' alt="#">
+    <div class="identity menu left_menu_d05">
+        <div class="left_menu_d04">사용자 관리</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="identity_sub left_menu_d07" style="display:none;">
+        <a href="/dashboard/identity"><div class="left_menu_d08 projects">프로젝트</div></a>
+        <a href="/dashboard/identity/users"><div class="left_menu_d08 users">사용자</div></a>
+        <a href="/dashboard/identity/groups"><div class="left_menu_d08 groups">그룹</div></a>
+        <a href="/dashboard/identity/roles"><div class="left_menu_d08 roles">역할</div></a>
+    </div>
+    <div class="admin menu left_menu_d06">
+        <div class="left_menu_d04">클라우드 관리</div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="admin_sub left_menu_d07" style="display:none;">
+        <a href="/dashboard/admin"><div class="left_menu_d08 usages">개요</div></a>
+        <a href="/dashboard/admin/hypervisors"><div class="left_menu_d08 hypervisors">하이퍼바이저</div></a>
+        <a href="/dashboard/admin/aggregates"><div class="left_menu_d08 aggregates">호스트 집합</div></a>
+        <a href="/dashboard/admin/instances"><div class="left_menu_d08 instances">가상서버</div></a>
+        <a href="/dashboard/admin/volumes" ><div class="left_menu_d08 volumes">볼륨</div></a>
+        <a href="/dashboard/admin/flavors"><div class="left_menu_d08 flavors">flavor</div></a>
+        <a href="/dashboard/admin/images"><div class="left_menu_d08 images">이미지</div></a>
+        <a href="/dashboard/admin/networks"><div class="left_menu_d08 networks">네트워크</div></a>
+        <a href="/dashboard/admin/routers"><div class="left_menu_d08 routers">라우터</div></a>
+        <a href="/dashboard/admin/defaults"><div class="left_menu_d08 defaults">기본 할당량</div></a>
+        <a href="/dashboard/admin/info"><div class="left_menu_d08 info">시스템 정보</div></a>
+        <!--<a href="/dashboard/admin/alarms"><div class="left_menu_d08 alarms">알람</div></a>-->
+    </div>
+    {% endif %}
+    <!--<img class="left_menu_img03" src="/static/img/common/btn/soa_shortcut_bt_01.png" onclick="location.href=''" alt="#">-->
+</div>

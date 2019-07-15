@@ -1,0 +1,66 @@
+{% load staticfiles %}
+{% load commontags %}
+<!--<img class="all_check_bt01" src='/static/img/dashboard/admin/networks/port_del_bt_01.png' alt="#">-->
+<img class="all_check_bt01" src="/static/img/dashboard/admin/networks/port_plus_bt_01.png" alt="#" id="createPort">
+<div class="clear_float"></div>
+<table class="common-tab-01" cellspacing="0" cellpadding="0" border="0">
+    <colgroup></colgroup>
+    <thead>
+    <tr>
+        <th class="name">이름</th>
+        <th class="fixed_ips">Fixed IP</th>
+        <th class="device_id">장치 연결됨</th>
+        <th class="status">Status</th>
+        <th class="admin_state_up">관리자 상태</th>
+        <th class="customHtml">액션</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for port in network.ports %}
+    <tr data-id="{{ port.id }}" data-filter="{{ port.name }}" data-data="{{ port }}">
+        <td class="name link">
+            <a class="list_a01" href="/dashboard/admin/networks/ports/{{ port.id }}/detail" data-id="{{ port.id }}">{{ port.name|default:port.id }}</a>
+        </td>
+        <td class="fixed_ips">
+            <ul>
+                {% for fixed_ip in port.fixed_ips %}
+                <li data-id="{{ fixed_ip.subnet_id }}">{{ fixed_ip.ip_address }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td class="device_id">{{ port.device_id }}</td>
+        <td class="status">{{ port.status }}</td>
+        <td class="admin_state_up">{% if port.admin_state_up %}UP{% else %}DOWN{% endif %}</td>
+        <td>
+            <div class="button_group_bt02">
+                <div class="button_group_d01 btnUpdate">포트 편집</div>
+                <div class="button_group_d02 action">
+                    <img src="/static/img/dashboard/common/arrow_img_01.png" alt="#">
+                </div>
+                <div class="clear_float"></div>
+                <div class="actionGroup actionGroup01" hidden>
+                    <a href="#" class="delete_port actionGroup_a01"><div>포트 삭제</div></a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    {% for value in network.ports|length|range:5 %}
+    <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td class="rs_td03 tl" colspan="6">Displaying {{ network.ports|length }} item</td>
+    </tr>
+    </tfoot>
+</table>
+
+<script src='{% static "js/admin/networks/ports/index.js" %}'></script>

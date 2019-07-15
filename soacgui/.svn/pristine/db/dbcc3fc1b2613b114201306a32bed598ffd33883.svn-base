@@ -1,0 +1,23 @@
+# _*_coding:utf-8_*_
+from django.conf.urls import url, include
+from sdsecgui.dashboard.service.intent import views
+urlpatterns = [
+    url(r'^new_service$', views.new_service, name='new_service'),
+    url(r'^new_service/$', views.new_service, name='new_service'),
+    # 병천 수정한 곳 여기부터
+    url(r'^reg_modal$', views.policy_intent_modal_registration, name='policy_intent_modal_registration'),
+    url(r'^rule_modal$', views.create_rule, name='rule_modal'),
+    # 병천 수정한 곳 여기까지
+    url(r'^rule$', views.get_rule_list, name='get_rule_list'),
+    url(r'^rule/(?P<rule_key>[\w\-]+)/detail$', views.get_rule, name='get_rule'),
+    url(r'^rule/create$', views.create_rule, name='create_rule'),
+    url(r'^rule/(?P<rule_key>[\w\-]+)/update$', views.update_rule, name='update_rule'),
+    url(r'^rule/(?P<rule_key>[\w\-]+)/delete$', views.delete_rule, name='delete_rule'),
+    url(r'^endpoint$', views.endpoint_settings, name='endpoint_settings'),
+    # 병천 추가한 부분 시작
+    url(r'^endpoint/(?P<endpoint_key>[\w\-]+)/update$', views.update_endpoint, name='update_endpoint'),
+    url(r'^endpoint/(?P<endpoint_key>[\w\-]+)/delete$', views.delete_endpoint, name='delete_endpoint'),
+    # 병천 추가한 부분 끝
+    #url(r'^template$', views.new_template, name='new_template'),
+]
+

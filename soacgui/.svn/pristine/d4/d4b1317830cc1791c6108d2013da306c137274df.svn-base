@@ -1,0 +1,147 @@
+# _*_coding:utf-8_*_
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+import json
+
+from sdsecgui.tools.openstack_restapi import NovaRestAPI, KeystoneRestAPI
+
+# set_log_dir()
+# logger = get_logger("myapp.myLogger")
+from sdsecgui.tools.keystone_exception import Unauthorized
+
+
+def get_flavor_list(request):
+    token = request.session.get('passToken')
+    domain_name = request.session.get("domain_name")
+    auth_url = request.session.get("auth_url")
+    description = request.session.get("description")
+    data = {}
+    nova = NovaRestAPI(auth_url, token)
+    flavors = nova.get_flavor_detail_list()
+    if flavors.get("success"):
+        data["flavors"] = flavors["success"].get("flavors")
+
+    return render(request, 'admin/flavors/index.html', data)
+
+
+def create_flavor(request):
+    if request.method == "POST":
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        data = json.loads(request.POST.get("data"))
+        try:
+            nova = NovaRestAPI(auth_url, token)
+            flavor = nova.create_flavor({"flavor": data.get("flavor")})
+            if flavor.get("success"):
+                if data.get("flavor_access"):
+                    result = nova.add_flavor_access(flavor.get("success").get("flavor").get("id"), data["flavor_access"])
+                    if result.get("error"):
+                        flavor["error"] = {"title": "flavor access Fail", "message": "Flavor는 생성되었으나 access 설정에 실패하였습니다."}
+        except Unauthorized as e:
+            request.session["error"] = {"title": e.message, "message": e.details}
+            flavor = {"error": request.session.get("error")}
+        return JsonResponse(flavor)
+
+
+def update_flavor(request, flavor_id):
+    if request.method == "POST":
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        data = json.loads(request.POST.get("data"))
+        try:
+            nova = NovaRestAPI(auth_url, token)
+            flavor = nova.update_flavor(flavor_id, {"flavor": data.get("flavor")})
+            if flavor.get("success"):
+                if data.get("flavor_access"):
+                    add_project = data["flavor_access"].get("add_project")
+                    remove_project = data["flavor_access"].get("remove_project")
+                    if add_project:
+                        result = nova.add_flavor_access(flavor_id, add_project)
+                        if result.get("error"):
+                            flavor["error"] = result["error"]
+                    if remove_project:
+                        result = nova.remove_flavor_access(flavor_id, remove_project)
+                        if result.get("error"):
+                            if flavor.get("error"):
+                                flavor["error"]["message"] += result["error"]["message"]
+                            else:
+                                flavor["error"] = result["error"]
+        except Unauthorized as e:
+            request.session["error"] = {"title": e.message, "message": e.details}
+            flavor = {"error": request.session.get("error")}
+        return JsonResponse(flavor)
+
+
+def delete_flavor(request, flavor_id):
+    if request.method != "POST":
+        return redirect("/dashboard/domains")
+    token = request.session.get('passToken')
+    domain_name = request.session.get("domain_name")
+    project_name = request.session.get("project_name")
+    auth_url = request.session.get("auth_url")
+    try:
+        nova = NovaRestAPI(auth_url, token)
+        result = nova.delete_flavor(flavor_id)
+        if not result:
+            result = {"success": "deleted"}
+    except Unauthorized as e:
+        request.session["error"] = {"title": e.message, "message":e.details}
+        result = {"error": request.session.get("error")}
+    return JsonResponse(result)
+
+
+def flavor_modal(request):
+    data = {}
+    auth_url = request.session.get("auth_url")
+    token = request.session.get("passToken")
+    flavor_id = request.GET.get("flavor_id")
+    domain_id = request.session.get("domain_id")
+
+    keystone = KeystoneRestAPI(auth_url, token)
+
+    projects = keystone.get_project_list({"domain_id": domain_id})
+    if projects.get("success"):
+        data["projects"] = projects["success"].get("projects")
+
+    if flavor_id:
+        nova = NovaRestAPI(auth_url, token)
+        flavor = nova.get_flavor(flavor_id)
+        if flavor.get("success"):
+            data["flavor"] = flavor["success"].get("flavor")
+            access_projects = nova.get_flavor_access(flavor_id)
+            if access_projects.get("success"):
+                data["access_projects"] = [
+                    project
+                    for project in data["projects"]
+                    for flavor_access in access_projects["success"].get("flavor_access")
+                    if project.get("id") == flavor_access.get("tenant_id")
+                ]
+                for idx in data["access_projects"]:
+                    data["projects"].remove(idx)
+
+    return render(request, 'admin/flavors/modal.html', data)
+
+# def get_flavor(request, flavor_id):
+#     token = request.session.get('passToken')
+#     authorizedFlag = True
+#     if not token:
+#         authorizedFlag = False
+#     domain_name = request.session.get("domain_name")
+#     project_name = request.session.get("project_name")
+#     auth_url = request.session.get("auth_url")
+#     description = request.session.get("description")
+#     flavor = {}
+#     try:
+#         nova = NovaRestAPI(auth_url, token)
+#         flavor = nova.get_flavor(flavor_id)
+#     except Unauthorized as e:
+#         request.session["error"] = {"title":e.message, "message":e.details, "code":401}
+#         authorizedFlag = False
+#
+#     if request.method == "POST":
+#         if not authorizedFlag:
+#             return {"error":request.session.get("error")}
+#         return JsonResponse(flavor)
+#     else:
+#         # request.session["error"] = {"title": e.message, "message": e.details, "code":401}
+#         return redirect("/dashboard/login/?auth_url=" + auth_url + "&domain_name=" + domain_name + "&description=" + description)

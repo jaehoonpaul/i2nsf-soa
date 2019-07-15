@@ -1,0 +1,415 @@
+{% extends 'common/modal.html' %}
+{% load zabbixtags %}
+{% load commontags %}
+{% load staticfiles %}
+{% block modal_body %}
+<div class="tab-area">
+    <div class="rs_d04 tab-btn click">액션</div>
+    <div class="rs_d04 tab-btn">오퍼레이션</div>
+    <div class="rs_d04 tab-btn">복구시 오퍼레이션</div>
+    <div class="rs_d04 tab-btn">인지시 오퍼레이션</div>
+    <div class="clear_float"></div>
+    <form id="edit_action_frm">
+        <!-- 액션 -->
+        <div class="tab-body" style="width: 100%;">
+            <table class="pop-tab-01" style="width: 920px;">
+                <colgroup>
+                    <col style="width:15%;">
+                    <col style="width:85%;">
+                </colgroup>
+                <tr>
+                    <th>이름</th>
+                    <td><input type="text" name="name" id="action_name" value="{{ action.name }}"/>{% if action.actionid %}<input type="hidden" id="action_id" value="{{ action.actionid }}">{% endif %}</td>
+                </tr>
+                <tr>
+                    <th>조건</th>
+                    <td>
+                        <select name="evaltype" id="evaltype" class="short">
+                            <option value="0"{% if action.filter.evaltype == "0" %} selected{% endif %}>and/or</option>
+                            <option value="1"{% if action.filter.evaltype == "1" %} selected{% endif %}>and</option>
+                            <option value="2"{% if action.filter.evaltype == "2" %} selected{% endif %}>or</option>
+                            <option value="3"{% if action.filter.evaltype == "3" %} selected{% endif %}>custom expression</option>
+                        </select>
+                        <input type="text" name="eval_formula" id="eval_formula" class="long" value="{{ action.filter.eval_formula }}" readonly>
+                        <table class="common-tab-01" id="condition_list" style="width: calc(100% - 20px); margin-right: 20px;">
+                            <colgroup>
+                                <col style="width:10%;">
+                                <col style="width:80%;">
+                                <col style="width:10%;">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>라벨</th>
+                                <th>이름</th>
+                                <th>액션</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for condition in action.filter.conditions %}
+                            <tr data-condition="{% parse_json condition %}">
+                                <td>{{ condition.formulaid }}</td>
+                                <td>
+                                    {% get_conditiontype condition.conditiontype %}
+                                    {% get_operator condition.operator %}
+                                    {% get_trigger_info_and_host condition.value %}
+                                </td>
+                                <td><button type="button" class="btn-del">삭제</button></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="2">
+                                    <select name="conditiontype" id="conditiontype" class="mini">
+                                        <option value="2">트리거</option>
+                                    </select>
+                                    <select name="operator" id="operator" class="nano">
+                                        <option value="0">=</option>
+                                        <option value="1">&lt;&gt;</option>
+                                    </select>
+                                    <div class="multiselect" id="new_condition_value">
+                                        <div class="selected">
+                                            <ul class="multiselect-list">
+                                            </ul>
+                                        </div>
+                                        <input class="narmal search_condition" placeholder="type here to search" type="text">
+
+                                        <!--<div class="available" style="width: 268px; left: -1px; display: none;">-->
+                                            <!--<div class="multiselect-matches">No matches found</div>-->
+                                        <!--</div>-->
+                                    </div>
+                                    <button type="button" class="bta-text" id="find_condition">목록에서 선택</button>
+                                </td>
+                                <td><button type="button" class="btn-add">추가</button></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>활성</th>
+                    <td><input type="checkbox" name="available" id="available"{% if action.status != '1' %} checked{% endif %}></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 오퍼레이션 -->
+        <div class="tab-body" style="width: 100%;">
+            <table class="pop-tab-01" style="width: 920px;">
+                <colgroup>
+                    <col style="width:15%;">
+                    <col style="width:85%;">
+                </colgroup>
+                <tr>
+                    <th>디폴트 액션 실행 스탭의 간격</th>
+                    <td><input type="text" name="period" id="period" value="{% if action.esc_period %}{{ action.esc_period }}{% else %}1h{% endif %}"></td>
+                </tr>
+                <tr>
+                    <th>디폴트 제목</th>
+                    <td><input type="text" name="def_shortdata" id="def_shortdata" value="{% if action.def_shortdata %}{{ action.def_shortdata }}{% else %}Problem: {TRIGGER.NAME}{% endif %}"></td>
+                </tr>
+                <tr>
+                    <th>디폴트 메시지</th>
+                    <td><textarea name="def_longdata" id="def_longdata" class="message">{% if action.def_longdata %}{{ action.def_longdata }}{% else %}Problem started at {EVENT.TIME} on {EVENT.DATE}
+Problem name: {TRIGGER.NAME}
+Host: {HOST.NAME}
+Severity: {TRIGGER.SEVERITY}
+
+Original problem ID: {EVENT.ID}
+{TRIGGER.URL}{% endif %}</textarea></td>
+                </tr>
+                <tr>
+                    <th>메인터넌스 기간 내 실행내용 보류</th>
+                    <td><input type="checkbox" name="" id="" checked></td>
+                </tr>
+                <tr>
+                    <th>오퍼레이션</th>
+                    <td>
+                        <table class="common-tab-01" id="def_operation" style="width: calc(100% - 20px); margin-right: 20px;">
+                            <colgroup>
+                                <col style="width:9%;">
+                                <col style="width:55%;">
+                                <col style="width:17%;">
+                                <col style="width:10%;">
+                                <col style="width:9%;">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>스텝</th>
+                                <th>자세히</th>
+                                <th>시작시간</th>
+                                <th>기간</th>
+                                <th>액션</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for operation in action.operations %}
+                            <tr data-operation="{% parse_json operation %}">
+                                <td>
+                                    {{ operation.esc_step_from }}
+                                    {% if operation.esc_step_from != operation.esc_step_to %}
+                                    -
+                                    {{ operation.esc_step_to }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>
+                                            {% if operation.opmessage_usr %}
+                                            <span class="bold">사용자:</span>
+                                            {% for user in operation.opmessage_usr %}
+                                            {% get_user_info user.userid %}
+                                            via
+                                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                                            {% endfor %}
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            {% if operation.opmessage_grp %}
+                                            <span class="bold">그룹:</span>
+                                            {% for group in operation.opmessage_grp %}
+                                            {% get_group_info group.usrgrpid %}
+                                            via
+                                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                                            {% endfor %}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>{% parse_hour operation.esc_step_from|add:-1 %}</td>
+                                <td>
+                                    {% if operation.esc_period == '0' %}
+                                    default
+                                    {% else %}
+                                    {{ operation.esc_period }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button" class="operation_update">수정</button>
+                                    <button type="button" class="operation_delete">삭제</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5">
+                                    <div id="operation_detail"></div>
+                                    <button type="button" id="operation_add">+ 추가</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 복구시 오퍼레이션 -->
+        <div class="tab-body" style="width: 100%;">
+            <table class="pop-tab-01" style="width: 920px;">
+                <colgroup>
+                    <col style="width:15%;">
+                    <col style="width:85%;">
+                </colgroup>
+                <tr>
+                    <th>디폴트 제목</th>
+                    <td><input type="text" name="r_shortdata" id="r_shortdata" value="{% if action.r_shortdata %}{{ action.r_shortdata }}{% else %}Resolved: {TRIGGER.NAME}{% endif %}"></td>
+                </tr>
+                <tr>
+                    <th>디폴트 메시지</th>
+                    <td><textarea name="r_longdata" id="r_longdata" class="message">{% if action.r_longdata %}{{ action.r_longdata }}{% else %}Problem has been resolved at {EVENT.RECOVERY.TIME} on {EVENT.RECOVERY.DATE}
+Problem name: {TRIGGER.NAME}
+Host: {HOST.NAME}
+Severity: {TRIGGER.SEVERITY}
+
+Original problem ID: {EVENT.ID}
+{TRIGGER.URL}{% endif %}</textarea></td>
+                </tr>
+                <tr>
+                    <th>오퍼레이션</th>
+                    <td>
+                        <table class="common-tab-01" style="width: calc(100% - 20px); margin-right: 20px;">
+                            <colgroup>
+                                <col style="width:9%;">
+                                <col style="width:55%;">
+                                <col style="width:17%;">
+                                <col style="width:10%;">
+                                <col style="width:9%;">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>스텝</th>
+                                <th>자세히</th>
+                                <th>시작시간</th>
+                                <th>기간</th>
+                                <th>액션</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for operation in action.operations %}
+                            <tr>
+                                <td>
+                                    {{ operation.esc_step_from }}
+                                    {% if operation.esc_step_from != operation.esc_step_to %}
+                                    -
+                                    {{ operation.esc_step_to }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>
+                                            {% if operation.opmessage_usr %}
+                                            <span class="bold">사용자:</span>
+                                            {% for user in operation.opmessage_usr %}
+                                            {% get_user_info user.userid %}
+                                            via
+                                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                                            {% endfor %}
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            {% if operation.opmessage_grp %}
+                                            <span class="bold">그룹:</span>
+                                            {% for group in operation.opmessage_grp %}
+                                            {% get_group_info group.usrgrpid %}
+                                            via
+                                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                                            {% endfor %}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>{% parse_hour operation.esc_step_from|add:-1 %}</td>
+                                <td>
+                                    {% if operation.esc_period == '0' %}
+                                    default
+                                    {% else %}
+                                    {{ operation.esc_period }}
+                                    {% endif %}
+                                </td>
+                                <td>수정, 삭제</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5">
+                                    <button type="button">+ 오퍼레이션 추가</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 인지시 오퍼레이션 -->
+        <div class="tab-body" style="width: 100%;">
+            <table class="pop-tab-01" style="width: 920px;">
+                <colgroup>
+                    <col style="width:15%;">
+                    <col style="width:85%;">
+                </colgroup>
+                <tr>
+                    <th>디폴트 제목</th>
+                    <td><input type="text" name="ack_shortdata" id="ack_shortdata" value="{% if action.ack_shortdata %}{{ action.ack_shortdata }}{% else %}Acknowledged: {TRIGGER.NAME}{% endif %}"></td>
+                </tr>
+                <tr>
+                    <th>디폴트 메시지</th>
+                    <td><textarea name="ack_longdata" id="ack_longdata" class="message">{% if action.ack_longdata %}{{ action.ack_longdata }}{% else %}{USER.FULLNAME} acknowledged problem at {ACK.DATE} {ACK.TIME} with the following message:
+{ACK.MESSAGE}
+
+Current problem status is {EVENT.STATUS}{% endif %}</textarea></td>
+                </tr>
+                <tr>
+                    <th>오퍼레이션</th>
+                    <td>
+                        <table class="common-tab-01" style="width: calc(100% - 20px); margin-right: 20px;">
+                            <colgroup>
+                                <col style="width:9%;">
+                                <col style="width:55%;">
+                                <col style="width:17%;">
+                                <col style="width:10%;">
+                                <col style="width:9%;">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>스텝</th>
+                                <th>자세히</th>
+                                <th>시작시간</th>
+                                <th>기간</th>
+                                <th>액션</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for operation in action.operations %}
+                            <tr>
+                                <td>
+                                    {{ operation.esc_step_from }}
+                                    {% if operation.esc_step_from != operation.esc_step_to %}
+                                    -
+                                    {{ operation.esc_step_to }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>
+                                            {% if operation.opmessage_usr %}
+                                            <span class="bold">사용자:</span>
+                                            {% for user in operation.opmessage_usr %}
+                                            {% get_user_info user.userid %}
+                                            via
+                                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                                            {% endfor %}
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            {% if operation.opmessage_grp %}
+                                            <span class="bold">그룹:</span>
+                                            {% for group in operation.opmessage_grp %}
+                                            {% get_group_info group.usrgrpid %}
+                                            via
+                                            {% get_mediatype_info operation.opmessage.mediatypeid %}
+                                            {% endfor %}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>{% parse_hour operation.esc_step_from|add:-1 %}</td>
+                                <td>
+                                    {% if operation.esc_period == '0' %}
+                                    default
+                                    {% else %}
+                                    {{ operation.esc_period }}
+                                    {% endif %}
+                                </td>
+                                <td>수정, 삭제</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5"><button type="button">+ 실행 내용 추가</button></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <div class="pop_plus_bt_img01" id="submit_action" style="display:inline-block;">
+        <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+    </div>
+    <div class="pop_cancel_bt_img01" id="submit_action_cancel" style="display:inline-block;">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+{% endblock modal_footer %}

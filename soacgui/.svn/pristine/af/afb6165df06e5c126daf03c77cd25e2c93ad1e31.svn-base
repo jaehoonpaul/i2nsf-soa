@@ -1,0 +1,60 @@
+{% extends 'service/right_pop.html' %}
+{% load commontags %}
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_virtual_machine.png" alt="#">
+<div class="right_d01 type">{{ _('가상머신') }}</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02">{{ _('이름') }}</div>
+<div class="right_d03 name">{{ server.name }}</div>
+<div class="right_d04">ID</div>
+<div class="right_d03 id">{{ server.id }}</div>
+<div class="right_d04">{{ _('상태') }}</div>
+<div class="right_d03 status">{{ server.status }}</div>
+<div class="right_d04">{{ _('가용 구역') }}</div>
+<div class="right_d03 availability_zone">{% get_dict server 'OS-EXT-AZ:availability_zone' %}</div>
+<div class="right_d04">{{ _('생성 일시') }}</div>
+<div class="right_d03 created">{{ server.created }}</div>
+<div class="right_d04">{{ _('갱신 일시') }}</div>
+<div class="right_d03 updated">{{ server.updated }}</div>
+<div class="right_d04">{{ _('생성된 이후 시간') }}</div>
+<div class="right_d03"></div>
+<div class="right_d04 host">{{ _('호스트') }}</div>
+<div class="right_d03">{% get_dict server 'OS-EXT-SRV-ATTR:host' %}</div>
+{% if server.flavor %}
+<div class="right_d02">{{ _('Flavor 이름') }}</div>
+<div class="right_d03 flavor_name">{{ server.flavor.added_data.name }}</div>
+<div class="right_d04">Flavor ID</div>
+<div class="right_d03 flavor_id">{{ server.flavor.added_data.id }}</div>
+<div class="right_d04">VCPUs</div>
+<div class="right_d03 flavor_vcpus">{{ server.flavor.added_data.vcpus }}</div>
+<div class="right_d04">RAM</div>
+<div class="right_d03 flavor_ram"> {{ server.flavor.added_data.ram }}(MB)</div>
+<div class="right_d04">{{ _('디스크') }}</div>
+<div class="right_d03 flavor_disk">{{ server.flavor.added_data.disk }}</div>
+{% else %}
+<div class="right_d02">Flavor</div>
+<div class="right_d03 flavor_name">{{ _('없음') }}</div>
+{% endif %}
+{% for key, value in server.addresses.items %}
+<div class="right_d02 network_name">{{ key }}</div>
+<div class="right_d03 network_address">
+    <!--{{ value }}-->
+    {% for subnet in value %}
+    {% if forloop.counter0 > 0 %}
+    <br/>
+    {% endif %}
+    {{ subnet.addr }}/{% get_dict subnet "OS-EXT-IPS-MAC:mac_addr" %}
+    {% endfor %}
+</div>
+{% endfor %}
+<div class="right_d02">{{ _('키 이름') }}</div>
+<div class="right_d03">{% if data.key_name %}{{ data.key_name }}{% else %}-{% endif %}</div>
+<div class="right_d04">{{ _('이미지') }}</div>
+{% if server.image %}
+<div class="right_d03">{{ _('이름') }} : {{ server.image.added_data.name }}<br/>ID : {{ server.image.added_data.id }}</div>
+{% else %}
+<div class="right_d03">{{ _('없음') }}</div>
+{% endif %}
+{% endblock resourceInfo %}

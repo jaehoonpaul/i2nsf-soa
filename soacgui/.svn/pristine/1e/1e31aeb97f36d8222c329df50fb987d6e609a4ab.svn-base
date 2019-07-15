@@ -1,0 +1,21 @@
+[SETTINGS]
+LOG_LEVEL = DEBUG
+ctrl_engine = controllerengine
+ctrl_url = http://127.0.0.1:8787/v2
+ZABBIX_URL = http://127.0.0.1
+ZABBIX_ID = Admin
+ZABBIX_PASS = zabbix
+
+DB_NM = soacgui
+DB_USER = soacgui
+DB_PASS = etri1234
+DB_IP = 127.0.0.1
+
+SEC_CTRL_HOST = https://192.168.120.151:8443
+CLIENT_CERT = /home/deploy/example-client.pem
+
+PORTAL_SYNC = False
+PORTAL_DB_NM = soa
+PORTAL_DB_USER = chiron
+PORTAL_DB_PASS = chiron#405
+PORTAL_DB_IP = 172.16.202.114

@@ -1,0 +1,82 @@
+{% extends 'common/modal.html' %}
+{% load staticfiles %}
+{% block modal_body %}
+<form id="edit_user_frm">
+    <div class="tab-body" style="width: 100%;">
+        <table class="pop-tab-01" style="width: 700px;">
+            {% if not pass_flag %}
+            <tr id="area_domain_id">
+                <th class="pop_input_td01"><label for="domain_id">도메인 ID</label></th>
+                <td class="pop_input_td02"><input type="text" name="domain_id" id="domain_id" value="{{ request.session.domain_id }}" disabled/></td>
+            </tr>
+            <tr id="area_domain_name">
+                <th class="pop_input_td01"><label for="input_domain_name">도메인 이름</label></th>
+                <td class="pop_input_td02"><input type="text" name="domain_name" id="input_domain_name" value="{{ request.session.domain_name }}" disabled/></td>
+            </tr>
+            <tr id="area_user_name">
+                <th class="pop_input_td01"><label for="input_user_name">사용자 이름 *</label></th>
+                <td class="pop_input_td02"><input type="text" name="name" id="input_user_name" value="{{ name }}"/> </td>
+            </tr>
+            <tr id="area_user_description">
+                <th class="pop_input_td01"><label for="user_description">사용자 설명</label></th>
+                <td class="pop_input_td02"><textarea name="description" id="user_description">{{ description }}</textarea></td>
+            </tr>
+            <tr id="area_user_email">
+                <th class="pop_input_td01"><label for="input_user_name">Email</label></th>
+                <td class="pop_input_td02"><input type="email" name="email" id="input_user_email" value="{{ email }}"/></td>
+            </tr>
+            <tr id="area_select_project">
+                <th class="pop_input_td01"><label for="box_select_project">최초 프로젝트</label></th>
+                <td class="pop_input_td02">
+                    <select name="default_project_id" id="box_select_project">
+                        <option value="None">프로젝트 선택</option>
+                        {% for project in projects %}
+                        <option value="{{ project.id }}"{% if project.id == default_project_id %} selected{% endif %}>{{ project.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            {% endif %}
+            {% if user_id is None or pass_flag %}
+            <tr id="area_user_password">
+                <th class="pop_input_td01"><label for="input_user_password">비밀번호 *</label></th>
+                <td class="pop_input_td02"><input type="password" name="password" id="input_user_password" value="{{ user_password }}"/></td>
+            </tr>
+            <tr id="area_user_password_cf">
+                <th class="pop_input_td01"><label for="input_user_password_cf">비밀번호 확인*</label></th>
+                <td class="pop_input_td02"><input type="password" name="password_confirm" id="input_user_password_cf" value="{{ user_password_cf }}"/></td>
+            </tr>
+            {% endif %}
+            {% if user_id is None %}
+                {% if not pass_flag %}
+                <tr id="area_select_role">
+                    <th class="pop_input_td01"><label for="box_select_role">역할</label></th>
+                    <td class="pop_input_td02">
+                        <select name="role_id" id="box_select_role">
+                            {% for role in roles %}
+                            <option value="{{ role.id }}">{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr id="area_enabled">
+                    <th class="pop_input_td01"><label for="enabled">사용유무</label></th>
+                    <td class="pop_input_td02"><input type="checkbox" name="enabled" id="enabled"{% if user_id is None or enabled %} checked{% endif %}/></td>
+                </tr>
+                {% endif %}
+            {% endif %}
+        </table>
+    </div>
+</form>
+{% endblock modal_body %}
+{% block modal_footer %}
+<div class="clear_float"></div>
+<div class="pop_d03">
+    <div class="pop_plus_bt_img01" id="submit_user" style="display:inline-block;">
+        <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+    </div>
+    <div class="pop_cancel_bt_img01" id="submit_user_cancel" style="display:inline-block;">
+        <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+{% endblock modal_footer %}

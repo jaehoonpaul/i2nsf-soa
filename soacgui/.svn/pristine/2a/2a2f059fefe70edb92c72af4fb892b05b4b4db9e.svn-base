@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load commontags %}
+{% block headerTitle %}
+<div class="head_d02">클라우드 관리</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03 header_title_d01">시스템 정보</div>
+<img class="head_img02" src="/static/img/common/head_arrow_02.png" alt="#">
+<div class="head_d03">서비스</div>
+<!--<img class="head_img03" src="/static/img/common/head_user_01.png" alt="#">-->
+{% endblock headerTitle %}
+
+{% block header %}
+<div class="head_d05 tab service_info click">서비스</div>
+<div class="head_d05 tab nova_service">Compute 서비스</div>
+<div class="head_d05 tab block_storage_service">블록 스토리지 서비스</div>
+<div class="head_d05 tab agent">네트워크 에이전트</div>
+{% endblock header %}
+
+{% block left_menu %}
+{% include "admin/left_menu.html" %}
+{% endblock left_menu %}
+
+{% block content %}
+<div class="rs_d01" id="service_info">
+    <div class="ind_d02">
+        <div class="ind_d05">서비스</div>
+        <div class="clear_float"></div>
+    </div>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="common-tab-01 mt15" cellpadding="0" border="0" cellspacing="0">
+        <colgroup></colgroup>
+        <thead>
+            <tr>
+                <th class="name">이름</th>
+                <th class="type">서비스</th>
+                <th class="enabled">Status</th>
+                <th class="host">호스트</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for service in services %}
+        <tr data-id="{{ service.id }}" data-filter="{{ service.name }}">
+            <td class="name">{{ service.name }}</td>
+            <td class="type">{{ service.type }}</td>
+            <td class="enabled">{{ service.enabled }}</td>
+            <td class="host">{{ service.host }}</td>
+        </tr>
+        {% endfor %}
+        {% for value in services|length|range:5 %}
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="rs_td03 tl" colspan="6">Displaying {{ services|length }} item</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="rs_d01" id="nova_service">
+    <div class="ind_d02">
+        <div class="ind_d05">Compute 서비스</div>
+        <div class="clear_float"></div>
+    </div>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0"></table>
+</div>
+<div class="rs_d01" id="block_storage_service">
+    <div class="ind_d02">
+        <div class="ind_d05">블록 스토리지 서비스</div>
+        <div class="clear_float"></div>
+    </div>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0"></table>
+</div>
+<div class="rs_d01" id="agent">
+    <div class="ind_d02">
+        <div class="ind_d05">네트워크 에이전트</div>
+        <div class="clear_float"></div>
+    </div>
+    <!--<img class="all_check_bt01" src="/static/img/common/btn/csv_dwn_bt_01.png" alt="#">-->
+    <div class="clear_float"></div>
+    <table class="rs_tab02 mt15" cellpadding="0" border="0" cellspacing="0"></table>
+</div>
+
+{% load staticfiles %}
+<script src='{% static "js/admin/info/index.js" %}'></script>
+<script>
+$(function(){
+    getServiceAjax();
+});
+</script>
+
+{% endblock content%}

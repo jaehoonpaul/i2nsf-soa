@@ -1,0 +1,68 @@
+{% load staticfiles %}
+<div id="modalRouterBody" hidden>
+    <table class="pop-tab-01" style="width: 700px;">
+        <tr id="areaName">
+            <th class="pop_input_td01"><label for="router_name">이름</label></th>
+            <td class="pop_input_td02"><input type="text" name="router_name" id="router_name"/></td>
+        </tr>
+        <tr id="areaAdmin">
+            <th class="pop_input_td01"><label for="admin_state_up">관리자 상태</label></th>
+            <td class="pop_input_td02">
+                <select name="admin_state_up" id="admin_state_up">
+                    <option value="1">UP</option>
+                    <option value="0">DOWN</option>
+                </select>
+            </td>
+        </tr>
+        <tr id="areaExternal">
+            <th class="pop_input_td01"><label for="network_id">외부 네트워크</label></th>
+            <td class="pop_input_td02"><select name="network_id" id="network_id"></select></td>
+        </tr>
+        <tr id="areaId">
+            <th class="pop_input_td01"><label for="router_id">ID</label></th>
+            <td class="pop_input_td02"><input type="text" name="router_id" id="router_id" disabled/></td>
+        </tr>
+    </table>
+</div>
+<div id="modalRouterFooter" hidden>
+    <div class="clear_float"></div>
+    <div class="pop_d03">
+        <img class="pop_plus_bt_img01" src='{% static "img/plus_bt_01.png" %}' alt="#" id="routerSubmit">
+        <img class="pop_cancel_bt_img01" src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+    </div>
+</div>
+
+
+<div id="modalInterfaceBody" hidden>
+    <table class="pop-tab-01" style="width: 700px;">
+        <tr id="areaPortSubnetId">
+            <th class="pop_input_td01"><label for="subnet_id">서브넷</label></th>
+            <td class="pop_input_td02"><select name="subnet_id" id="subnet_id" required></select></td>
+        </tr>
+        <tr id="areaPortIpAddress">
+            <th class="pop_input_td01"><label for="ip_address">IP 주소</label></th>
+            <td class="pop_input_td02"><input type="text" name="ip_address" id="ip_address"></td>
+        </tr>
+        <tr id="areaPortDeiceName">
+            <th class="pop_input_td01"><label for="device_name">라우터 이름</label></th>
+            <td class="pop_input_td02"><input type="text" name="device_name" id="device_name" disabled/></td>
+        </tr>
+        <tr id="areaPortDeviceId">
+            <th class="pop_input_td01"><label for="device_id">라우터 ID</label></th>
+            <td class="pop_input_td02"><input type="text" name="device_id" id="device_id" disabled/></td>
+        </tr>
+    </table>
+</div>
+
+
+<div id="modalInterfaceFooter" hidden>
+    <div class="clear_float"></div>
+    <div class="pop_d03">
+        <div class="pop_plus_bt_img01" id="interfaceSubmit" hidden style="display:inline-block;">
+            <img src='{% static "img/plus_bt_01.png" %}' alt="#">
+        </div>
+        <div class="pop_cancel_bt_img01" id="interfaceCancel" style="display:inline-block;">
+            <img src='{% static "img/cancel_bt_01.png" %}' alt="#" data-dismiss="modal">
+        </div>
+    </div>
+</div>

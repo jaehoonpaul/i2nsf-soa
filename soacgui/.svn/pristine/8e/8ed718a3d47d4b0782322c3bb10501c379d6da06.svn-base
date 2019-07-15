@@ -1,0 +1,80 @@
+{% extends 'service/right_pop.html' %}
+
+{% block rightPopTitle %}
+<img class="right_img01 right_pop_title_img" src="/static/img/right_network.png" alt="#">
+<div class="right_d01 type">네트워크</div>
+{% endblock rightPopTitle %}
+
+{% block resourceInfo %}
+<div class="right_d02 "></div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">이름 *</div>
+    <input class="pop03_text01" name="name" placeholder="이름" type="text" value="{{ data.name }}" autofocus>
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d02">
+    <div class="pop03_d03 ">네트워크 주소 *</div>
+    <input class="pop03_text01" name="cidr" placeholder="CIDR (예, 192.168.0.0/24)" type="text" value="{{ data.cidr }}">
+    <div class="clear_float"></div>
+</div>
+<div class="pop03_d04 " onclick="networkDetailToggle(this)">
+    <div class="pop03_d05 ">세부정보</div>
+    <img class="pop03_img01" src="/static/img/dashboard/common/arrow_02.png" alt="#">
+</div>
+<div class="network_detail_info" style="display: none;" hidden="hidden">
+    <div class="clear_float"></div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">관리자 상태</div>
+        <select class="pop03_sel01" name="admin_state">
+            <option value="UP"{% if data.admin_state != 'DOWN' %} selected{% endif %}>UP</option>
+            <option value="DOWN"{% if data.admin_state == 'DOWN' %} selected{% endif %}>DOWN</option>
+        </select>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">공유</div>
+        <input class="pop03_check01" name="share" type="checkbox"{% if data.share %} checked{% endif %}>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">IP 버전</div>
+        <select class="pop03_sel01" name="ip_version">
+            <option value="4"{% if data.ip_version != 6 %} selected{% endif %}>IPv4</option>
+            <option value="6"{% if data.ip_version == 6 %} selected{% endif %}>IPv6</option>
+        </select>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">게이트웨이 IP</div>
+        <input class="pop03_text01" name="gateway_ip" placeholder="게이트웨이 IP" type="text" value="{{ data.gateway_ip }}">
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">DHCP 사용</div>
+        <input class="pop03_check01" name="enable_dhcp" type="checkbox"{% if data.enable_dhcp is not False %} checked{% endif %}>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">IP 풀 할당</div>
+        <div class="right_input ">
+            <textarea class="form-control service" rows="4" placeholder="풀에 할당된 IP 주소 :&#x0a;한 줄에 하나씩 시작 주소, 끝 주소를 입력합니다.&#x0a;(예, 192.168.1.100, 192.168.1.120)" name="alloc_pools">{{ data.alloc_pools }}</textarea>
+        </div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">DNS 서버</div>
+        <div class="right_input ">
+            <textarea class="form-control service" rows="3" placeholder="이 서브넷에 대한 DNS 서버의 IP주소 :&#x0a;한 줄에 하나씩 입력합니다." name="dns">{{ data.dns }}</textarea>
+        </div>
+        <div class="clear_float"></div>
+    </div>
+    <div class="pop03_d02">
+        <div class="pop03_d03 ">호스트 라우트</div>
+        <div class="right_input ">
+            <textarea class="form-control service" rows="5" placeholder="추가 라우트 설정 :&#x0a;한 줄에 하나씩 destination_cidr과 nexthop을 입력합니다.&#x0a;(예, 192.168.200.0/24,10.56.1.254)" name="host_route">{{ data.host_route }}</textarea>
+        </div>
+        <div class="clear_float"></div>
+    </div>
+</div>
+<div class="right_d08"></div>
+{% endblock resourceInfo %}

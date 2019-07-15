@@ -1,0 +1,60 @@
+# _*_ coding:utf-8 _*_
+import re
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+
+from sdsecgui.tools.openstack_restapi import CinderRestAPI, KeystoneRestAPI, NovaRestAPI, NeutronRestAPI
+
+# set_log_dir()
+# logger = get_logger("myapp.myLogger")
+
+
+def retrieve_service_list(request):
+    # logger.info("retrieve_service_list")
+    pattern = re.compile("http://([\\d]{1,3}.[\\d]{1,3}.[\\d]{1,3}.[\\d]{1,3})")
+    token = request.session.get('passToken')
+    auth_url = request.session.get("auth_url")
+    keystone = KeystoneRestAPI(auth_url, token)
+    result = keystone.get_service_list()
+    if result.get("success"):
+        service_list = result["success"].get("services")
+        for service in service_list:
+            matcher = pattern.match(service["links"]["self"])
+            if matcher:
+                service["host"] = matcher.group(1)
+    else:
+        service_list = result
+    if not token:
+        return redirect("/dashboard/domains/?next=/dashboard/admin/info")
+    return render(request, 'admin/info/index.html', {"services": service_list})
+
+
+def retrieve_nova_service_list(request):
+    if request.is_ajax() and request.method == 'POST':
+
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        nova = NovaRestAPI(auth_url, token)
+        nova_service_list = nova.get_nova_service_list()
+        return JsonResponse({"success": {'novaServiceList': nova_service_list.get("success").get("services")}})
+
+
+def retrieve_block_storage_service_list(request):
+    if request.is_ajax() and request.method == 'POST':
+
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        cinder = CinderRestAPI(auth_url, token)
+        block_storage_service_list = [service for service in cinder.getBlockStorageServiceList().get("success").get("services")]
+        return JsonResponse({"success": {'blockStorageServiceList': block_storage_service_list}})
+
+
+def retrieve_agent_list(request):
+    if request.is_ajax() and request.method == 'POST':
+
+        token = request.session.get('passToken')
+        auth_url = request.session.get("auth_url")
+        neutron = NeutronRestAPI(auth_url, token)
+        agent_list = neutron.getAgentList().get("success").get("agents")
+        return JsonResponse({"success": {'agentList': agent_list}})
